@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Win64",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:\\Users\\amits\\Documents\\Projects\\mlscript\\.venv\\Include",
+                "C:\\Users\\amits\\AppData\\Local\\Programs\\Python\\Python313\\include",
+                "${workspaceFolder}/cpp_backend/pybind11/include",
+                "${workspaceFolder}/.venv/Include",
+                "${workspaceFolder}/cpp_backend/**"
+            ],
+            "defines": [],
+            "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
+        }
+    ],
+    "version": 4
+}

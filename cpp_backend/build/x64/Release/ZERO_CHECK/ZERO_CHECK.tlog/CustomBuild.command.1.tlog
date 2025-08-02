@@ -1,0 +1,10 @@
+^C:\USERS\AMITS\DOCUMENTS\PROJECTS\MLSCRIPT\CPP_BACKEND\BUILD\CMAKEFILES\BB40738B87A0564D9D2A9254EB28D0A3\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/amits/Documents/Projects/mlscript/cpp_backend -BC:/Users/amits/Documents/Projects/mlscript/cpp_backend/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/amits/Documents/Projects/mlscript/cpp_backend/build/mlscript.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
