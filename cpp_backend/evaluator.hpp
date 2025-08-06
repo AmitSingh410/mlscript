@@ -10,7 +10,7 @@
 /**
  * Core C++ evaluator: stores variables in a scoped symbol table and evaluates expressions.
  */
-using Value = std::variant<int, double>;
+using Value = std::variant<int, double, std::string>;
 
 class Evaluator {
 private:

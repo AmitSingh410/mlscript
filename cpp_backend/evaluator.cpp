@@ -23,7 +23,13 @@ void Evaluator::exit_scope() {
 
 // Assigns a variable to the current, most-nested scope.
 void Evaluator::assign_variable(const std::string& name, const Value& value) {
-    if (!scope_stack.empty()) {
+    for (auto it = scope_stack.rbegin(); it != scope_stack.rend(); ++it) {
+        if (it->count(name)) {
+            (*it)[name] = value; // Update existing variable
+            return;
+        }
+    }
+    if(!scope_stack.empty()) {
         scope_stack.back()[name] = value;
     }
 }
@@ -64,10 +70,18 @@ struct OperationVisitor {
         throw std::runtime_error("Unsupported operator for doubles: " + op);
     }
 
+    Value operator()(const std::string& l, const std::string& r) const {
+        if (op == "+") return l + r; // String concatenation
+        throw std::runtime_error("Operator '" + op + "' not supported for strings.");
+    }
+
     // Handles mixed types (int, double) by promoting both to double.
     template <typename T, typename U>
     Value operator()(T l, U r) const {
+        if constexpr(std::is_arithmetic_v<T> && std::is_arithmetic_v<U>) {
         return (*this)(static_cast<double>(l), static_cast<double>(r));
+    }
+        throw std::runtime_error("Unsupported type combination for operator: " + op);
     }
 };
 
