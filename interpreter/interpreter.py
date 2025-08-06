@@ -14,7 +14,7 @@ class Interpreter:
 
     def run(self, code):
         tokens = tokenize(code)
-        statements = Parser(tokens).parse()
+        statements = Parser(tokens,code).parse()
         for stmt in statements:
             self.visit(stmt)
 
@@ -29,6 +29,16 @@ class Interpreter:
     def visit_Assign(self, node):
         value = self.visit(node.expr)
         self.e.assign_variable(node.left.name, value)
+
+    def visit_UnaryOp(self, node):
+        value = self.visit(node.expr)
+        if node.op == '-':
+            return -value
+        elif node.op == '+':
+            return value
+        
+    def visit_StringLiteral(self, node):
+        return node.value
 
     def visit_PrintStatement(self, node):
         value = self.visit(node.expr)

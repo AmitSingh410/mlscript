@@ -4,6 +4,7 @@ from enum import Enum, auto
 class TokenType(Enum):
     INTEGER = auto()
     FLOAT = auto()
+    STRING = auto()
     IDENT = auto()
     ASSIGN = auto()
     PLUS = auto()
@@ -36,6 +37,7 @@ token_spec = [
     (TokenType.PRINT,   r'print\b'),
     (TokenType.FLOAT,   r'\d+\.\d+'),
     (TokenType.INTEGER, r'\d+'),
+    (TokenType.STRING,  r'"[^"]*"'),
     (TokenType.IDENT,   r'[a-zA-Z_]\w*'),
     (TokenType.EQ,      r'=='),
     (TokenType.NE,      r'!='),
@@ -53,19 +55,26 @@ token_spec = [
     (TokenType.LBRACE,  r'\{'),
     (TokenType.RBRACE,  r'\}'),
     (TokenType.COMMA,   r','),
-    ("SKIP",            r'[ \t\n]+'),
+    ("NEWLINE",        r'\n'),
+    ("SKIP",            r'[ \t]+'),
     ("MISMATCH",        r'.'),
 ]
 
-token_regex = '|'.join(f'(?P<{spec[0].name}>{spec[1]})' for spec in token_spec if spec[0] != "SKIP" and spec[0] != "MISMATCH")
-
+token_regex = '|'.join(f'(?P<{spec[0].name if isinstance(spec[0], Enum) else spec[0]}>{spec[1]})' for spec in token_spec)
+ 
 def tokenize(code):
     tokens = []
     line_num = 1
-    line_start = 0
+
     for mo in re.finditer(token_regex, code):
         kind_str = mo.lastgroup
         value = mo.group()
+
+        if kind_str == "NEWLINE":
+            line_num += 1
+            continue
+        if kind_str == "SKIP" or kind_str == "MISMATCH":
+            continue
 
         kind = TokenType[kind_str]
 
@@ -73,8 +82,10 @@ def tokenize(code):
             value = float(value)
         elif kind == TokenType.INTEGER:
             value = int(value)
+        elif kind == TokenType.STRING:
+            value = value[1:-1]
 
-        tokens.append((kind, value))
+        tokens.append((kind, value, line_num))
 
-    tokens.append((TokenType.EOF, None))
+    tokens.append((TokenType.EOF, None,line_num))
     return tokens

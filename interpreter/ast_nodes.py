@@ -10,6 +10,12 @@ class Number(Node):
         self.token = token
         self.value = token[1]
 
+class StringLiteral(Node):
+    """Represents a string literal."""
+    def __init__(self, token):
+        self.token = token
+        self.value = token[1] 
+
 class Variable(Node):
     """Represents a variable identifier."""
     def __init__(self, token):

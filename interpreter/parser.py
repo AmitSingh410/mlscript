@@ -1,9 +1,11 @@
+from ast import UnaryOp
 from .lexer import TokenType
 from .ast_nodes import *
 
 class Parser:
-    def __init__(self, tokens):
+    def __init__(self, tokens,code):
         self.tokens = tokens
+        self.code_lines = code.split('\n')
         self.pos = 0
         self.current_token = self.tokens[self.pos]
 
@@ -13,12 +15,20 @@ class Parser:
         if self.pos < len(self.tokens):
             self.current_token = self.tokens[self.pos]
 
+    def error(self, expected_type):
+        token_type, token_value, line_num = self.current_token
+        line = self.code_lines[line_num - 1]
+
+        error_message = f"""SyntaxError: Expected {expected_type}, but got {token_type} at line {line_num}: {line.strip()}"""
+        raise Exception(error_message)
+
+
     def eat(self, token_type):
         """Consume the current token if it matches the expected type."""
         if self.current_token[0] == token_type:
             self.advance()
         else:
-            raise SyntaxError(f"Expected {token_type}, but got {self.current_token[0]}")
+            self.error(token_type)
 
     def parse(self):
         """Parse a list of statements."""
@@ -136,11 +146,19 @@ class Parser:
 
     def factor(self):
         """Parses numbers, identifiers, function calls, and parenthesized expressions."""
-        token_type, token_value = self.current_token
+        token_type, token_value, line_num = self.current_token
+
+        if token_type in (TokenType.PLUS, TokenType.MINUS):
+            self.advance()
+            return UnaryOp(token_value,self.factor())
+        
+        if token_type == TokenType.STRING:
+            self.advance()
+            return StringLiteral((token_type, token_value, line_num))
 
         if token_type in (TokenType.INTEGER, TokenType.FLOAT):
             self.advance()
-            return Number((token_type, token_value))
+            return Number((token_type, token_value,line_num))
         elif token_type == TokenType.IDENT:
             # Lookahead to see if it's a function call
             if self.pos + 1 < len(self.tokens) and self.tokens[self.pos + 1][0] == TokenType.LPAREN:

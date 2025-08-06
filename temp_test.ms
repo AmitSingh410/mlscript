@@ -23,14 +23,8 @@ def fizzbuzz_loop(current_number, max_number) {
 
     fizzbuzz_loop(current_number + 1, max_number)
 }
-
-
-
 print("Starting FizzBuzz")
-
 fizzbuzz_loop(1, 10)
-
 print("Loop Complete")
-
 print("Total iterations run:")
 print(global_counter)
