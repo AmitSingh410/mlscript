@@ -486,23 +486,3 @@ fun calculate\_stats() {
 print("Starting statistical analysis...")  
 calculate\_stats()  
 print("Analysis complete.")
-<<<<<<< HEAD
-=======
-
-#### **Works cited**
-
-1. accessed on January 1, 1970,  
-2. pybind/pybind11: Seamless operability between C++11 and Python \- GitHub, accessed on August 8, 2025, [https://github.com/pybind/pybind11](https://github.com/pybind/pybind11)  
-3. Installation \- pip documentation v25.2, accessed on August 8, 2025, [https://pip.pypa.io/en/stable/installation/](https://pip.pypa.io/en/stable/installation/)  
-4. Install C and C++ support in Visual Studio \- Microsoft Learn, accessed on August 8, 2025, [https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=msvc-170](https://learn.microsoft.com/en-us/cpp/build/vscpp-step-0-installation?view=msvc-170)  
-5. Download Python | Python.org, accessed on August 8, 2025, [https://www.python.org/downloads/](https://www.python.org/downloads/)  
-6. Download CMake, accessed on August 8, 2025, [https://cmake.org/download/](https://cmake.org/download/)  
-7. Create a C++ extension for Python in Visual Studio \- Microsoft Learn, accessed on August 8, 2025, [https://learn.microsoft.com/en-us/visualstudio/python/working-with-c-cpp-python-in-visual-studio?view=vs-2022](https://learn.microsoft.com/en-us/visualstudio/python/working-with-c-cpp-python-in-visual-studio?view=vs-2022)  
-8. Installing a C++ Compiler \- Henry Feild, accessed on August 8, 2025, [https://hank.feild.org/courses/common/cpp-compiler.html](https://hank.feild.org/courses/common/cpp-compiler.html)  
-9. Installing cmake with home-brew \- Stack Overflow, accessed on August 8, 2025, [https://stackoverflow.com/questions/32185079/installing-cmake-with-home-brew](https://stackoverflow.com/questions/32185079/installing-cmake-with-home-brew)  
-10. Installing CMake, accessed on August 8, 2025, [https://cliutils.gitlab.io/modern-cmake/chapters/intro/installing.html](https://cliutils.gitlab.io/modern-cmake/chapters/intro/installing.html)  
-11. Build systems \- pybind11 documentation, accessed on August 8, 2025, [https://pybind11.readthedocs.io/en/stable/compiling.html](https://pybind11.readthedocs.io/en/stable/compiling.html)  
-12. Using C++ on Linux in VS Code, accessed on August 8, 2025, [https://code.visualstudio.com/docs/cpp/config-linux](https://code.visualstudio.com/docs/cpp/config-linux)  
-13. How to Install Python on Your System: A Guide \- Real Python, accessed on August 8, 2025, [https://realpython.com/installing-python/](https://realpython.com/installing-python/)  
-14. First steps \- pybind11 documentation, accessed on August 8, 2025, [https://pybind11.readthedocs.io/en/stable/basics.html](https://pybind11.readthedocs.io/en/stable/basics.html)
->>>>>>> 8b2c1f6dcf1249ca20b752bf148f290dccd7eb3a
