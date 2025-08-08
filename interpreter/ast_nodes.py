@@ -52,6 +52,20 @@ class IfStatement(Node):
         self.if_block = if_block
         self.else_block = else_block
 
+class WhileStatement(Node):
+    """Represents a while loop."""
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
+class ForStatement(Node):
+    """Represents a for loop."""
+    def __init__(self, variable, iterable, body):
+        self.variable = variable
+        self.iterable = iterable 
+        self.body = body
+
+
 class FunctionDef(Node):
     """Represents a function definition."""
     def __init__(self, name_token, params, body):

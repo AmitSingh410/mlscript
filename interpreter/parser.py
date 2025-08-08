@@ -43,10 +43,14 @@ class Parser:
 
         if token_type == TokenType.PRINT:
             return self.print_statement()
-        elif token_type == TokenType.DEF:
+        elif token_type == TokenType.FUN:
             return self.function_definition()
         elif token_type == TokenType.IF:
             return self.if_statement()
+        elif token_type == TokenType.WHILE:
+            return self.while_statement()
+        elif token_type == TokenType.FOR:
+            return self.for_statement()
         elif token_type == TokenType.RETURN:
             self.advance()
             expr = self.comparison_expression()
@@ -76,19 +80,63 @@ class Parser:
         return Assign(Variable(ident_token), expr)
 
     def if_statement(self):
+        cases = []
+        # Parse the initial 'if'
         self.eat(TokenType.IF)
         self.eat(TokenType.LPAREN)
         condition = self.comparison_expression()
         self.eat(TokenType.RPAREN)
-        if_block = self.block()
-        else_block = None
+        body = self.block()
+        cases.append((condition, body))
+
+        # Parse all 'elif' blocks
+        while self.current_token[0] == TokenType.ELIF:
+            self.eat(TokenType.ELIF)
+            self.eat(TokenType.LPAREN)
+            condition = self.comparison_expression()
+            self.eat(TokenType.RPAREN)
+            body = self.block()
+            cases.append((condition, body))
+
+        # Parse the final 'else' block, if it exists
+        else_body = None
         if self.current_token[0] == TokenType.ELSE:
             self.eat(TokenType.ELSE)
-            else_block = self.block()
-        return IfStatement(condition, if_block, else_block)
+            else_body = self.block()
+
+        # Build the nested IfStatement node from the cases
+        # Start from the last case and work backwards
+        if else_body:
+            node = else_body
+        else:
+            node = None
+            
+        for condition, body in reversed(cases):
+            node = IfStatement(condition, body, node)
+        
+        return node
+    
+    def while_statement(self):
+        self.eat(TokenType.WHILE)
+        self.eat(TokenType.LPAREN)
+        condition = self.comparison_expression()
+        self.eat(TokenType.RPAREN)
+        body = self.block()
+        return WhileStatement(condition, body)
+    
+    def for_statement(self):
+        self.eat(TokenType.FOR)
+        variable_node = Variable(self.current_token)
+        self.eat(TokenType.IDENT)
+        self.eat(TokenType.IN)
+
+        iterable_node = self.call_expression() # Assuming iterable is a function call, like range()
+
+        body = self.block()
+        return ForStatement(variable_node, iterable_node, body)
 
     def function_definition(self):
-        self.eat(TokenType.DEF)
+        self.eat(TokenType.FUN)
         name_token = self.current_token
         self.eat(TokenType.IDENT)
         self.eat(TokenType.LPAREN)

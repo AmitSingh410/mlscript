@@ -17,10 +17,14 @@ class TokenType(Enum):
     RBRACE = auto()
     COMMA = auto()
     PRINT = auto()
-    DEF = auto()
+    FUN = auto()
     RETURN = auto()
     IF = auto()
+    ELIF = auto()
     ELSE = auto()
+    WHILE = auto()
+    FOR = auto()
+    IN = auto()
     EQ = auto()
     NE = auto()
     GT = auto()
@@ -30,9 +34,16 @@ class TokenType(Enum):
     EOF = auto()
 
 token_spec = [
+    ("COMMENT",       r'//.*'),
+    ("NEWLINE",        r'\n'),
+    ("SKIP",            r'[ \t]+'),
     (TokenType.IF,      r'if\b'),
+    (TokenType.ELIF,    r'elif\b'),
     (TokenType.ELSE,    r'else\b'),
-    (TokenType.DEF,     r'def\b'),
+    (TokenType.WHILE,   r'while\b'),
+    (TokenType.FOR,     r'for\b'),
+    (TokenType.IN,      r'in\b'),
+    (TokenType.FUN,     r'fun\b'),
     (TokenType.RETURN,  r'return\b'),
     (TokenType.PRINT,   r'print\b'),
     (TokenType.FLOAT,   r'\d+\.\d+'),
@@ -55,8 +66,7 @@ token_spec = [
     (TokenType.LBRACE,  r'\{'),
     (TokenType.RBRACE,  r'\}'),
     (TokenType.COMMA,   r','),
-    ("NEWLINE",        r'\n'),
-    ("SKIP",            r'[ \t]+'),
+    
     ("MISMATCH",        r'.'),
 ]
 
@@ -70,6 +80,8 @@ def tokenize(code):
         kind_str = mo.lastgroup
         value = mo.group()
 
+        if kind_str == "COMMENT":
+            continue
         if kind_str == "NEWLINE":
             line_num += 1
             continue

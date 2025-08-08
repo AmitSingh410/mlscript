@@ -55,6 +55,24 @@ class Interpreter:
         elif node.else_block:
             self.visit(node.else_block)
 
+    def visit_WhileStatement(self, node):
+        while self.visit(node.condition):
+            self.visit(node.body)
+
+    def visit_ForStatement(self, node):
+        iterable_expr = node.iterable
+        if not (isinstance(iterable_expr, FunctionCall) and iterable_expr.name == 'range'):
+            raise Exception("For loops currently only support 'range' as iterable")
+        
+        args = [self.visit(arg) for arg in iterable_expr.args]
+        self.e.enter_scope()
+
+        for i in range(*args):
+            self.e.assign_variable(node.variable.name, i)
+            self.visit(node.body)
+
+        self.e.exit_scope()
+
     def visit_FunctionDef(self, node):
         self.functions[node.name] = node
 
