@@ -93,7 +93,8 @@ Once all prerequisites are installed, you can compile the mlscript module using 
    cd mlscript
 
 2. **Configure with CMake:** Create a build directory and run CMake from within it. This command inspects your system, finds the required tools, and generates the native build files (e.g., a Visual Studio solution on Windows or a Makefile on Linux/macOS).14  
-   Shell  
+   Shell
+   cd cpp_backend  
    mkdir build  
    cd build  
    cmake..
@@ -104,8 +105,8 @@ Once all prerequisites are installed, you can compile the mlscript module using 
    cmake \--build. \--config Release
 
 4. **Copy the Module:** After the build completes, you must manually copy the compiled module to the project's root directory (the same directory that contains main.py).  
-   * **On Windows:** The file will be named mlscript.pyd and is typically located in the build\\Release directory.  
-   * **On macOS/Linux:** The file will be named mlscript.so and is typically located directly in the build directory.
+   * **On Windows:** The file will be named mlscript.cp313-win_amd64.pyd and is typically located in the build\\Release directory.  
+   * **On macOS/Linux:** The file will be named with a .so extension and is typically located directly in the build directory.
 
 ### **Running mlscript**
 
