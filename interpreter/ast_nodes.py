@@ -16,11 +16,30 @@ class StringLiteral(Node):
         self.token = token
         self.value = token[1] 
 
+class BooleanLiteral(Node):
+    """Represents a boolean literal."""
+    def __init__(self, token):
+        self.token = token
+        self.value = token[1] 
+
+class ListLiteral(Node):
+    """Represents a list literal."""
+    def __init__(self, start_token,elements):
+        self.token = start_token
+        self.elements = elements
+
 class Variable(Node):
     """Represents a variable identifier."""
     def __init__(self, token):
         self.token = token
         self.name = token[1]
+
+class UnaryOp(Node):
+    """Represents a unary operation (e.g., -x, !x)."""
+    def __init__(self, op_token,expr):
+        self.token = op_token
+        self.op = op_token[1]  # The operator (e.g., '-', '!')
+        self.expr = expr
 
 class BinOp(Node):
     """Represents a binary operation (e.g., +, -, *, /, ==)."""
@@ -75,8 +94,9 @@ class FunctionDef(Node):
 
 class FunctionCall(Node):
     """Represents a function call."""
-    def __init__(self, name, args):
-        self.name = name
+    def __init__(self, name_token, args):
+        self.token = name_token
+        self.name= name_token[1]
         self.args = args
 
 class ReturnStatement(Node):

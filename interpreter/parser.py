@@ -1,4 +1,4 @@
-from ast import UnaryOp
+
 from .lexer import TokenType
 from .ast_nodes import *
 
@@ -130,7 +130,7 @@ class Parser:
         self.eat(TokenType.IDENT)
         self.eat(TokenType.IN)
 
-        iterable_node = self.call_expression() # Assuming iterable is a function call, like range()
+        iterable_node = self.comparison_expression() # Assuming iterable is a function call, like range()
 
         body = self.block()
         return ForStatement(variable_node, iterable_node, body)
@@ -194,26 +194,35 @@ class Parser:
 
     def factor(self):
         """Parses numbers, identifiers, function calls, and parenthesized expressions."""
-        token_type, token_value, line_num = self.current_token
+        token = self.current_token
+        token_type = token[0]
 
         if token_type in (TokenType.PLUS, TokenType.MINUS):
             self.advance()
-            return UnaryOp(token_value,self.factor())
+            return UnaryOp(token,self.factor())
         
         if token_type == TokenType.STRING:
             self.advance()
-            return StringLiteral((token_type, token_value, line_num))
+            return StringLiteral(token)
 
         if token_type in (TokenType.INTEGER, TokenType.FLOAT):
             self.advance()
-            return Number((token_type, token_value,line_num))
+            return Number(token)
+        
+        if token_type in (TokenType.TRUE, TokenType.FALSE):
+            self.advance()
+            return BooleanLiteral(token)
+        
+        if token_type == TokenType.LBRACKET:
+            return self.list_expression()
+
         elif token_type == TokenType.IDENT:
             # Lookahead to see if it's a function call
             if self.pos + 1 < len(self.tokens) and self.tokens[self.pos + 1][0] == TokenType.LPAREN:
                 return self.call_expression()
             else:
                 self.advance()
-                return Variable((token_type, token_value))
+                return Variable(token)
         elif token_type == TokenType.LPAREN:
             self.eat(TokenType.LPAREN)
             node = self.comparison_expression()
@@ -221,6 +230,19 @@ class Parser:
             return node
         else:
             raise SyntaxError(f"Unexpected token {self.current_token} in expression")
+        
+    def list_expression(self):
+        """Parses a list literal."""
+        start_token = self.current_token
+        self.eat(TokenType.LBRACKET)
+        elements = []
+        if self.current_token[0] != TokenType.RBRACKET:
+            elements.append(self.comparison_expression())
+            while self.current_token[0] == TokenType.COMMA:
+                self.eat(TokenType.COMMA)
+                elements.append(self.comparison_expression())
+        self.eat(TokenType.RBRACKET)
+        return ListLiteral(start_token,elements)
 
     def call_expression(self):
         """Parses a function call."""
@@ -234,4 +256,4 @@ class Parser:
                 self.eat(TokenType.COMMA)
                 args.append(self.comparison_expression())
         self.eat(TokenType.RPAREN)
-        return FunctionCall(name_token[1], args)
+        return FunctionCall(name_token, args)

@@ -23,18 +23,11 @@ void Evaluator::exit_scope() {
 
 // Assigns a variable to the current, most-nested scope.
 void Evaluator::assign_variable(const std::string& name, const Value& value) {
-    for (auto it = scope_stack.rbegin(); it != scope_stack.rend(); ++it) {
-        if (it->count(name)) {
-            (*it)[name] = value; // Update existing variable
-            return;
-        }
-    }
-    if(!scope_stack.empty()) {
+    if (!scope_stack.empty()) {
         scope_stack.back()[name] = value;
     }
 }
 
-// Retrieves a variable by searching from the current scope outwards to the global scope.
 Value Evaluator::get_variable(const std::string& name) {
     for (auto it = scope_stack.rbegin(); it != scope_stack.rend(); ++it) {
         if (it->count(name)) {
@@ -75,7 +68,7 @@ struct OperationVisitor {
         throw std::runtime_error("Operator '" + op + "' not supported for strings.");
     }
 
-    // Handles mixed types (int, double) by promoting both to double.
+    // Handles mixed types (int, double,string,bool and py objects.
     template <typename T, typename U>
     Value operator()(T l, U r) const {
         if constexpr(std::is_arithmetic_v<T> && std::is_arithmetic_v<U>) {

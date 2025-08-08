@@ -15,6 +15,8 @@ class TokenType(Enum):
     RPAREN = auto()
     LBRACE = auto()
     RBRACE = auto()
+    LBRACKET = auto()
+    RBRACKET = auto()
     COMMA = auto()
     PRINT = auto()
     FUN = auto()
@@ -31,6 +33,8 @@ class TokenType(Enum):
     GTE = auto()
     LT = auto()
     LTE = auto()
+    TRUE = auto()
+    FALSE = auto()
     EOF = auto()
 
 token_spec = [
@@ -46,6 +50,8 @@ token_spec = [
     (TokenType.FUN,     r'fun\b'),
     (TokenType.RETURN,  r'return\b'),
     (TokenType.PRINT,   r'print\b'),
+    (TokenType.TRUE,    r'true\b'),
+    (TokenType.FALSE,   r'false\b'),
     (TokenType.FLOAT,   r'\d+\.\d+'),
     (TokenType.INTEGER, r'\d+'),
     (TokenType.STRING,  r'"[^"]*"'),
@@ -65,6 +71,8 @@ token_spec = [
     (TokenType.RPAREN,  r'\)'),
     (TokenType.LBRACE,  r'\{'),
     (TokenType.RBRACE,  r'\}'),
+    (TokenType.LBRACKET, r'\['),
+    (TokenType.RBRACKET, r'\]'),
     (TokenType.COMMA,   r','),
     
     ("MISMATCH",        r'.'),
@@ -96,6 +104,10 @@ def tokenize(code):
             value = int(value)
         elif kind == TokenType.STRING:
             value = value[1:-1]
+        elif kind == TokenType.TRUE:
+            value = True
+        elif kind == TokenType.FALSE:
+            value = False
 
         tokens.append((kind, value, line_num))
 

@@ -39,6 +39,12 @@ class Interpreter:
         
     def visit_StringLiteral(self, node):
         return node.value
+    
+    def visit_ListLiteral(self, node):
+        return [self.visit(elem) for elem in node.elements]
+    
+    def visit_BooleanLiteral(self, node):
+        return node.value
 
     def visit_PrintStatement(self, node):
         value = self.visit(node.expr)
@@ -60,17 +66,19 @@ class Interpreter:
             self.visit(node.body)
 
     def visit_ForStatement(self, node):
-        iterable_expr = node.iterable
-        if not (isinstance(iterable_expr, FunctionCall) and iterable_expr.name == 'range'):
-            raise Exception("For loops currently only support 'range' as iterable")
+        iterable_value = self.visit(node.iterable)
         
-        args = [self.visit(arg) for arg in iterable_expr.args]
+        iterator = None
+        if isinstance(iterable_value, (list, str)):
+            iterator = iterable_value
+        else:
+            line_num = node.iterable.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: 'for' loop can only iterate over a list, string, or range.")
+
         self.e.enter_scope()
-
-        for i in range(*args):
-            self.e.assign_variable(node.variable.name, i)
+        for item in iterator:
+            self.e.assign_variable(node.variable.name, item)
             self.visit(node.body)
-
         self.e.exit_scope()
 
     def visit_FunctionDef(self, node):
@@ -84,7 +92,11 @@ class Interpreter:
         return node.value
 
     def visit_Variable(self, node):
-        return self.e.get_variable(node.name)
+        try:
+            return self.e.get_variable(node.name)
+        except Exception as e:
+            line_num = node.token[2] 
+            raise Exception(f"Runtime Error on line {line_num}: {e}")
 
     def visit_BinOp(self, node):
         left = self.visit(node.left)
@@ -103,13 +115,27 @@ class Interpreter:
             raise Exception(f"Unsupported binary operator: {op}")
 
     def visit_FunctionCall(self, node):
+        line_num = node.token[2]
+        if node.name == 'len':
+            if len(node.args) != 1:
+                raise Exception(f"Runtime Error on line {line_num}: len() expects 1 argument, but received {len(node.args)}")
+            value = self.visit(node.args[0])
+            if isinstance(value, (str, list)):
+                return len(value)
+            else:
+                raise Exception(f"Runtime Error on line {line_num}: len() is only supported for strings and lists.")
+        
+        if node.name == 'range':
+            args = [self.visit(arg) for arg in node.args]
+            return list(range(*args))
+
         if node.name not in self.functions:
-            raise Exception(f"Undefined function '{node.name}'")
+            raise Exception(f"Runtime Error on line {line_num}: Undefined function '{node.name}'")
         
         func_def = self.functions[node.name]
         
         if len(node.args) != len(func_def.params):
-            raise Exception(f"Function '{node.name}' expects {len(func_def.params)} arguments, but received {len(node.args)}")
+            raise Exception(f"Runtime Error on line {line_num}: Function '{node.name}' expects {len(func_def.params)} arguments, but received {len(node.args)}")
         
         self.e.enter_scope()
         

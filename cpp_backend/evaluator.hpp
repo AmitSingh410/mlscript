@@ -6,11 +6,15 @@
 #include <unordered_map>
 #include <variant>
 #include <stdexcept>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+namespace py = pybind11;
 
 /**
  * Core C++ evaluator: stores variables in a scoped symbol table and evaluates expressions.
  */
-using Value = std::variant<int, double, std::string>;
+using Value = std::variant<int, double, bool, std::string, py::object>;
 
 class Evaluator {
 private:
