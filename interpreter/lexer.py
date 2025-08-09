@@ -18,6 +18,7 @@ class TokenType(Enum):
     LBRACKET = auto()
     RBRACKET = auto()
     COMMA = auto()
+    COLON = auto()
     PRINT = auto()
     FUN = auto()
     RETURN = auto()
@@ -54,7 +55,7 @@ token_spec = [
     (TokenType.FALSE,   r'false\b'),
     (TokenType.FLOAT,   r'\d+\.\d+'),
     (TokenType.INTEGER, r'\d+'),
-    (TokenType.STRING,  r'"[^"]*"'),
+    (TokenType.STRING,  r'"(?:\\.|[^"\\])*"'),
     (TokenType.IDENT,   r'[a-zA-Z_]\w*'),
     (TokenType.EQ,      r'=='),
     (TokenType.NE,      r'!='),
@@ -74,6 +75,7 @@ token_spec = [
     (TokenType.LBRACKET, r'\['),
     (TokenType.RBRACKET, r'\]'),
     (TokenType.COMMA,   r','),
+    (TokenType.COLON,   r':'),
     
     ("MISMATCH",        r'.'),
 ]
@@ -103,7 +105,7 @@ def tokenize(code):
         elif kind == TokenType.INTEGER:
             value = int(value)
         elif kind == TokenType.STRING:
-            value = value[1:-1]
+            value = bytes(value[1:-1], "utf-8").decode("unicode_escape")
         elif kind == TokenType.TRUE:
             value = True
         elif kind == TokenType.FALSE:

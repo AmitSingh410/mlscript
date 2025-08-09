@@ -38,7 +38,6 @@ class Parser:
         return statements
 
     def statement(self):
-        """Parse a single statement."""
         token_type = self.current_token[0]
 
         if token_type == TokenType.PRINT:
@@ -55,15 +54,23 @@ class Parser:
             self.advance()
             expr = self.comparison_expression()
             return ReturnStatement(expr)
-        elif token_type == TokenType.IDENT:
-            # Lookahead to distinguish between assignment and function call
-            if len(self.tokens) > self.pos + 1 and self.tokens[self.pos + 1][0] == TokenType.ASSIGN:
-                return self.assignment_statement()
-            else:
-                # An expression used as a statement (e.g., a function call)
-                return self.comparison_expression()
         else:
-            raise SyntaxError(f"Unexpected token {self.current_token} at start of statement")
+            return self.assignment_or_expression_statement()
+        
+    def assignment_or_expression_statement(self):
+        expr = self.comparison_expression()
+
+        if self.current_token[0] == TokenType.ASSIGN:
+            self.eat(TokenType.ASSIGN)
+            right_expr = self.comparison_expression()
+
+            if isinstance(expr, Variable):
+                return Assign(expr, right_expr)
+            elif isinstance(expr, IndexAccess):
+                return IndexAssign(expr.collection, expr.index_expr, right_expr)
+            else:
+                raise SyntaxError("The left-hand side of an assignment must be a variable or an index.")
+        return expr
 
     def print_statement(self):
         self.eat(TokenType.PRINT)
@@ -189,40 +196,59 @@ class Parser:
         while self.current_token[0] in (TokenType.MUL, TokenType.DIV):
             op_token = self.current_token
             self.eat(op_token[0])
-            node = BinOp(node, op_token[1], self.factor())
+            node = BinOp(node, op_token[1], self.factor()) 
         return node
 
     def factor(self):
-        """Parses numbers, identifiers, function calls, and parenthesized expressions."""
+        token = self.current_token
+        if token[0] in (TokenType.PLUS, TokenType.MINUS):
+            self.advance()
+            return UnaryOp(token, self.factor())
+        return self.call_and_index()
+
+    def call_and_index(self):
+        node = self.primary()
+
+        while True:
+            if self.current_token[0] == TokenType.LPAREN:
+                self.eat(TokenType.LPAREN)
+                args = []
+                if self.current_token[0] != TokenType.RPAREN:
+                    args.append(self.comparison_expression())
+                    while self.current_token[0] == TokenType.COMMA:
+                        self.eat(TokenType.COMMA)
+                        args.append(self.comparison_expression())
+                self.eat(TokenType.RPAREN)
+                node = FunctionCall(node, args)
+            elif self.current_token[0] == TokenType.LBRACKET:
+                self.eat(TokenType.LBRACKET)
+                index_expr = self.comparison_expression()
+                self.eat(TokenType.RBRACKET)
+                node = IndexAccess(node, index_expr)
+            else:
+                break
+        return node
+    
+    def primary(self):
         token = self.current_token
         token_type = token[0]
 
-        if token_type in (TokenType.PLUS, TokenType.MINUS):
-            self.advance()
-            return UnaryOp(token,self.factor())
-        
         if token_type == TokenType.STRING:
             self.advance()
             return StringLiteral(token)
-
-        if token_type in (TokenType.INTEGER, TokenType.FLOAT):
+        elif token_type in (TokenType.INTEGER, TokenType.FLOAT):
             self.advance()
             return Number(token)
-        
-        if token_type in (TokenType.TRUE, TokenType.FALSE):
+        elif token_type in (TokenType.TRUE, TokenType.FALSE):
             self.advance()
             return BooleanLiteral(token)
-        
-        if token_type == TokenType.LBRACKET:
+        elif token_type == TokenType.LBRACKET:
             return self.list_expression()
-
+        elif token_type == TokenType.LBRACE:
+            return self.dict_expression()
         elif token_type == TokenType.IDENT:
-            # Lookahead to see if it's a function call
-            if self.pos + 1 < len(self.tokens) and self.tokens[self.pos + 1][0] == TokenType.LPAREN:
-                return self.call_expression()
-            else:
-                self.advance()
-                return Variable(token)
+            self.advance()
+            return Variable(token)
         elif token_type == TokenType.LPAREN:
             self.eat(TokenType.LPAREN)
             node = self.comparison_expression()
@@ -244,16 +270,24 @@ class Parser:
         self.eat(TokenType.RBRACKET)
         return ListLiteral(start_token,elements)
 
-    def call_expression(self):
-        """Parses a function call."""
-        name_token = self.current_token
-        self.eat(TokenType.IDENT)
-        self.eat(TokenType.LPAREN)
-        args = []
-        if self.current_token[0] != TokenType.RPAREN:
-            args.append(self.comparison_expression())
+    def dict_expression(self):
+        """Parses a dictionary literal."""
+        start_token = self.current_token
+        self.eat(TokenType.LBRACE)
+        pairs = []
+        if self.current_token[0] != TokenType.RBRACE:
+            key = self.comparison_expression()
+            self.eat(TokenType.COLON)
+            value_node = self.comparison_expression()
+            pairs.append((key, value_node))
+
             while self.current_token[0] == TokenType.COMMA:
                 self.eat(TokenType.COMMA)
-                args.append(self.comparison_expression())
-        self.eat(TokenType.RPAREN)
-        return FunctionCall(name_token, args)
+                key_node = self.comparison_expression()
+                self.eat(TokenType.COLON)
+                value_node = self.comparison_expression()
+                pairs.append((key_node, value_node))
+        self.eat(TokenType.RBRACE)
+        return DictLiteral(start_token, pairs)
+    
+  

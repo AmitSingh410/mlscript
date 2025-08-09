@@ -7,6 +7,13 @@ class ReturnSignal(Exception):
     def __init__(self, value):
         self.value = value
 
+class MLObject:
+    def __init__(self, value):
+        self.value = value
+
+    def __repr__(self):
+        return str(self.value)
+
 class Interpreter:
     def __init__(self):
         self.e = mlscript.Evaluator()
@@ -22,13 +29,42 @@ class Interpreter:
         method_name = f'visit_{type(node).__name__}'
         visitor = getattr(self, method_name, self.no_visit_method)
         return visitor(node)
+    
+    def visit_IndexAssign(self, node):
+        collection = self.visit(node.collection)
+        index = self.visit(node.index_expr)
+        value = self.visit(node.value_expr)
+
+        line_num = node.token[2] # Get the line number from the node
+
+        if isinstance(collection, (list, dict)):
+            try:
+                collection[index] = value
+            except (IndexError, KeyError) as e:
+                # Now includes the line number
+                raise Exception(f"Runtime Error on line {line_num}: {e}")
+        else:
+            # Now includes the line number
+            raise Exception(f"Runtime Error on line {line_num}: Index assignment is only supported for lists and dictionaries.")
+        
+    def visit_IndexAccess(self, node):
+        collection = self.visit(node.collection)
+        index = self.visit(node.index_expr)
+        try:
+            return collection[index]
+        except (IndexError, KeyError, TypeError) as e:
+            line_num = node.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: {e}")
 
     def no_visit_method(self, node):
         raise Exception(f"No visit_{type(node).__name__} method defined")
 
     def visit_Assign(self, node):
         value = self.visit(node.expr)
-        self.e.assign_variable(node.left.name, value)
+        if isinstance(value,(bool,list,dict)):
+            self.e.assign_variable(node.left.name, MLObject(value))
+        else:
+            self.e.assign_variable(node.left.name,value)
 
     def visit_UnaryOp(self, node):
         value = self.visit(node.expr)
@@ -43,12 +79,23 @@ class Interpreter:
     def visit_ListLiteral(self, node):
         return [self.visit(elem) for elem in node.elements]
     
+    def visit_DictLiteral(self, node):
+        py_dict = {}
+        for key_node, value_node in node.pairs:
+            key = self.visit(key_node)
+            value = self.visit(value_node)
+            py_dict[key] = value
+        return py_dict
+    
     def visit_BooleanLiteral(self, node):
         return node.value
 
     def visit_PrintStatement(self, node):
         value = self.visit(node.expr)
-        print(value)
+        if isinstance(value,bool):
+            print(str(value).lower())
+        else:
+            print(value)
 
     def visit_Block(self, node):
         for statement in node.statements:
@@ -93,7 +140,10 @@ class Interpreter:
 
     def visit_Variable(self, node):
         try:
-            return self.e.get_variable(node.name)
+            value = self.e.get_variable(node.name)
+            if isinstance(value,MLObject):
+                return value.value
+            return value
         except Exception as e:
             line_num = node.token[2] 
             raise Exception(f"Runtime Error on line {line_num}: {e}")
@@ -116,39 +166,56 @@ class Interpreter:
 
     def visit_FunctionCall(self, node):
         line_num = node.token[2]
-        if node.name == 'len':
-            if len(node.args) != 1:
-                raise Exception(f"Runtime Error on line {line_num}: len() expects 1 argument, but received {len(node.args)}")
-            value = self.visit(node.args[0])
-            if isinstance(value, (str, list)):
-                return len(value)
-            else:
-                raise Exception(f"Runtime Error on line {line_num}: len() is only supported for strings and lists.")
         
-        if node.name == 'range':
-            args = [self.visit(arg) for arg in node.args]
-            return list(range(*args))
-
-        if node.name not in self.functions:
-            raise Exception(f"Runtime Error on line {line_num}: Undefined function '{node.name}'")
-        
-        func_def = self.functions[node.name]
-        
-        if len(node.args) != len(func_def.params):
-            raise Exception(f"Runtime Error on line {line_num}: Function '{node.name}' expects {len(func_def.params)} arguments, but received {len(node.args)}")
-        
-        self.e.enter_scope()
-        
-        try:
-            for param, arg_node in zip(func_def.params, node.args):
-                arg_value = self.visit(arg_node)
-                self.e.assign_variable(param.name, arg_value)
+        # First, check if the callee is a simple variable name.
+        if isinstance(node.callee, Variable):
+            callee_name = node.callee.name
             
-            self.visit(func_def.body)
+            # Handle Built-in functions by name
+            builtins = {'len', 'range', 'min', 'max', 'sum'}
+            if callee_name in builtins:
+                args = [self.visit(arg) for arg in node.args] # Evaluate args for built-ins
+                if callee_name == 'len':
+                    if len(args) != 1: raise Exception(f"Runtime Error on line {line_num}: len() expects 1 argument, but received {len(args)}")
+                    value = args[0]
+                    if isinstance(value, (str, list, dict)): return len(value)
+                    raise Exception(f"Runtime Error on line {line_num}: len() is only supported for strings, lists, and dictionaries.")
+                
+                if callee_name == 'range':
+                    return list(range(*args))
 
-        except ReturnSignal as ret:
-            return ret.value
-        finally:
-            self.e.exit_scope()
+                if callee_name in ('min', 'max', 'sum'):
+                    if len(args) != 1: raise Exception(f"Runtime Error on line {line_num}: {callee_name}() expects 1 argument (a list), but received {len(args)}")
+                    data = args[0]
+                    if not isinstance(data, list): raise Exception(f"Runtime Error on line {line_num}: Argument to {callee_name}() must be a list.")
+                    if not data: raise Exception(f"Runtime Error on line {line_num}: {callee_name}() arg is an empty sequence.")
+                    if callee_name == 'min': return min(data)
+                    if callee_name == 'max': return max(data)
+                    if callee_name == 'sum': return sum(data)
             
-        return None
+            # Handle User-defined functions by name
+            if callee_name in self.functions:
+                func_def = self.functions[callee_name]
+                args = [self.visit(arg) for arg in node.args] # Evaluate args for user functions
+
+                if len(args) != len(func_def.params):
+                    raise Exception(f"Runtime Error on line {line_num}: Function '{callee_name}' expects {len(func_def.params)} arguments, but received {len(args)}")
+                
+                self.e.enter_scope()
+                try:
+                    for param, arg_value in zip(func_def.params, args):
+                        self.e.assign_variable(param.name, arg_value)
+                    self.visit(func_def.body)
+                except ReturnSignal as ret:
+                    return ret.value
+                finally:
+                    self.e.exit_scope()
+                return None
+
+            # If the name is not a known built-in or user function, it's an error.
+            raise Exception(f"Runtime Error on line {line_num}: Undefined function '{callee_name}'")
+
+        # Case 2: The callee is a complex expression (e.g., my_list[0]())
+        else:
+            # For now, we can keep this restricted until we need it.
+            raise Exception(f"Runtime Error on line {line_num}: Dynamic function execution is not yet supported.")

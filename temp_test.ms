@@ -1,6 +1,6 @@
-// ##########################################
-// ## mlscript v0.3 - Comprehensive Test Suite
-// ##########################################
+// ######################################################
+// ## mlscript v0.4 - Comprehensive Test Suite
+// ######################################################
 
 print("--- 1. Testing Primitives, Variables, and Operators ---")
 
@@ -20,12 +20,11 @@ print("Boolean d:")
 print(d)
 
 // Test arithmetic and string concatenation
-sum = a + 5
+sum_val = a + 5
 product = b * 2
 greeting = c + " mlscript!"
-
 print("Sum (10 + 5):")
-print(sum)
+print(sum_val)
 print("Product (3.14 * 2):")
 print(product)
 print("Greeting:")
@@ -140,17 +139,88 @@ print(fact_5) // Expected: 120
 
 print("")
 
-// --- 5. Demonstrating Improved Runtime Errors ---
-print("--- 5. Demonstrating Improved Runtime Errors ---")
+// --- 5. Demonstrating v0.3 Runtime Errors ---
+print("--- 5. Demonstrating v0.3 Runtime Errors ---")
 print("The following lines are commented out to prevent crashing the script.")
-print("Uncomment them one by one to test the new error messages.")
-
-// Uncomment the line below to test undefined variable error
 // print(undefined_variable)
-// Expected -> Runtime Error on line XXX: Undefined variable: undefined_variable
-
-// Uncomment the line below to test undefined function error
 // some_function_that_does_not_exist()
-// Expected -> Runtime Error on line YYY: Undefined function 'some_function_that_does_not_exist'
 
-print("--- Test Suite Complete ---")
+print("")
+
+// ######################################################
+// ## v0.4 - NEW FEATURE TESTS
+// ######################################################
+
+print("--- 6. Testing v0.4 Interactive Data Structures ---")
+
+// Test List Indexing and Assignment
+print("Testing List Indexing and Assignment:")
+numbers = [10, 20, 30, 40]
+print("Original list:")
+print(numbers)
+print("Accessing numbers[2]:")
+print(numbers[2]) // Expected: 30
+numbers[0] = 99
+print("After numbers[0] = 99, list is:")
+print(numbers) // Expected: [99, 20, 30, 40]
+print("")
+
+// Test Dictionary Literals, Access, and Assignment
+print("Testing Dictionaries:")
+person = {"name": "mlscript", "version": 0.4, "stable": false}
+print("Original dictionary:")
+print(person)
+print("Accessing person[\"name\"]:")
+print(person["name"]) // Expected: "mlscript"
+
+// Update existing key
+person["stable"] = true
+// Add new key
+person["year"] = 2025
+print("After updates, dictionary is:")
+print(person) // Expected: {'name': 'mlscript', 'version': 0.4, 'stable': true, 'year': 2025}
+print("")
+
+// Test String Indexing
+print("Testing String Indexing:")
+lang = "python"
+print("Accessing lang[0]:")
+print(lang[0]) // Expected: "p"
+print("")
+
+// Test new built-in functions
+print("Testing New Built-in Functions (min, max, sum):")
+scores = [88, 95, 72, 100, 81]
+print("Scores:")
+print(scores)
+print("min(scores):")
+print(min(scores)) // Expected: 72
+print("max(scores):")
+print(max(scores)) // Expected: 100
+print("sum(scores):")
+print(sum(scores)) // Expected: 436
+print("")
+
+
+// --- 7. Demonstrating v0.4 Improved Runtime Errors ---
+print("--- 7. Demonstrating v0.4 Improved Runtime Errors ---")
+print("Uncomment the lines below one by one to test the new error messages.")
+
+// Uncomment to test list index out of bounds (access)
+// print(scores[99])
+// Expected -> Runtime Error on line XXX: list index out of range
+
+// Uncomment to test list index out of bounds (assignment)
+// scores[99] = 100
+// Expected -> Runtime Error on line YYY: list assignment index out of range
+
+// Uncomment to test dictionary key error
+// print(person["non_existent_key"])
+// Expected -> Runtime Error on line ZZZ: 'non_existent_key'
+
+// Uncomment to test calling sum() on an empty list
+// sum([])
+// Expected -> Runtime Error on line AAA: sum() arg is an empty sequence
+
+print("")
+print("--- v0.4 Test Suite Complete ---")

@@ -14,7 +14,7 @@ namespace py = pybind11;
 /**
  * Core C++ evaluator: stores variables in a scoped symbol table and evaluates expressions.
  */
-using Value = std::variant<int, double, bool, std::string, py::object>;
+using Value = std::variant<int, double,std::string, py::object>;
 
 class Evaluator {
 private:

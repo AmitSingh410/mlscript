@@ -28,11 +28,33 @@ class ListLiteral(Node):
         self.token = start_token
         self.elements = elements
 
+class DictLiteral(Node):
+    """Represents a dictionary literal."""
+    def __init__(self, start_token, pairs):
+        self.token = start_token
+        self.pairs = pairs
+
 class Variable(Node):
     """Represents a variable identifier."""
     def __init__(self, token):
         self.token = token
         self.name = token[1]
+
+class IndexAccess(Node):
+    """Represents an index access operation (e.g., list[index])."""
+    def __init__(self, collection, index_expr):
+        self.collection = collection  # This is a Variable or ListLiteral node
+        self.index_expr = index_expr
+        self.token = collection.token
+
+class IndexAssign(Node):
+    """Represents an index assignment operation (e.g., list[index] = value)."""
+    def __init__(self, collection, index_expr, value_expr):
+        self.collection = collection  # This is a Variable or ListLiteral node
+        self.index_expr = index_expr
+        self.value_expr = value_expr
+        self.token = collection.token
+        
 
 class UnaryOp(Node):
     """Represents a unary operation (e.g., -x, !x)."""
@@ -94,10 +116,10 @@ class FunctionDef(Node):
 
 class FunctionCall(Node):
     """Represents a function call."""
-    def __init__(self, name_token, args):
-        self.token = name_token
-        self.name= name_token[1]
+    def __init__(self, callee, args):
+        self.callee = callee
         self.args = args
+        self.token = callee.token  
 
 class ReturnStatement(Node):
     """Represents a return statement."""
