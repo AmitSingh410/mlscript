@@ -8,7 +8,8 @@
                 "C:\\Users\\amits\\AppData\\Local\\Programs\\Python\\Python313\\include",
                 "${workspaceFolder}/cpp_backend/pybind11/include",
                 "${workspaceFolder}/.venv/Include",
-                "${workspaceFolder}/cpp_backend/**"
+                "${workspaceFolder}/cpp_backend/**",
+                "${workspaceFolder}/third_party/**"
             ],
             "defines": [],
             "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/BuildTools/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",

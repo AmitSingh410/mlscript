@@ -1,0 +1,458 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="MinSizeRel|x64">
+      <Configuration>MinSizeRel</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="RelWithDebInfo|x64">
+      <Configuration>RelWithDebInfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{91DE9D51-49C2-3F32-BD49-BE817FE5BF1F}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+    <Platform>x64</Platform>
+    <ProjectName>all_examples</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\CMakeLists.txt">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Building Custom Rule C:/Users/amits/Documents/Projects/mlscript/third_party/eigen/doc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/amits/Documents/Projects/mlscript -BC:/Users/amits/Documents/Projects/mlscript/build --check-stamp-file C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/doc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\Doxyfile.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_footer.html.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_header.html.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_layout.xml.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\unsupported\doc\eigendoxy_layout.xml.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Building Custom Rule C:/Users/amits/Documents/Projects/mlscript/third_party/eigen/doc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/amits/Documents/Projects/mlscript -BC:/Users/amits/Documents/Projects/mlscript/build --check-stamp-file C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/doc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\Doxyfile.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_footer.html.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_header.html.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_layout.xml.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\unsupported\doc\eigendoxy_layout.xml.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Building Custom Rule C:/Users/amits/Documents/Projects/mlscript/third_party/eigen/doc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/amits/Documents/Projects/mlscript -BC:/Users/amits/Documents/Projects/mlscript/build --check-stamp-file C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/doc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\Doxyfile.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_footer.html.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_header.html.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_layout.xml.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\unsupported\doc\eigendoxy_layout.xml.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Building Custom Rule C:/Users/amits/Documents/Projects/mlscript/third_party/eigen/doc/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/amits/Documents/Projects/mlscript -BC:/Users/amits/Documents/Projects/mlscript/build --check-stamp-file C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/doc/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\Doxyfile.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_footer.html.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_header.html.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\doc\eigendoxy_layout.xml.in;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen\unsupported\doc\eigendoxy_layout.xml.in;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\ZERO_CHECK.vcxproj">
+      <Project>{7EBEA1DB-B271-3FD4-8035-809674689473}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\CustomizingEigen_Inheritance.vcxproj">
+      <Project>{BC033175-6B63-3A8F-900F-57A9D24CDED8}</Project>
+      <Name>CustomizingEigen_Inheritance</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Cwise_erf.vcxproj">
+      <Project>{2B49897A-6411-31E9-8580-2B6C72B83401}</Project>
+      <Name>Cwise_erf</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Cwise_erfc.vcxproj">
+      <Project>{35818C0F-8EBE-3208-BB1D-2CB3E3BA44AB}</Project>
+      <Name>Cwise_erfc</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Cwise_lgamma.vcxproj">
+      <Project>{DE915EBA-02E7-3BE1-BF6E-2F1A621B394A}</Project>
+      <Name>Cwise_lgamma</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\DenseBase_middleCols_int.vcxproj">
+      <Project>{A7FE850C-0DDF-3118-B0A1-70CEBE6E3BD3}</Project>
+      <Name>DenseBase_middleCols_int</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\DenseBase_middleRows_int.vcxproj">
+      <Project>{5DBA1A6D-5568-336C-91BE-53D6B8817591}</Project>
+      <Name>DenseBase_middleRows_int</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\DenseBase_template_int_middleCols.vcxproj">
+      <Project>{EA5B6FA1-1170-3DA8-9427-8116C3BD2243}</Project>
+      <Name>DenseBase_template_int_middleCols</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\DenseBase_template_int_middleRows.vcxproj">
+      <Project>{07B30666-3175-359B-970F-32C255E69430}</Project>
+      <Name>DenseBase_template_int_middleRows</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\QuickStart_example.vcxproj">
+      <Project>{C56CB46B-67F3-3784-A963-93994C863861}</Project>
+      <Name>QuickStart_example</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\QuickStart_example2_dynamic.vcxproj">
+      <Project>{BB615A98-F44B-3168-95CB-0DF9F527D44E}</Project>
+      <Name>QuickStart_example2_dynamic</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\QuickStart_example2_fixed.vcxproj">
+      <Project>{185B8098-14BF-3BB7-90E9-B306606E8C77}</Project>
+      <Name>QuickStart_example2_fixed</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TemplateKeyword_flexible.vcxproj">
+      <Project>{69291F39-9BFF-3C30-B04B-17251B0B3CE1}</Project>
+      <Name>TemplateKeyword_flexible</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TemplateKeyword_simple.vcxproj">
+      <Project>{BC591763-07B8-3963-8B8C-4334E5509099}</Project>
+      <Name>TemplateKeyword_simple</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialInplaceLU.vcxproj">
+      <Project>{2DBCE524-A38E-37C5-A3CD-8EFEECB3B1E2}</Project>
+      <Name>TutorialInplaceLU</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialLinAlgComputeTwice.vcxproj">
+      <Project>{ABC487FA-C394-3E63-A13D-372C89EC12EE}</Project>
+      <Name>TutorialLinAlgComputeTwice</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialLinAlgExComputeSolveError.vcxproj">
+      <Project>{F81E6A4F-3162-3728-B4CD-83DFBA7C895A}</Project>
+      <Name>TutorialLinAlgExComputeSolveError</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialLinAlgExSolveColPivHouseholderQR.vcxproj">
+      <Project>{41A4D272-22BB-395D-A2D6-0275E79D5CC3}</Project>
+      <Name>TutorialLinAlgExSolveColPivHouseholderQR</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialLinAlgExSolveLDLT.vcxproj">
+      <Project>{52C1E804-E48D-3092-8406-FEFB5425A45C}</Project>
+      <Name>TutorialLinAlgExSolveLDLT</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialLinAlgInverseDeterminant.vcxproj">
+      <Project>{3D8CA626-F77C-30AC-BB56-15AC79EACF47}</Project>
+      <Name>TutorialLinAlgInverseDeterminant</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialLinAlgRankRevealing.vcxproj">
+      <Project>{6E2D837D-0875-3760-91D2-331D378989F6}</Project>
+      <Name>TutorialLinAlgRankRevealing</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialLinAlgSVDSolve.vcxproj">
+      <Project>{71EC5C5E-78F7-3951-8CA3-3D4F08073970}</Project>
+      <Name>TutorialLinAlgSVDSolve</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialLinAlgSelfAdjointEigenSolver.vcxproj">
+      <Project>{9E100A2A-388F-3085-B967-24554C5CE31F}</Project>
+      <Name>TutorialLinAlgSelfAdjointEigenSolver</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\TutorialLinAlgSetThreshold.vcxproj">
+      <Project>{FECAD048-379F-3CC2-9941-2AB783EE7761}</Project>
+      <Name>TutorialLinAlgSetThreshold</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ArrayClass_accessors.vcxproj">
+      <Project>{F202C0C2-5E41-352F-AB0E-288CD59FC4A9}</Project>
+      <Name>Tutorial_ArrayClass_accessors</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ArrayClass_addition.vcxproj">
+      <Project>{2258A2D1-9F67-3A35-B02D-3742E6553F41}</Project>
+      <Name>Tutorial_ArrayClass_addition</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ArrayClass_cwise_other.vcxproj">
+      <Project>{A5271DDE-72AA-3011-8B58-DB69B0CD1624}</Project>
+      <Name>Tutorial_ArrayClass_cwise_other</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ArrayClass_interop.vcxproj">
+      <Project>{2E0FC685-BFD1-3571-B7AD-FF0550BF8777}</Project>
+      <Name>Tutorial_ArrayClass_interop</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ArrayClass_interop_matrix.vcxproj">
+      <Project>{079566C6-88EE-3BF8-8B90-A7EF8C417BB6}</Project>
+      <Name>Tutorial_ArrayClass_interop_matrix</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ArrayClass_mult.vcxproj">
+      <Project>{3D79FA8D-C7FE-3984-8DFC-8D959EF88CBE}</Project>
+      <Name>Tutorial_ArrayClass_mult</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_BlockOperations_block_assignment.vcxproj">
+      <Project>{BD429CD8-6DE6-3F6D-B9F5-1318E0F42BAD}</Project>
+      <Name>Tutorial_BlockOperations_block_assignment</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_BlockOperations_colrow.vcxproj">
+      <Project>{2CD47DC0-B793-3340-B116-590BA44E8497}</Project>
+      <Name>Tutorial_BlockOperations_colrow</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_BlockOperations_corner.vcxproj">
+      <Project>{476615C4-9190-3AD7-B3C0-8CDA3D042BFD}</Project>
+      <Name>Tutorial_BlockOperations_corner</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_BlockOperations_print_block.vcxproj">
+      <Project>{50FBBF85-D35A-3639-B50B-E57305642806}</Project>
+      <Name>Tutorial_BlockOperations_print_block</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_BlockOperations_vector.vcxproj">
+      <Project>{A77A54C7-E365-35AB-AE45-92B295B340DE}</Project>
+      <Name>Tutorial_BlockOperations_vector</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_PartialLU_solve.vcxproj">
+      <Project>{B16BCC4B-AC24-34B3-9B08-C46D68C2AC4F}</Project>
+      <Name>Tutorial_PartialLU_solve</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_broadcast_1nn.vcxproj">
+      <Project>{C82F326D-C8AC-3E27-A04F-3AAD54962BE3}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_broadcast_1nn</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_broadcast_simple.vcxproj">
+      <Project>{1C80C654-E3E7-3875-B19E-FA0C6B8DE87D}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_broadcast_simple</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_broadcast_simple_rowwise.vcxproj">
+      <Project>{BEC68A5F-2411-31C1-A74A-F99C37AD6F9C}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_broadcast_simple_rowwise</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_colwise.vcxproj">
+      <Project>{186C442C-B6E5-3A6D-BA91-64C461DA5471}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_colwise</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_maxnorm.vcxproj">
+      <Project>{3599637F-E20F-3FB1-926C-8A5A4DC3B998}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_maxnorm</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_reductions_bool.vcxproj">
+      <Project>{8F000BDC-CAF4-39C1-BD06-844A78018665}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_reductions_bool</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_reductions_norm.vcxproj">
+      <Project>{9009E962-A7C9-3EDC-8BA3-B2AB54C177A0}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_reductions_norm</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_reductions_operatornorm.vcxproj">
+      <Project>{4B423426-C4C3-3005-B3AA-3B38BE0EBE27}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_reductions_operatornorm</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_rowwise.vcxproj">
+      <Project>{1F6C7122-30F6-3F72-8B3B-AC44DD763914}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_rowwise</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_ReductionsVisitorsBroadcasting_visitors.vcxproj">
+      <Project>{588A3221-48D2-3BBE-ABE4-B3E00F3B6875}</Project>
+      <Name>Tutorial_ReductionsVisitorsBroadcasting_visitors</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_simple_example_dynamic_size.vcxproj">
+      <Project>{C2B3196E-9340-348B-9B79-648C29DC0F35}</Project>
+      <Name>Tutorial_simple_example_dynamic_size</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\Tutorial_simple_example_fixed_size.vcxproj">
+      <Project>{248AAC26-A5D0-3DB0-B0C1-9077606A730E}</Project>
+      <Name>Tutorial_simple_example_fixed_size</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\class_Block.vcxproj">
+      <Project>{58DC94FD-E803-382D-9186-ADEDE9321AB5}</Project>
+      <Name>class_Block</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\class_CwiseBinaryOp.vcxproj">
+      <Project>{E6183114-0ED6-3018-97A6-0898822276B7}</Project>
+      <Name>class_CwiseBinaryOp</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\class_CwiseUnaryOp.vcxproj">
+      <Project>{2821AFB9-A86F-30C8-B860-CF66533257FF}</Project>
+      <Name>class_CwiseUnaryOp</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\class_CwiseUnaryOp_ptrfun.vcxproj">
+      <Project>{5EED5AAE-59D8-38DD-B929-801980B558C1}</Project>
+      <Name>class_CwiseUnaryOp_ptrfun</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\class_FixedBlock.vcxproj">
+      <Project>{E429091B-CE7A-304A-92D7-671810AB4978}</Project>
+      <Name>class_FixedBlock</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\class_FixedReshaped.vcxproj">
+      <Project>{489E94FE-D489-3CF8-9F28-E41530A1DA86}</Project>
+      <Name>class_FixedReshaped</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\class_FixedVectorBlock.vcxproj">
+      <Project>{0D6FA332-8342-3741-ADF5-4D6B3D344AF9}</Project>
+      <Name>class_FixedVectorBlock</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\class_Reshaped.vcxproj">
+      <Project>{6C0416CB-A685-3AAB-A87F-B8466460A392}</Project>
+      <Name>class_Reshaped</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\class_VectorBlock.vcxproj">
+      <Project>{D0A6B697-D8D9-3B4B-ADB4-FA8359EB70D5}</Project>
+      <Name>class_VectorBlock</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\function_taking_eigenbase.vcxproj">
+      <Project>{AEBCAF09-261E-3C4F-BED9-D532B03A5E77}</Project>
+      <Name>function_taking_eigenbase</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\function_taking_ref.vcxproj">
+      <Project>{579F4240-C601-3459-BACF-A629DB17F91F}</Project>
+      <Name>function_taking_ref</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\make_circulant.vcxproj">
+      <Project>{130782F8-8EFB-312C-B0EC-7113876E6645}</Project>
+      <Name>make_circulant</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\make_circulant2.vcxproj">
+      <Project>{63222923-1390-324C-907E-DA1FACC82ECE}</Project>
+      <Name>make_circulant2</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\matrixfree_cg.vcxproj">
+      <Project>{B0BA39F4-F8CF-323A-AB89-E532EC77AC70}</Project>
+      <Name>matrixfree_cg</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\nullary_indexing.vcxproj">
+      <Project>{EBEE8E33-DE6D-3E12-80A6-DC47D532C9CB}</Project>
+      <Name>nullary_indexing</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\tut_arithmetic_add_sub.vcxproj">
+      <Project>{A418E01F-9C15-3C9C-A612-32D7A6455D55}</Project>
+      <Name>tut_arithmetic_add_sub</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\tut_arithmetic_dot_cross.vcxproj">
+      <Project>{045F694A-BC19-3BF1-9599-ECA3FCA228F9}</Project>
+      <Name>tut_arithmetic_dot_cross</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\tut_arithmetic_matrix_mul.vcxproj">
+      <Project>{6417FE2C-2A97-3C24-8B14-C19C7BD9AAAD}</Project>
+      <Name>tut_arithmetic_matrix_mul</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\tut_arithmetic_redux_basic.vcxproj">
+      <Project>{3C048840-9668-3EC3-B0AE-75F3F16BD406}</Project>
+      <Name>tut_arithmetic_redux_basic</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\tut_arithmetic_scalar_mul_div.vcxproj">
+      <Project>{3E93C015-388F-3712-94BC-2F75995159D5}</Project>
+      <Name>tut_arithmetic_scalar_mul_div</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\tut_matrix_coefficient_accessors.vcxproj">
+      <Project>{217CF648-2A7F-300F-AE41-F8A0CB73A72C}</Project>
+      <Name>tut_matrix_coefficient_accessors</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\tut_matrix_resize.vcxproj">
+      <Project>{1C836B65-F3AF-3F34-9146-51018EBD2816}</Project>
+      <Name>tut_matrix_resize</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Users\amits\Documents\Projects\mlscript\build\third_party\eigen\doc\examples\tut_matrix_resize_fixed_size.vcxproj">
+      <Project>{1B8F1296-B4A5-393D-9311-3DAC4194E9E5}</Project>
+      <Name>tut_matrix_resize_fixed_size</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,5 +1,8 @@
 #include "pybind11/pybind11.h"
 #include <pybind11/stl.h>
+#include <pybind11/operators.h>
+#include <eigen/Dense>
+
 #include <variant> // Required for std::variant automatic conversion
 #include "evaluator.hpp"
 

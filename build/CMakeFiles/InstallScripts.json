@@ -1,0 +1,26 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/amits/Documents/Projects/mlscript/build/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/pybind11/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/doc/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/doc/examples/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/doc/special_examples/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/doc/snippets/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/test/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/failtest/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/blas/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/lapack/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/unsupported/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/unsupported/Eigen/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/unsupported/Eigen/CXX11/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/unsupported/doc/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/unsupported/doc/examples/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/unsupported/doc/snippets/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/unsupported/test/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/demos/cmake_install.cmake",
+		"C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/scripts/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
