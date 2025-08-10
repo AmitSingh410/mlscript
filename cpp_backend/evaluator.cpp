@@ -1,5 +1,62 @@
 #include "evaluator.hpp"
 #include <stdexcept>
+#include <iostream>
+
+Tensor::Tensor(const std::vector<std::vector<double>>& data) {
+    if (data.empty() || data[0].empty()) {
+        throw std::runtime_error("Tensor data cannot be empty.");
+    }
+    size_t rows = data.size();
+    size_t cols = data[0].size();
+    mat.resize(rows, cols);
+    for (size_t i = 0; i < rows; ++i) {
+        if (data[i].size() != cols) {
+            throw std::runtime_error("All rows in tensor data must have the same number of columns.");
+        }
+        for (size_t j = 0; j < cols; ++j) {
+            mat(i, j) = data[i][j];
+        }
+    }
+}
+
+Tensor Tensor::operator+(const Tensor& other) const {
+    Tensor result;
+    result.mat = this->mat.array() + other.mat.array();
+    return result;
+}
+
+Tensor Tensor::operator-(const Tensor& other) const {
+    Tensor result;
+    result.mat = this->mat.array() - other.mat.array();
+    return result;
+}
+
+Tensor Tensor::operator*(const Tensor& other) const {
+    Tensor result;
+    result.mat = this->mat.array() * other.mat.array();
+    return result;
+}
+
+Tensor Tensor::operator/(const Tensor& other) const {
+    Tensor result;
+    result.mat = this->mat.array() / other.mat.array();
+    return result;
+}
+
+Tensor Tensor::operator*(double scalar) const {
+    Tensor result;
+    result.mat = this->mat.array() * scalar;
+    return result;
+}
+
+Tensor Tensor::matmul(const Tensor& other) const {
+    if (this->mat.cols() != other.mat.rows()) {
+        throw std::runtime_error("Tensor shapes are incompatible for matrix multiplication.");
+    }
+    Tensor result;
+    result.mat = this->mat * other.mat;
+    return result;
+}
 
 // Constructor: Initializes the evaluator by creating the global scope.
 Evaluator::Evaluator() {
@@ -79,6 +136,33 @@ struct OperationVisitor {
 };
 
 // Evaluates a binary operation using the visitor.
+
 Value Evaluator::evaluate(const std::string& op, const Value& left, const Value& right) {
     return std::visit(OperationVisitor{op}, left, right);
+}
+
+Tensor operator*(double scalar, const Tensor& t) {
+    return t * scalar; 
+}
+
+Value Evaluator::evaluate(const std::string& op, const Tensor& left, const Tensor& right) {
+    if (op == "+") return left + right;
+    if (op == "-") return left - right;
+    if (op == "*") return left * right;
+    if (op == "/") return left / right;
+    throw std::runtime_error("Unsupported operator for Tensors: " + op);
+}
+
+Value Evaluator::evaluate(const std::string& op, const Tensor& left, double right) {
+    if (op == "*") return left * right;
+    throw std::runtime_error("Unsupported operator for Tensor and scalar: " + op);
+}
+
+Value Evaluator::evaluate(const std::string& op, double left, const Tensor& right) {
+    if (op == "*") return left * right;
+    throw std::runtime_error("Unsupported operator for scalar and Tensor: " + op);
+}
+
+Value Evaluator::matmul(const Tensor& left, const Tensor& right) {
+    return left.matmul(right);
 }

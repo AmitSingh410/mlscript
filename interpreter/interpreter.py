@@ -172,9 +172,18 @@ class Interpreter:
             callee_name = node.callee.name
             
             # Handle Built-in functions by name
-            builtins = {'len', 'range', 'min', 'max', 'sum'}
+            builtins = {'len', 'range', 'min', 'max', 'sum','tensor','matmul'}
             if callee_name in builtins:
                 args = [self.visit(arg) for arg in node.args] # Evaluate args for built-ins
+
+                if callee_name == 'tensor':
+                    if len(args) != 1: raise Exception(f"Runtime Error on line {line_num}: tensor() expects 1 argument, but received {len(args)}")
+                    return mlscript.Tensor(args[0])
+
+                if callee_name == 'matmul':
+                    if len(args) != 2: raise Exception(f"Runtime Error on line {line_num}: matmul() expects 2 arguments, but received {len(args)}")
+                    return self.e.matmul(args[0], args[1])  
+                
                 if callee_name == 'len':
                     if len(args) != 1: raise Exception(f"Runtime Error on line {line_num}: len() expects 1 argument, but received {len(args)}")
                     value = args[0]
