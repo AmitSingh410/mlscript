@@ -222,7 +222,12 @@ class Parser:
                 node = FunctionCall(node, args)
             elif self.current_token[0] == TokenType.LBRACKET:
                 self.eat(TokenType.LBRACKET)
-                index_expr = self.comparison_expression()
+                index_expr = []
+                if self.current_token[0] != TokenType.RBRACKET:
+                    index_expr.append(self.comparison_expression())
+                    while self.current_token[0] == TokenType.COMMA:
+                        self.eat(TokenType.COMMA)
+                        index_expr.append(self.comparison_expression())
                 self.eat(TokenType.RBRACKET)
                 node = IndexAccess(node, index_expr)
             else:

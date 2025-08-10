@@ -32,24 +32,22 @@ class Interpreter:
     
     def visit_IndexAssign(self, node):
         collection = self.visit(node.collection)
-        index = self.visit(node.index_expr)
         value = self.visit(node.value_expr)
+        indices = [self.visit(expr) for expr in node.index_expr]
+        index = indices[0] if len(indices) == 1 else tuple(indices)
 
         line_num = node.token[2] # Get the line number from the node
 
-        if isinstance(collection, (list, dict)):
-            try:
-                collection[index] = value
-            except (IndexError, KeyError) as e:
-                # Now includes the line number
-                raise Exception(f"Runtime Error on line {line_num}: {e}")
-        else:
+        try:
+            collection[index] = value
+        except (IndexError, KeyError) as e:
             # Now includes the line number
-            raise Exception(f"Runtime Error on line {line_num}: Index assignment is only supported for lists and dictionaries.")
+            raise Exception(f"Runtime Error on line {line_num}: {e}")
         
     def visit_IndexAccess(self, node):
         collection = self.visit(node.collection)
-        index = self.visit(node.index_expr)
+        indices = [self.visit(expr) for expr in node.index_expr]
+        index = indices[0] if len(indices) == 1 else tuple(indices)
         try:
             return collection[index]
         except (IndexError, KeyError, TypeError) as e:
@@ -61,10 +59,8 @@ class Interpreter:
 
     def visit_Assign(self, node):
         value = self.visit(node.expr)
-        if isinstance(value,(bool,list,dict)):
-            self.e.assign_variable(node.left.name, MLObject(value))
-        else:
-            self.e.assign_variable(node.left.name,value)
+        self.e.assign_variable(node.left.name, value)
+
 
     def visit_UnaryOp(self, node):
         value = self.visit(node.expr)
@@ -140,10 +136,7 @@ class Interpreter:
 
     def visit_Variable(self, node):
         try:
-            value = self.e.get_variable(node.name)
-            if isinstance(value,MLObject):
-                return value.value
-            return value
+            return self.e.get_variable(node.name)
         except Exception as e:
             line_num = node.token[2] 
             raise Exception(f"Runtime Error on line {line_num}: {e}")

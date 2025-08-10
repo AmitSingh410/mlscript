@@ -21,6 +21,17 @@ PYBIND11_MODULE(mlscript, m) {
         .def(py::self * double())
         .def(double() * py::self)
         .def("matmul", &Tensor::matmul)
+        .def("__getitem__", [](const Tensor &t, py::tuple index) {
+            if (index.size() != 2) {
+                throw py::index_error("Only 2D indexing is supported.");
+            }
+            long row = index[0].cast<long>();
+            long col = index[1].cast<long>();
+            return t.get_element(row, col);
+        })
+        .def("__getitem__", [](const Tensor &t, long row) {
+            return t.get_row(row);
+        })
         .def("__repr__", [](const Tensor &t) {
             std::stringstream ss;
             ss << t.mat;
@@ -32,15 +43,8 @@ PYBIND11_MODULE(mlscript, m) {
         .def(py::init<>())
         .def("assign_variable", &Evaluator::assign_variable)
         .def("get_variable", &Evaluator::get_variable)
-
-        // IMPORTANT: Specific overloads MUST be defined before the generic one.
-        .def("evaluate", py::overload_cast<const std::string&, const Tensor&, const Tensor&>(&Evaluator::evaluate), "Evaluates two Tensors")
-        .def("evaluate", py::overload_cast<const std::string&, const Tensor&, double>(&Evaluator::evaluate), "Evaluates Tensor and scalar")
-        .def("evaluate", py::overload_cast<const std::string&, double, const Tensor&>(&Evaluator::evaluate), "Evaluates scalar and Tensor")
-        .def("evaluate", py::overload_cast<const std::string&, const Value&, const Value&>(&Evaluator::evaluate), "Evaluates non-tensor types")
-
-        .def("matmul", py::overload_cast<const Tensor&, const Tensor&>(&Evaluator::matmul))
-        
+        .def("evaluate", &Evaluator::evaluate)
+        .def("matmul", &Evaluator::matmul)
         .def("enter_scope", &Evaluator::enter_scope)
         .def("exit_scope", &Evaluator::exit_scope);
 }

@@ -79,90 +79,102 @@ void Evaluator::exit_scope() {
 }
 
 // Assigns a variable to the current, most-nested scope.
-void Evaluator::assign_variable(const std::string& name, const Value& value) {
+void Evaluator::assign_variable(const std::string& name, const py::object& value) {
     if (!scope_stack.empty()) {
         scope_stack.back()[name] = value;
     }
 }
 
-Value Evaluator::get_variable(const std::string& name) {
+py::object Evaluator::get_variable(const std::string& name) {
     for (auto it = scope_stack.rbegin(); it != scope_stack.rend(); ++it) {
         if (it->count(name)) {
-            return it->at(name);
+            // All complex objects are stored as py::object, so we get that.
+            // Primitives will need to be handled or cast as needed.
+            // For now, this direct return is the goal of the refactor.
+            const Value& val = it->at(name);
+            if (std::holds_alternative<py::object>(val)) {
+                return std::get<py::object>(val);
+            } else if (std::holds_alternative<int>(val)) {
+                return py::cast(std::get<int>(val));
+            } else if (std::holds_alternative<double>(val)) {
+                return py::cast(std::get<double>(val));
+            } else if (std::holds_alternative<std::string>(val)) {
+                return py::cast(std::get<std::string>(val));
+            } else if (std::holds_alternative<bool>(val)) {
+                return py::cast(std::get<bool>(val));
+            }
         }
     }
     throw std::runtime_error("Undefined variable: " + name);
 }
 
-// A visitor for handling binary operations on std::variant<int, double>.
-struct OperationVisitor {
-    const std::string& op;
-
-    Value operator()(int l, int r) const {
-        if (op == "+") return l + r;
-        if (op == "-") return l - r;
-        if (op == "*") return l * r;
-        if (op == "/") {
-            if (r == 0) throw std::runtime_error("Division by zero");
-            return static_cast<double>(l) / r; // Division of ints produces a double
-        }
-        throw std::runtime_error("Unsupported operator for ints: " + op);
+// Evaluates an operation between two objects, which can be Tensors or primitive types.
+// This function is designed to handle both Tensor operations and primitive type operations.
+py::object Evaluator::evaluate(const std::string& op, const py::object& left, const py::object& right) {
+    // Tensor operations
+    if (py::isinstance<Tensor>(left) && py::isinstance<Tensor>(right)) {
+        const auto& l = left.cast<const Tensor&>();
+        const auto& r = right.cast<const Tensor&>();
+        if (op == "+") return py::cast(l + r);
+        if (op == "-") return py::cast(l - r);
+        if (op == "*") return py::cast(l * r);
+        if (op == "/") return py::cast(l / r);
     }
-
-    Value operator()(double l, double r) const {
-        if (op == "+") return l + r;
-        if (op == "-") return l - r;
-        if (op == "*") return l * r;
-        if (op == "/") {
-            if (r == 0) throw std::runtime_error("Division by zero");
-            return l / r;
-        }
-        throw std::runtime_error("Unsupported operator for doubles: " + op);
+    // Scalar broadcasting
+    if (py::isinstance<Tensor>(left) && (py::isinstance<py::int_>(right) || py::isinstance<py::float_>(right))) {
+        if (op == "*") return py::cast(left.cast<const Tensor&>() * right.cast<double>());
     }
-
-    Value operator()(const std::string& l, const std::string& r) const {
-        if (op == "+") return l + r; // String concatenation
-        throw std::runtime_error("Operator '" + op + "' not supported for strings.");
+    if ((py::isinstance<py::int_>(left) || py::isinstance<py::float_>(left)) && py::isinstance<Tensor>(right)) {
+        if (op == "*") return py::cast(left.cast<double>() * right.cast<const Tensor&>());
     }
-
-    // Handles mixed types (int, double,string,bool and py objects.
-    template <typename T, typename U>
-    Value operator()(T l, U r) const {
-        if constexpr(std::is_arithmetic_v<T> && std::is_arithmetic_v<U>) {
-        return (*this)(static_cast<double>(l), static_cast<double>(r));
+    // Primitive operations
+    if (py::isinstance<py::float_>(left) || py::isinstance<py::float_>(right)) {
+        double l = left.cast<double>();
+        double r = right.cast<double>();
+        if (op == "+") return py::cast(l + r);
+        if (op == "-") return py::cast(l - r);
+        if (op == "*") return py::cast(l * r);
+        if (op == "/") return py::cast(l / r);
     }
-        throw std::runtime_error("Unsupported type combination for operator: " + op);
+    if (py::isinstance<py::int_>(left) && py::isinstance<py::int_>(right)) {
+        int l = left.cast<int>();
+        int r = right.cast<int>();
+        if (op == "+") return py::cast(l + r);
+        if (op == "-") return py::cast(l - r);
+        if (op == "*") return py::cast(l * r);
+        if (op == "/") return py::cast(static_cast<double>(l) / r);
     }
-};
-
-// Evaluates a binary operation using the visitor.
-
-Value Evaluator::evaluate(const std::string& op, const Value& left, const Value& right) {
-    return std::visit(OperationVisitor{op}, left, right);
+    if (py::isinstance<py::str>(left) && py::isinstance<py::str>(right)) {
+        if (op == "+") return py::cast(left.cast<std::string>() + right.cast<std::string>());
+    }
+    throw std::runtime_error("Unsupported types for operator " + op);
 }
+
 
 Tensor operator*(double scalar, const Tensor& t) {
     return t * scalar; 
 }
 
-Value Evaluator::evaluate(const std::string& op, const Tensor& left, const Tensor& right) {
-    if (op == "+") return left + right;
-    if (op == "-") return left - right;
-    if (op == "*") return left * right;
-    if (op == "/") return left / right;
-    throw std::runtime_error("Unsupported operator for Tensors: " + op);
+
+py::object Evaluator::matmul(const py::object& left, const py::object& right) {
+    if (py::isinstance<Tensor>(left) && py::isinstance<Tensor>(right)) {
+        return py::cast(left.cast<const Tensor&>().matmul(right.cast<const Tensor&>()));
+    }
+    throw std::runtime_error("matmul is only defined for Tensors.");
 }
 
-Value Evaluator::evaluate(const std::string& op, const Tensor& left, double right) {
-    if (op == "*") return left * right;
-    throw std::runtime_error("Unsupported operator for Tensor and scalar: " + op);
+double Tensor::get_element(long row, long col) const {
+    if (row >= mat.rows() || col >= mat.cols() || row < 0 || col < 0) {
+        throw std::out_of_range("Tensor index out of range.");
+    }
+    return mat(row, col);
 }
 
-Value Evaluator::evaluate(const std::string& op, double left, const Tensor& right) {
-    if (op == "*") return left * right;
-    throw std::runtime_error("Unsupported operator for scalar and Tensor: " + op);
-}
-
-Value Evaluator::matmul(const Tensor& left, const Tensor& right) {
-    return left.matmul(right);
+Tensor Tensor::get_row(long row) const {
+    if (row >= mat.rows() || row < 0) {
+        throw std::out_of_range("Tensor row index out of range.");
+    }
+    Tensor result;
+    result.mat = mat.row(row);
+    return result;
 }

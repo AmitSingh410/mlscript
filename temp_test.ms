@@ -202,25 +202,65 @@ print(sum(scores)) // Expected: 436
 print("")
 
 
-// --- 7. Demonstrating v0.4 Improved Runtime Errors ---
-print("--- 7. Demonstrating v0.4 Improved Runtime Errors ---")
-print("Uncomment the lines below one by one to test the new error messages.")
+// ######################################################
+// ## v0.5 - NEW FEATURE TESTS
+// ######################################################
 
-// Uncomment to test list index out of bounds (access)
-// print(scores[99])
-// Expected -> Runtime Error on line XXX: list index out of range
+print("--- 8. Testing v0.5 Numerical Core (Tensors) ---")
 
-// Uncomment to test list index out of bounds (assignment)
-// scores[99] = 100
-// Expected -> Runtime Error on line YYY: list assignment index out of range
+// Test Tensor Creation
+print("Testing Tensor Creation:")
+t1 = tensor([[1, 2], [3, 4.5]])
+t2 = tensor([[10, 20], [30, 40]])
+print("Tensor t1:")
+print(t1)
+print("Tensor t2:")
+print(t2)
+print("")
 
-// Uncomment to test dictionary key error
-// print(person["non_existent_key"])
-// Expected -> Runtime Error on line ZZZ: 'non_existent_key'
+// Test Element-wise Operations
+print("Testing Element-wise Operations:")
+print("t1 + t2:")
+print(t1 + t2)
+print("t2 - t1:")
+print(t2 - t1)
+print("")
 
-// Uncomment to test calling sum() on an empty list
-// sum([])
-// Expected -> Runtime Error on line AAA: sum() arg is an empty sequence
+// Test Scalar Broadcasting
+print("Testing Scalar Broadcasting:")
+print("t1 * 10:")
+print(t1 * 10)
+print("10 * t1:")
+print(10 * t1)
+print("")
+
+// Test Matrix Multiplication
+print("Testing Matrix Multiplication:")
+t_matmul_res = matmul(t1, t2)
+print("matmul(t1, t2):")
+print(t_matmul_res)
+print("")
+
+// Test Tensor Indexing
+print("Testing Tensor Indexing:")
+print("Accessing t1[0, 1]:")
+print(t1[0, 1]) 
+print("Accessing row t1[1]:")
+print(t1[1]) 
+print("")
+
+
+// --- 9. Demonstrating v0.5 Tensor Runtime Errors ---
+print("--- 9. Demonstrating v0.5 Tensor Runtime Errors ---")
+print("Uncomment lines below one by one to test tensor errors.")
+
+// Incompatible shapes for matrix multiplication
+// matmul(t1, tensor([[1], [2], [3]]))
+// Expected -> Runtime Error: Tensor shapes are incompatible for matrix multiplication.
+
+// Index out of bounds
+// print(t1[5, 5])
+// Expected -> Runtime Error: Tensor index out of range.
 
 print("")
-print("--- v0.4 Test Suite Complete ---")
+print("--- v0.5 Test Suite Complete ---")
