@@ -249,6 +249,22 @@ print("Accessing row t1[1]:")
 print(t1[1]) 
 print("")
 
+// Add new, more complex tests for slicing with steps
+print("Testing Advanced Tensor Slicing with Steps:")
+t_slice = tensor([[0,1,2,3], [4,5,6,7], [8,9,10,11], [12,13,14,15]])
+print("Original 4x4 Tensor:")
+print(t_slice)
+
+print("Every second row (t_slice[0:4:2, :]):")
+print(t_slice[0:4:2, :])
+
+print("Every second column from the first two rows (t_slice[0:2, 0:4:2]):")
+print(t_slice[0:2, 0:4:2])
+
+print("Reversed rows (t_slice[::-1, :]):")
+print(t_slice[::-1, :])
+print("")
+
 
 // --- 9. Demonstrating v0.5 Tensor Runtime Errors ---
 print("--- 9. Demonstrating v0.5 Tensor Runtime Errors ---")

@@ -125,3 +125,10 @@ class ReturnStatement(Node):
     """Represents a return statement."""
     def __init__(self, expr):
         self.expr = expr
+
+class SliceNode(Node):
+    """Represents a slice operation (e.g., list[start:end:step])."""
+    def __init__(self, start=None, stop=None, step=None):
+        self.start = start
+        self.stop = stop
+        self.step = step

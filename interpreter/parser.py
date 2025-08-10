@@ -224,10 +224,28 @@ class Parser:
                 self.eat(TokenType.LBRACKET)
                 index_expr = []
                 if self.current_token[0] != TokenType.RBRACKET:
-                    index_expr.append(self.comparison_expression())
+                    def parse_slice_or_expr():
+                        start=None
+                        if self.current_token[0] != TokenType.COLON:
+                            start = self.comparison_expression()
+                        if self.current_token[0] != TokenType.COLON:
+                            return start
+                        self.eat(TokenType.COLON)
+                        stop = None
+                        if self.current_token[0] not in (TokenType.COLON, TokenType.RBRACKET):
+                            stop = self.comparison_expression()
+                        step = None
+                        if self.current_token[0] == TokenType.COLON:
+                            self.eat(TokenType.COLON)
+                            if self.current_token[0] not in (TokenType.RBRACKET, TokenType.COMMA):
+                                step = self.comparison_expression()
+
+                        return SliceNode(start, stop, step)
+                        
+                    index_expr.append(parse_slice_or_expr())
                     while self.current_token[0] == TokenType.COMMA:
                         self.eat(TokenType.COMMA)
-                        index_expr.append(self.comparison_expression())
+                        index_expr.append(parse_slice_or_expr())
                 self.eat(TokenType.RBRACKET)
                 node = IndexAccess(node, index_expr)
             else:

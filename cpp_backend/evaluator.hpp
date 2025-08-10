@@ -12,6 +12,12 @@
 
 namespace py = pybind11;
 
+struct Slice {
+    py::ssize_t start;
+    py::ssize_t stop;
+    py::ssize_t step;
+};
+
 class Tensor {
 public:
     Eigen::MatrixXd mat;
@@ -28,6 +34,7 @@ public:
 
     double get_element(long row, long col) const;
     Tensor get_row(long row) const;
+    Tensor slice(Slice row_slice,Slice col_slice) const;
 };
 Tensor operator*(double scalar, const Tensor& t);
 

@@ -221,3 +221,9 @@ class Interpreter:
         else:
             # For now, we can keep this restricted until we need it.
             raise Exception(f"Runtime Error on line {line_num}: Dynamic function execution is not yet supported.")
+        
+    def visit_SliceNode(self, node):
+        start = self.visit(node.start) if node.start else None
+        stop = self.visit(node.stop) if node.stop else None
+        step = self.visit(node.step) if node.step else None
+        return slice(start,stop,step)

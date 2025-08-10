@@ -178,3 +178,29 @@ Tensor Tensor::get_row(long row) const {
     result.mat = mat.row(row);
     return result;
 }
+
+Tensor Tensor::slice(Slice row_slice, Slice col_slice) const {
+    std::vector<py::ssize_t> row_indices;
+    for (py::ssize_t i = row_slice.start; row_slice.step > 0 ? i < row_slice.stop : i > row_slice.stop; i += row_slice.step) {
+        row_indices.push_back(i);
+    }
+
+    std::vector<py::ssize_t> col_indices;
+    for (py::ssize_t i = col_slice.start; col_slice.step > 0 ? i < col_slice.stop : i > col_slice.stop; i += col_slice.step) {
+        col_indices.push_back(i);
+    }
+
+    if (row_indices.empty() || col_indices.empty()) {
+        // Return an empty tensor if the slice is empty
+        return Tensor(std::vector<std::vector<double>>());
+    }
+
+    Tensor result;
+    result.mat.resize(row_indices.size(), col_indices.size());
+    for(size_t i = 0; i < row_indices.size(); ++i) {
+        for(size_t j = 0; j < col_indices.size(); ++j) {
+            result.mat(i, j) = this->mat(row_indices[i], col_indices[j]);
+        }
+    }
+    return result;
+}
