@@ -1,3 +1,4 @@
+import importlib
 from .parser import Parser
 from .lexer import tokenize
 from .ast_nodes import *
@@ -18,6 +19,21 @@ class Interpreter:
     def __init__(self):
         self.e = mlscript.Evaluator()
         self.functions = {}
+        
+        # Define all built-in objects that should exist in the global scope
+        self.global_scope = {
+            'tensor': mlscript.Tensor,
+            'matmul': self.e.matmul,
+            'len': len,
+            'range': range,
+            'min': min,
+            'max': max,
+            'sum': sum,
+        }
+        
+        # Load the built-ins into the C++ Evaluator's global scope
+        for name, value in self.global_scope.items():
+            self.e.assign_variable(name, value)
 
     def run(self, code):
         tokens = tokenize(code)
@@ -112,7 +128,7 @@ class Interpreter:
         iterable_value = self.visit(node.iterable)
         
         iterator = None
-        if isinstance(iterable_value, (list, str)):
+        if isinstance(iterable_value, (list, str,range)):
             iterator = iterable_value
         else:
             line_num = node.iterable.token[2]
@@ -140,6 +156,14 @@ class Interpreter:
         except Exception as e:
             line_num = node.token[2] 
             raise Exception(f"Runtime Error on line {line_num}: {e}")
+        
+    def visit_AttributeAccess(self, node):
+        obj = self.visit(node.obj)
+        try:
+            return getattr(obj, node.attribute)
+        except AttributeError:
+            line_num = node.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: Object '{obj}' has no attribute '{node.attribute}'") 
 
     def visit_BinOp(self, node):
         left = self.visit(node.left)
@@ -160,70 +184,51 @@ class Interpreter:
     def visit_FunctionCall(self, node):
         line_num = node.token[2]
         
-        # First, check if the callee is a simple variable name.
-        if isinstance(node.callee, Variable):
-            callee_name = node.callee.name
+        # First, handle user-defined functions as a special case because they
+        # manipulate the interpreter's scope stack directly.
+        if isinstance(node.callee, Variable) and node.callee.name in self.functions:
+            func_def = self.functions[node.callee.name]
+            args = [self.visit(arg) for arg in node.args]
+
+            if len(args) != len(func_def.params):
+                raise Exception(f"Runtime Error on line {line_num}: Function '{func_def.name}' expects {len(func_def.params)} arguments, but received {len(args)}")
             
-            # Handle Built-in functions by name
-            builtins = {'len', 'range', 'min', 'max', 'sum','tensor','matmul'}
-            if callee_name in builtins:
-                args = [self.visit(arg) for arg in node.args] # Evaluate args for built-ins
+            self.e.enter_scope()
+            try:
+                for param, arg_value in zip(func_def.params, args):
+                    self.e.assign_variable(param.name, arg_value)
+                self.visit(func_def.body)
+            except ReturnSignal as ret:
+                return ret.value
+            finally:
+                self.e.exit_scope()
+            return None
 
-                if callee_name == 'tensor':
-                    if len(args) != 1: raise Exception(f"Runtime Error on line {line_num}: tensor() expects 1 argument, but received {len(args)}")
-                    return mlscript.Tensor(args[0])
+        # For all other functions (built-ins, imported functions), resolve the callee
+        # expression to a callable Python object.
+        callee_obj = self.visit(node.callee)
+        
+        if not callable(callee_obj):
+            callee_repr = node.callee.name if isinstance(node.callee, Variable) else 'expression'
+            raise Exception(f"Runtime Error on line {line_num}: '{callee_repr}' is not a function.")
 
-                if callee_name == 'matmul':
-                    if len(args) != 2: raise Exception(f"Runtime Error on line {line_num}: matmul() expects 2 arguments, but received {len(args)}")
-                    return self.e.matmul(args[0], args[1])  
-                
-                if callee_name == 'len':
-                    if len(args) != 1: raise Exception(f"Runtime Error on line {line_num}: len() expects 1 argument, but received {len(args)}")
-                    value = args[0]
-                    if isinstance(value, (str, list, dict)): return len(value)
-                    raise Exception(f"Runtime Error on line {line_num}: len() is only supported for strings, lists, and dictionaries.")
-                
-                if callee_name == 'range':
-                    return list(range(*args))
-
-                if callee_name in ('min', 'max', 'sum'):
-                    if len(args) != 1: raise Exception(f"Runtime Error on line {line_num}: {callee_name}() expects 1 argument (a list), but received {len(args)}")
-                    data = args[0]
-                    if not isinstance(data, list): raise Exception(f"Runtime Error on line {line_num}: Argument to {callee_name}() must be a list.")
-                    if not data: raise Exception(f"Runtime Error on line {line_num}: {callee_name}() arg is an empty sequence.")
-                    if callee_name == 'min': return min(data)
-                    if callee_name == 'max': return max(data)
-                    if callee_name == 'sum': return sum(data)
-            
-            # Handle User-defined functions by name
-            if callee_name in self.functions:
-                func_def = self.functions[callee_name]
-                args = [self.visit(arg) for arg in node.args] # Evaluate args for user functions
-
-                if len(args) != len(func_def.params):
-                    raise Exception(f"Runtime Error on line {line_num}: Function '{callee_name}' expects {len(func_def.params)} arguments, but received {len(args)}")
-                
-                self.e.enter_scope()
-                try:
-                    for param, arg_value in zip(func_def.params, args):
-                        self.e.assign_variable(param.name, arg_value)
-                    self.visit(func_def.body)
-                except ReturnSignal as ret:
-                    return ret.value
-                finally:
-                    self.e.exit_scope()
-                return None
-
-            # If the name is not a known built-in or user function, it's an error.
-            raise Exception(f"Runtime Error on line {line_num}: Undefined function '{callee_name}'")
-
-        # Case 2: The callee is a complex expression (e.g., my_list[0]())
-        else:
-            # For now, we can keep this restricted until we need it.
-            raise Exception(f"Runtime Error on line {line_num}: Dynamic function execution is not yet supported.")
+        args = [self.visit(arg) for arg in node.args]
+        
+        try:
+            return callee_obj(*args)
+        except Exception as e:
+            raise Exception(f"Runtime Error on line {line_num}: Error during function call: {e}")
         
     def visit_SliceNode(self, node):
         start = self.visit(node.start) if node.start else None
         stop = self.visit(node.stop) if node.stop else None
         step = self.visit(node.step) if node.step else None
         return slice(start,stop,step)
+    
+    def visit_ImportStatement(self, node):
+        try:
+            module = importlib.import_module(node.module_name)
+            self.e.assign_variable(node.alias, module)
+        except ImportError as e:
+            line_num = node.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: {e}")

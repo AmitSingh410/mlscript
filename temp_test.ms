@@ -1,5 +1,5 @@
 // ######################################################
-// ## mlscript v0.4 - Comprehensive Test Suite
+// ## mlscript - Comprehensive Test Suite
 // ######################################################
 
 print("--- 1. Testing Primitives, Variables, and Operators ---")
@@ -266,9 +266,62 @@ print(t_slice[::-1, :])
 print("")
 
 
-// --- 9. Demonstrating v0.5 Tensor Runtime Errors ---
-print("--- 9. Demonstrating v0.5 Tensor Runtime Errors ---")
-print("Uncomment lines below one by one to test tensor errors.")
+print("--- 9. Testing v0.6 Python Interoperability ---")
+
+// Test 1: Importing a Python module
+print("Testing 'import' statement...")
+import "numpy" as np
+print("Successfully imported numpy as 'np'.")
+print(np)
+print("")
+
+// Test 2: Creating a mlscript Tensor from a NumPy array
+print("Testing NumPy -> mlscript bridge...")
+np_array = np.array([[10, 20], [30, 40]])
+print("Created NumPy array using np.array():")
+print(np_array)
+t_from_np = tensor(np_array)
+print("Created mlscript Tensor from NumPy array:")
+print(t_from_np)
+print("")
+
+// Test 3: Creating a NumPy array from an mlscript Tensor
+print("Testing mlscript -> NumPy bridge...")
+t_to_np = tensor([[1.5, 2.5], [3.5, 4.5]])
+print("Original mlscript Tensor:")
+print(t_to_np)
+np_from_t = np.array(t_to_np * 10)
+print("Created NumPy array from (t_to_np * 10):")
+print(np_from_t)
+print("")
+
+// Test 4: Chained operations
+print("Testing chained operations...")
+chained_tensor = tensor(np.array(t_from_np) + 100)
+print("Result of 'tensor(np.array(t_from_np) + 100)':")
+print(chained_tensor)
+print("")
+
+//Test 5: Automatic Type Conversion
+print("Testing automatic type conversion (mlscript list -> C++ vector)...")
+ml_list = [[100.0, 200.0], [300.0, 400.0]]
+t_from_ml_list = tensor(ml_list)
+print("Tensor created from native mlscript list:")
+print(t_from_ml_list)
+print("")
+
+
+// --- 10. Demonstrating v0.6 Interop Runtime Errors ---
+print("--- 10. Demonstrating v0.6 Interop Runtime Errors ---")
+print("Uncomment lines below one by one to test interop errors.")
+
+// Importing a module that does not exist
+// import "non_existent_module" as bad_import
+// Expected -> Runtime Error: Module 'non_existent_module' not found.
+
+// Accessing an attribute that does not exist
+// np.non_existent_function()
+// Expected -> Runtime Error: Object has no attribute 'non_existent_function'
 
 // Incompatible shapes for matrix multiplication
 // matmul(t1, tensor([[1], [2], [3]]))
@@ -278,5 +331,13 @@ print("Uncomment lines below one by one to test tensor errors.")
 // print(t1[5, 5])
 // Expected -> Runtime Error: Tensor index out of range.
 
+// Importing a module that does not exist
+// import "non_existent_module" as bad_import
+// Expected -> Runtime Error: Module 'non_existent_module' not found.
+
+// Accessing an attribute that does not exist
+// np.non_existent_function()
+// Expected -> Runtime Error: Object has no attribute 'non_existent_function'
 print("")
-print("--- v0.5 Test Suite Complete ---")
+print("--- v0.6 Test Suite Complete ---")
+

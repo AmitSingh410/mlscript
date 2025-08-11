@@ -3,18 +3,27 @@ project(mlscript)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# Add your local third_party directory to the module path
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/third_party")
 
-add_subdirectory(third_party/pybind11)
+# Add the subdirectories for Eigen and pybind11
+# This builds them directly from your source files
 add_subdirectory(third_party/eigen)
+add_subdirectory(third_party/pybind11)
 
-# This sets the output path for any configuration that isn't explicitly set.
+# Modern way to find Python and NumPy
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
+execute_process(
+    COMMAND ${Python_EXECUTABLE} -c "import numpy; print(numpy.get_include())"
+    OUTPUT_VARIABLE NUMPY_INCLUDE_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+# Set the output directory for build artifacts
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-# This explicitly sets the output path for the "Release" configuration,
-# which is what `cmake --build . --config Release` uses.
 foreach(config ${CMAKE_CONFIGURATION_TYPES})
     string(TOUPPER ${config} CONFIG_UPPER)
     set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_SOURCE_DIR})
@@ -22,16 +31,22 @@ foreach(config ${CMAKE_CONFIGURATION_TYPES})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONFIG_UPPER} ${CMAKE_SOURCE_DIR})
 endforeach()
 
-# Diagnostic message to confirm the path
 message(STATUS "Build artifacts will be placed in: ${CMAKE_SOURCE_DIR}")
 
-#include_directories(include)
-
-pybind11_add_module(mlscript
+pybind11_add_module(mlscript SHARED
     cpp_backend/bindings.cpp
     cpp_backend/evaluator.cpp
 )
 
-target_include_directories(mlscript PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/cpp_backend")
+# Link the necessary libraries and include directories
+target_include_directories(mlscript PRIVATE 
+    "${CMAKE_CURRENT_SOURCE_DIR}/cpp_backend"
+    ${Python_INCLUDE_DIRS}
+    ${NUMPY_INCLUDE_DIR}
+)
 
-target_link_libraries(mlscript PRIVATE Eigen3::Eigen)
+# Link against the targets provided by add_subdirectory
+target_link_libraries(mlscript PRIVATE 
+    Eigen3::Eigen 
+    pybind11::embed
+)

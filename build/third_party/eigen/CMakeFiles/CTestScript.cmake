@@ -61,7 +61,7 @@ set(CTEST_MEMORYCHECK_SANITIZER_OPTIONS "")
 set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE "")
 
 # CTest Submit Step
-set(CTEST_SITE "amitsingh")
+set(CTEST_SITE "AmitSingh")
 set(CTEST_BUILD_NAME "unknownwin-19.44.35213.0-sse2-64bit")
 set(CTEST_SUBMIT_URL "http://my.cdash.org/submit.php?project=Eigen")
 set(CTEST_SUBMIT_INACTIVITY_TIMEOUT "")

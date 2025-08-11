@@ -19,6 +19,7 @@ class TokenType(Enum):
     RBRACKET = auto()
     COMMA = auto()
     COLON = auto()
+    DOT = auto()
     PRINT = auto()
     FUN = auto()
     RETURN = auto()
@@ -36,6 +37,8 @@ class TokenType(Enum):
     LTE = auto()
     TRUE = auto()
     FALSE = auto()
+    IMPORT = auto()
+    AS = auto()
     EOF = auto()
 
 token_spec = [
@@ -53,6 +56,8 @@ token_spec = [
     (TokenType.PRINT,   r'print\b'),
     (TokenType.TRUE,    r'true\b'),
     (TokenType.FALSE,   r'false\b'),
+    (TokenType.IMPORT,  r'import\b'),
+    (TokenType.AS,      r'as\b'),
     (TokenType.FLOAT,   r'\d+\.\d+'),
     (TokenType.INTEGER, r'\d+'),
     (TokenType.STRING,  r'"(?:\\.|[^"\\])*"'),
@@ -76,6 +81,7 @@ token_spec = [
     (TokenType.RBRACKET, r'\]'),
     (TokenType.COMMA,   r','),
     (TokenType.COLON,   r':'),
+    (TokenType.DOT,     r'\.'),
     
     ("MISMATCH",        r'.'),
 ]

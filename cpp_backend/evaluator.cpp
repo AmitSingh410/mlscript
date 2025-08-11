@@ -1,6 +1,8 @@
 #include "evaluator.hpp"
 #include <stdexcept>
 #include <iostream>
+#include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 
 Tensor::Tensor(const std::vector<std::vector<double>>& data) {
     if (data.empty() || data[0].empty()) {
@@ -18,6 +20,8 @@ Tensor::Tensor(const std::vector<std::vector<double>>& data) {
         }
     }
 }
+
+Tensor::Tensor(const Eigen::MatrixXd& matrix) : mat(matrix) {}
 
 Tensor Tensor::operator+(const Tensor& other) const {
     Tensor result;
@@ -111,8 +115,47 @@ py::object Evaluator::get_variable(const std::string& name) {
 // Evaluates an operation between two objects, which can be Tensors or primitive types.
 // This function is designed to handle both Tensor operations and primitive type operations.
 py::object Evaluator::evaluate(const std::string& op, const py::object& left, const py::object& right) {
-    // Tensor operations
-    if (py::isinstance<Tensor>(left) && py::isinstance<Tensor>(right)) {
+    bool is_left_tensor = py::isinstance<Tensor>(left);
+    bool is_left_array = py::isinstance<py::array>(left);
+    bool is_left_numeric = py::isinstance<py::float_>(left) || py::isinstance<py::int_>(left);
+
+    bool is_right_tensor = py::isinstance<Tensor>(right);
+    bool is_right_array = py::isinstance<py::array>(right);
+    bool is_right_numeric = py::isinstance<py::float_>(right) || py::isinstance<py::int_>(right);
+
+    const char* op_dunder = nullptr;
+    if (op == "+") op_dunder = "__add__";
+    else if (op == "-") op_dunder = "__sub__";
+    else if (op == "*") op_dunder = "__mul__";
+    else if (op == "/") op_dunder = "__truediv__";
+
+    // Handle operations involving numpy arrays by delegating back to Python
+    if (op_dunder) {
+        // Case 1: numpy_array (+, -, *, /) Tensor
+        if (is_left_array && is_right_tensor) {
+            // Convert our Tensor to a numpy array view and then let Python handle it.
+            return left.attr(op_dunder)(py::cast(right.cast<const Tensor&>()));
+        }
+        // Case 2: Tensor (+, -, *, /) numpy_array
+        if (is_left_tensor && is_right_array) {
+            return py::cast(left.cast<const Tensor&>()).attr(op_dunder)(right);
+        }
+        // Case 3: numpy_array (+, -, *, /) scalar
+        if (is_left_array && is_right_numeric) {
+             return left.attr(op_dunder)(right);
+        }
+        // Case 4: scalar (+, -, *, /) numpy_array
+        if (is_left_numeric && is_right_array) {
+            // For scalar on the left, we need the "reflected" operator (e.g., __radd__)
+            std::string r_op_dunder = "__r" + std::string(op_dunder + 2);
+            return right.attr(r_op_dunder.c_str())(left);
+        }
+    }
+
+    // --- Original Logic for mlscript Native Types ---
+
+    // Tensor + Tensor
+    if (is_left_tensor && is_right_tensor) {
         const auto& l = left.cast<const Tensor&>();
         const auto& r = right.cast<const Tensor&>();
         if (op == "+") return py::cast(l + r);
@@ -120,15 +163,16 @@ py::object Evaluator::evaluate(const std::string& op, const py::object& left, co
         if (op == "*") return py::cast(l * r);
         if (op == "/") return py::cast(l / r);
     }
-    // Scalar broadcasting
-    if (py::isinstance<Tensor>(left) && (py::isinstance<py::int_>(right) || py::isinstance<py::float_>(right))) {
+    // Tensor * scalar (Broadcasting)
+    if (is_left_tensor && is_right_numeric) {
         if (op == "*") return py::cast(left.cast<const Tensor&>() * right.cast<double>());
     }
-    if ((py::isinstance<py::int_>(left) || py::isinstance<py::float_>(left)) && py::isinstance<Tensor>(right)) {
+    // scalar * Tensor (Broadcasting)
+    if (is_left_numeric && is_right_tensor) {
         if (op == "*") return py::cast(left.cast<double>() * right.cast<const Tensor&>());
     }
-    // Primitive operations
-    if (py::isinstance<py::float_>(left) || py::isinstance<py::float_>(right)) {
+    // Primitive arithmetic
+    if (is_left_numeric && py::isinstance<py::float_>(right) || py::isinstance<py::float_>(left)) {
         double l = left.cast<double>();
         double r = right.cast<double>();
         if (op == "+") return py::cast(l + r);
@@ -144,9 +188,11 @@ py::object Evaluator::evaluate(const std::string& op, const py::object& left, co
         if (op == "*") return py::cast(l * r);
         if (op == "/") return py::cast(static_cast<double>(l) / r);
     }
+    // String concatenation
     if (py::isinstance<py::str>(left) && py::isinstance<py::str>(right)) {
         if (op == "+") return py::cast(left.cast<std::string>() + right.cast<std::string>());
     }
+    
     throw std::runtime_error("Unsupported types for operator " + op);
 }
 

@@ -50,6 +50,8 @@ class Parser:
             return self.while_statement()
         elif token_type == TokenType.FOR:
             return self.for_statement()
+        elif token_type == TokenType.IMPORT:
+            return self.import_statement()
         elif token_type == TokenType.RETURN:
             self.advance()
             expr = self.comparison_expression()
@@ -141,6 +143,15 @@ class Parser:
 
         body = self.block()
         return ForStatement(variable_node, iterable_node, body)
+    
+    def import_statement(self):
+        self.eat(TokenType.IMPORT)
+        module_name_token = self.current_token
+        self.eat(TokenType.STRING)
+        self.eat(TokenType.AS)
+        alias_token = self.current_token
+        self.eat(TokenType.IDENT)
+        return ImportStatement(module_name_token, alias_token)
 
     def function_definition(self):
         self.eat(TokenType.FUN)
@@ -246,8 +257,14 @@ class Parser:
                     while self.current_token[0] == TokenType.COMMA:
                         self.eat(TokenType.COMMA)
                         index_expr.append(parse_slice_or_expr())
+                
                 self.eat(TokenType.RBRACKET)
                 node = IndexAccess(node, index_expr)
+            elif self.current_token[0] == TokenType.DOT:
+                self.eat(TokenType.DOT)
+                attr_token = self.current_token
+                self.eat(TokenType.IDENT)
+                node = AttributeAccess(node, attr_token)
             else:
                 break
         return node

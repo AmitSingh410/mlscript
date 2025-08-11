@@ -20,9 +20,10 @@ struct Slice {
 
 class Tensor {
 public:
-    Eigen::MatrixXd mat;
+    Eigen::Matrix<double, Eigen::Dynamic,Eigen::Dynamic, Eigen::RowMajor> mat;
 
     Tensor(const std::vector<std::vector<double>>& data);
+    Tensor(const Eigen::MatrixXd& matrix); 
     Tensor() = default;
 
     Tensor operator+(const Tensor& other) const;

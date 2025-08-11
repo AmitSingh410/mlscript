@@ -40,6 +40,13 @@ class Variable(Node):
         self.token = token
         self.name = token[1]
 
+class AttributeAccess(Node):
+    """Represents an attribute access (e.g., object.attribute)."""
+    def __init__(self,obj,attribute_name_token):
+        self.obj = obj
+        self.attribute= attribute_name_token[1]  
+        self.token = attribute_name_token
+
 class IndexAccess(Node):
     """Represents an index access operation (e.g., list[index])."""
     def __init__(self, collection, index_expr):
@@ -132,3 +139,10 @@ class SliceNode(Node):
         self.start = start
         self.stop = stop
         self.step = step
+
+class ImportStatement(Node):
+    """Represents an import statement."""
+    def __init__(self,module_name_token, alias_token):
+        self.module_name = module_name_token[1]  
+        self.alias = alias_token[1] 
+        self.token = module_name_token  
