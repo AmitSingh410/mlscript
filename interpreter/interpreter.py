@@ -15,12 +15,22 @@ class MLObject:
     def __repr__(self):
         return str(self.value)
 
+class NoGradManager:
+    def __init__(self, evaluator):
+        self.evaluator = evaluator
+        self.original_state = None
+
+    def __enter__(self):
+        self.evaluator.set_grad_enabled(False)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.evaluator.set_grad_enabled(True)
+
 class Interpreter:
     def __init__(self):
         self.e = mlscript.Evaluator()
         self.functions = {}
         
-        # Define all built-in objects that should exist in the global scope
         self.global_scope = {
             'tensor': mlscript.Tensor,
             'matmul': self.e.matmul,
@@ -29,9 +39,9 @@ class Interpreter:
             'min': min,
             'max': max,
             'sum': sum,
+            'no_grad': NoGradManager(self.e),
         }
         
-        # Load the built-ins into the C++ Evaluator's global scope
         for name, value in self.global_scope.items():
             self.e.assign_variable(name, value)
 
@@ -52,12 +62,11 @@ class Interpreter:
         indices = [self.visit(expr) for expr in node.index_expr]
         index = indices[0] if len(indices) == 1 else tuple(indices)
 
-        line_num = node.token[2] # Get the line number from the node
+        line_num = node.token[2]
 
         try:
             collection[index] = value
         except (IndexError, KeyError) as e:
-            # Now includes the line number
             raise Exception(f"Runtime Error on line {line_num}: {e}")
         
     def visit_IndexAccess(self, node):
@@ -140,6 +149,17 @@ class Interpreter:
             self.visit(node.body)
         self.e.exit_scope()
 
+    def visit_WithStatement(self,node):
+        context_manager = self.visit(node.context_expr)
+        if not (hasattr(context_manager, '__enter__') and hasattr(context_manager, '__exit__')):
+            line_num = node.context_expr.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: 'with' statement requires a context manager.")
+        context_manager.__enter__()
+        try:
+            self.visit(node.body)
+        finally:
+            context_manager.__exit__(None, None, None)
+
     def visit_FunctionDef(self, node):
         self.functions[node.name] = node
 
@@ -184,8 +204,6 @@ class Interpreter:
     def visit_FunctionCall(self, node):
         line_num = node.token[2]
         
-        # First, handle user-defined functions as a special case because they
-        # manipulate the interpreter's scope stack directly.
         if isinstance(node.callee, Variable) and node.callee.name in self.functions:
             func_def = self.functions[node.callee.name]
             args = [self.visit(arg) for arg in node.args]
@@ -204,10 +222,11 @@ class Interpreter:
                 self.e.exit_scope()
             return None
 
-        # For all other functions (built-ins, imported functions), resolve the callee
-        # expression to a callable Python object.
         callee_obj = self.visit(node.callee)
         
+        if isinstance(callee_obj, NoGradManager):
+            raise Exception(f"Runtime Error on line {line_num}: 'no_grad' must be used in a 'with' statement, not called as a function.")
+
         if not callable(callee_obj):
             callee_repr = node.callee.name if isinstance(node.callee, Variable) else 'expression'
             raise Exception(f"Runtime Error on line {line_num}: '{callee_repr}' is not a function.")

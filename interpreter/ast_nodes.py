@@ -146,3 +146,10 @@ class ImportStatement(Node):
         self.module_name = module_name_token[1]  
         self.alias = alias_token[1] 
         self.token = module_name_token  
+
+class WithStatement(Node):
+    """Represents a with statement."""
+    def __init__(self, context_expr, body):
+        self.context_expr = context_expr
+        self.body = body
+

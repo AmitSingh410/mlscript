@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 project(mlscript)
 
-set(CMAKE_CXX_STANDARD 17)
-
 # Add your local third_party directory to the module path
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/third_party")
 
@@ -50,3 +48,6 @@ target_link_libraries(mlscript PRIVATE
     Eigen3::Eigen 
     pybind11::embed
 )
+
+# Set the C++ standard as a target property for consistency
+target_compile_features(mlscript PRIVATE cxx_std_17)

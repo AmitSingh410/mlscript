@@ -50,6 +50,8 @@ class Parser:
             return self.while_statement()
         elif token_type == TokenType.FOR:
             return self.for_statement()
+        elif token_type == TokenType.WITH:
+            return self.with_statement()
         elif token_type == TokenType.IMPORT:
             return self.import_statement()
         elif token_type == TokenType.RETURN:
@@ -143,6 +145,12 @@ class Parser:
 
         body = self.block()
         return ForStatement(variable_node, iterable_node, body)
+    
+    def with_statement(self):
+        self.eat(TokenType.WITH)
+        context_expr = self.comparison_expression()
+        body = self.block()
+        return WithStatement(context_expr, body)
     
     def import_statement(self):
         self.eat(TokenType.IMPORT)

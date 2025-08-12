@@ -3,14 +3,28 @@
 #include <iostream>
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
+#include <algorithm>
 
-Tensor::Tensor(const std::vector<std::vector<double>>& data) {
+void build_topo(std::shared_ptr<const Tensor> node, std::vector<std::shared_ptr<const Tensor>>& topo, std::unordered_set<std::shared_ptr<const Tensor>>& visited) {
+    if (visited.find(node) == visited.end()) {
+        visited.insert(node);
+        for (const auto& parent_ptr : node->_prev) {
+            build_topo(parent_ptr, topo, visited);
+        }
+        topo.push_back(node);
+    }
+}
+
+Tensor::Tensor(const std::vector<std::vector<double>>& data) : _op("") {
     if (data.empty() || data[0].empty()) {
-        throw std::runtime_error("Tensor data cannot be empty.");
+        mat.resize(0, 0);
+        grad.resize(0, 0);
+        return;
     }
     size_t rows = data.size();
     size_t cols = data[0].size();
     mat.resize(rows, cols);
+    grad.setZero(rows, cols);
     for (size_t i = 0; i < rows; ++i) {
         if (data[i].size() != cols) {
             throw std::runtime_error("All rows in tensor data must have the same number of columns.");
@@ -21,80 +35,191 @@ Tensor::Tensor(const std::vector<std::vector<double>>& data) {
     }
 }
 
-Tensor::Tensor(const Eigen::MatrixXd& matrix) : mat(matrix) {}
+Tensor::Tensor(const Eigen::MatrixXd& matrix) : mat(matrix), _op("") {
+    grad.setZero(matrix.rows(), matrix.cols());
+}
 
 Tensor Tensor::operator+(const Tensor& other) const {
-    Tensor result;
-    result.mat = this->mat.array() + other.mat.array();
+    Tensor result(this->mat.array() + other.mat.array());
+    if (AutodiffContext::get_instance().is_grad_enabled()) {
+        result._prev = {this->shared_from_this(), other.shared_from_this()};
+        result._op = "+";
+    }
     return result;
 }
 
 Tensor Tensor::operator-(const Tensor& other) const {
-    Tensor result;
-    result.mat = this->mat.array() - other.mat.array();
+    Tensor result(this->mat.array() - other.mat.array());
+    if (AutodiffContext::get_instance().is_grad_enabled()) {
+        result._prev = {this->shared_from_this(), other.shared_from_this()};
+        result._op = "-";
+    }
     return result;
 }
 
 Tensor Tensor::operator*(const Tensor& other) const {
-    Tensor result;
-    result.mat = this->mat.array() * other.mat.array();
+    Tensor result(this->mat.array() * other.mat.array());
+    if (AutodiffContext::get_instance().is_grad_enabled()) {
+        result._prev = {this->shared_from_this(), other.shared_from_this()};
+        result._op = "*";
+    }
     return result;
 }
 
 Tensor Tensor::operator/(const Tensor& other) const {
-    Tensor result;
-    result.mat = this->mat.array() / other.mat.array();
+    Tensor result(this->mat.array() / other.mat.array());
+    if (AutodiffContext::get_instance().is_grad_enabled()) {
+        result._prev = {this->shared_from_this(), other.shared_from_this()};
+        result._op = "/";
+    }
     return result;
 }
 
 Tensor Tensor::operator*(double scalar) const {
-    Tensor result;
-    result.mat = this->mat.array() * scalar;
+    Tensor result(this->mat.array() * scalar);
+    if (AutodiffContext::get_instance().is_grad_enabled()) {
+        result._prev = {this->shared_from_this()};
+        result._op = "*_scalar";
+        result._scalar_val = scalar;
+    }
     return result;
+}
+
+Tensor operator*(double scalar, const Tensor& t) {
+    return t * scalar; 
 }
 
 Tensor Tensor::matmul(const Tensor& other) const {
     if (this->mat.cols() != other.mat.rows()) {
         throw std::runtime_error("Tensor shapes are incompatible for matrix multiplication.");
     }
-    Tensor result;
-    result.mat = this->mat * other.mat;
+    Tensor result(this->mat * other.mat);
+    if (AutodiffContext::get_instance().is_grad_enabled()) {
+        result._prev = {this->shared_from_this(), other.shared_from_this()};
+        result._op = "matmul";
+    }
     return result;
 }
 
-// Constructor: Initializes the evaluator by creating the global scope.
+Tensor Tensor::sum() const {
+    double scalar_sum = this->mat.sum();
+    Eigen::MatrixXd result_mat(1, 1);
+    result_mat(0, 0) = scalar_sum;
+    
+    Tensor result(result_mat);
+    if (AutodiffContext::get_instance().is_grad_enabled()) {
+        result._prev = {this->shared_from_this()};
+        result._op = "sum";
+    }
+    return result;
+}
+
+double Tensor::get_element(long row, long col) const {
+    if (row >= mat.rows() || col >= mat.cols() || row < 0 || col < 0) {
+        throw std::out_of_range("Tensor index out of range.");
+    }
+    return mat(row, col);
+}
+
+Tensor Tensor::get_row(long row) const {
+    if (row >= mat.rows() || row < 0) {
+        throw std::out_of_range("Tensor row index out of range.");
+    }
+    Tensor result(mat.row(row));
+    if (AutodiffContext::get_instance().is_grad_enabled()) {
+        result._prev = {this->shared_from_this()};
+        result._op = "get_row";
+    }
+    return result;
+}
+
+Tensor Tensor::slice(Slice row_slice, Slice col_slice) const {
+    std::vector<py::ssize_t> row_indices;
+    for (py::ssize_t i = row_slice.start; row_slice.step > 0 ? i < row_slice.stop : i > row_slice.stop; i += row_slice.step) {
+        row_indices.push_back(i);
+    }
+
+    std::vector<py::ssize_t> col_indices;
+    for (py::ssize_t i = col_slice.start; col_slice.step > 0 ? i < col_slice.stop : i > col_slice.stop; i += col_slice.step) {
+        col_indices.push_back(i);
+    }
+
+    if (row_indices.empty() || col_indices.empty()) {
+        return Tensor(Eigen::MatrixXd(0, 0));
+    }
+    
+    Eigen::MatrixXd new_mat(row_indices.size(), col_indices.size());
+    for(size_t i = 0; i < row_indices.size(); ++i) {
+        for(size_t j = 0; j < col_indices.size(); ++j) {
+            new_mat(i, j) = this->mat(row_indices[i], col_indices[j]);
+        }
+    }
+    
+    Tensor result(new_mat);
+    if (AutodiffContext::get_instance().is_grad_enabled()) {
+        result._prev = {this->shared_from_this()};
+        result._op = "slice";
+    }
+    return result;
+}
+
+void Tensor::backward() {
+    std::vector<std::shared_ptr<const Tensor>> topo;
+    std::unordered_set<std::shared_ptr<const Tensor>> visited;
+    build_topo(this->shared_from_this(), topo, visited);
+
+    this->grad.setOnes(this->mat.rows(), this->mat.cols());
+
+    std::reverse(topo.begin(), topo.end());
+
+    for (const auto& t : topo) {
+        if (t->_op == "+") {
+            const_cast<Tensor*>(t->_prev[0].get())->grad += t->grad;
+            const_cast<Tensor*>(t->_prev[1].get())->grad += t->grad;
+        } else if (t->_op == "*") {
+            const_cast<Tensor*>(t->_prev[0].get())->grad += (t->_prev[1]->mat.array() * t->grad.array()).matrix();
+            const_cast<Tensor*>(t->_prev[1].get())->grad += (t->_prev[0]->mat.array() * t->grad.array()).matrix();
+        } else if (t->_op == "matmul") {
+            const_cast<Tensor*>(t->_prev[0].get())->grad += t->grad * t->_prev[1]->mat.transpose();
+            const_cast<Tensor*>(t->_prev[1].get())->grad += t->_prev[0]->mat.transpose() * t->grad;
+        } else if (t->_op == "*_scalar") {
+             const_cast<Tensor*>(t->_prev[0].get())->grad.array() += t->_scalar_val * t->grad.array();
+        } else if (t->_op == "sum") {
+            auto parent = const_cast<Tensor*>(t->_prev[0].get());
+            parent->grad.array() += Eigen::MatrixXd::Ones(parent->mat.rows(), parent->mat.cols()).array() * t->grad(0,0);
+        }
+    }
+}
+
 Evaluator::Evaluator() {
     this->enter_scope();
 }
 
-// Enters a new, nested scope by pushing a new symbol table onto the stack.
 void Evaluator::enter_scope() {
     scope_stack.emplace_back();
 }
 
-// Exits the current scope, ensuring the global scope is never removed.
 void Evaluator::exit_scope() {
     if (scope_stack.size() > 1) {
         scope_stack.pop_back();
     } else {
-        // This should ideally not be reachable if the interpreter is correct.
         throw std::runtime_error("Internal error: Cannot exit the global scope.");
     }
 }
 
-// Assigns a variable to the current, most-nested scope.
 void Evaluator::assign_variable(const std::string& name, const py::object& value) {
     if (!scope_stack.empty()) {
         scope_stack.back()[name] = value;
     }
 }
 
+void Evaluator::set_grad_enabled(bool enabled) {
+    AutodiffContext::get_instance().set_grad_enabled(enabled);
+}
+
 py::object Evaluator::get_variable(const std::string& name) {
     for (auto it = scope_stack.rbegin(); it != scope_stack.rend(); ++it) {
         if (it->count(name)) {
-            // All complex objects are stored as py::object, so we get that.
-            // Primitives will need to be handled or cast as needed.
-            // For now, this direct return is the goal of the refactor.
             const Value& val = it->at(name);
             if (std::holds_alternative<py::object>(val)) {
                 return std::get<py::object>(val);
@@ -112,8 +237,6 @@ py::object Evaluator::get_variable(const std::string& name) {
     throw std::runtime_error("Undefined variable: " + name);
 }
 
-// Evaluates an operation between two objects, which can be Tensors or primitive types.
-// This function is designed to handle both Tensor operations and primitive type operations.
 py::object Evaluator::evaluate(const std::string& op, const py::object& left, const py::object& right) {
     bool is_left_tensor = py::isinstance<Tensor>(left);
     bool is_left_array = py::isinstance<py::array>(left);
@@ -129,32 +252,22 @@ py::object Evaluator::evaluate(const std::string& op, const py::object& left, co
     else if (op == "*") op_dunder = "__mul__";
     else if (op == "/") op_dunder = "__truediv__";
 
-    // Handle operations involving numpy arrays by delegating back to Python
     if (op_dunder) {
-        // Case 1: numpy_array (+, -, *, /) Tensor
         if (is_left_array && is_right_tensor) {
-            // Convert our Tensor to a numpy array view and then let Python handle it.
             return left.attr(op_dunder)(py::cast(right.cast<const Tensor&>()));
         }
-        // Case 2: Tensor (+, -, *, /) numpy_array
         if (is_left_tensor && is_right_array) {
             return py::cast(left.cast<const Tensor&>()).attr(op_dunder)(right);
         }
-        // Case 3: numpy_array (+, -, *, /) scalar
         if (is_left_array && is_right_numeric) {
              return left.attr(op_dunder)(right);
         }
-        // Case 4: scalar (+, -, *, /) numpy_array
         if (is_left_numeric && is_right_array) {
-            // For scalar on the left, we need the "reflected" operator (e.g., __radd__)
             std::string r_op_dunder = "__r" + std::string(op_dunder + 2);
             return right.attr(r_op_dunder.c_str())(left);
         }
     }
 
-    // --- Original Logic for mlscript Native Types ---
-
-    // Tensor + Tensor
     if (is_left_tensor && is_right_tensor) {
         const auto& l = left.cast<const Tensor&>();
         const auto& r = right.cast<const Tensor&>();
@@ -163,16 +276,13 @@ py::object Evaluator::evaluate(const std::string& op, const py::object& left, co
         if (op == "*") return py::cast(l * r);
         if (op == "/") return py::cast(l / r);
     }
-    // Tensor * scalar (Broadcasting)
     if (is_left_tensor && is_right_numeric) {
         if (op == "*") return py::cast(left.cast<const Tensor&>() * right.cast<double>());
     }
-    // scalar * Tensor (Broadcasting)
     if (is_left_numeric && is_right_tensor) {
         if (op == "*") return py::cast(left.cast<double>() * right.cast<const Tensor&>());
     }
-    // Primitive arithmetic
-    if (is_left_numeric && py::isinstance<py::float_>(right) || py::isinstance<py::float_>(left)) {
+    if ((is_left_numeric && py::isinstance<py::float_>(right)) || (py::isinstance<py::float_>(left) && is_right_numeric) || (py::isinstance<py::float_>(left) && py::isinstance<py::float_>(right))) {
         double l = left.cast<double>();
         double r = right.cast<double>();
         if (op == "+") return py::cast(l + r);
@@ -188,7 +298,6 @@ py::object Evaluator::evaluate(const std::string& op, const py::object& left, co
         if (op == "*") return py::cast(l * r);
         if (op == "/") return py::cast(static_cast<double>(l) / r);
     }
-    // String concatenation
     if (py::isinstance<py::str>(left) && py::isinstance<py::str>(right)) {
         if (op == "+") return py::cast(left.cast<std::string>() + right.cast<std::string>());
     }
@@ -196,57 +305,9 @@ py::object Evaluator::evaluate(const std::string& op, const py::object& left, co
     throw std::runtime_error("Unsupported types for operator " + op);
 }
 
-
-Tensor operator*(double scalar, const Tensor& t) {
-    return t * scalar; 
-}
-
-
 py::object Evaluator::matmul(const py::object& left, const py::object& right) {
     if (py::isinstance<Tensor>(left) && py::isinstance<Tensor>(right)) {
         return py::cast(left.cast<const Tensor&>().matmul(right.cast<const Tensor&>()));
     }
     throw std::runtime_error("matmul is only defined for Tensors.");
-}
-
-double Tensor::get_element(long row, long col) const {
-    if (row >= mat.rows() || col >= mat.cols() || row < 0 || col < 0) {
-        throw std::out_of_range("Tensor index out of range.");
-    }
-    return mat(row, col);
-}
-
-Tensor Tensor::get_row(long row) const {
-    if (row >= mat.rows() || row < 0) {
-        throw std::out_of_range("Tensor row index out of range.");
-    }
-    Tensor result;
-    result.mat = mat.row(row);
-    return result;
-}
-
-Tensor Tensor::slice(Slice row_slice, Slice col_slice) const {
-    std::vector<py::ssize_t> row_indices;
-    for (py::ssize_t i = row_slice.start; row_slice.step > 0 ? i < row_slice.stop : i > row_slice.stop; i += row_slice.step) {
-        row_indices.push_back(i);
-    }
-
-    std::vector<py::ssize_t> col_indices;
-    for (py::ssize_t i = col_slice.start; col_slice.step > 0 ? i < col_slice.stop : i > col_slice.stop; i += col_slice.step) {
-        col_indices.push_back(i);
-    }
-
-    if (row_indices.empty() || col_indices.empty()) {
-        // Return an empty tensor if the slice is empty
-        return Tensor(std::vector<std::vector<double>>());
-    }
-
-    Tensor result;
-    result.mat.resize(row_indices.size(), col_indices.size());
-    for(size_t i = 0; i < row_indices.size(); ++i) {
-        for(size_t j = 0; j < col_indices.size(); ++j) {
-            result.mat(i, j) = this->mat(row_indices[i], col_indices[j]);
-        }
-    }
-    return result;
 }

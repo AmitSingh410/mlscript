@@ -692,7 +692,7 @@ PYBIND11_TEST:BOOL=OFF
 PYBIND11_USE_CROSSCOMPILING:BOOL=OFF
 
 //Python Interpreter
-Python_EXECUTABLE:FILEPATH=C:/Users/amits/AppData/Local/Programs/Python/Python313/python.exe
+Python_EXECUTABLE:FILEPATH=C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/python.exe
 
 //Python Include Directory
 Python_INCLUDE_DIR:FILEPATH=C:/Users/amits/AppData/Local/Programs/Python/Python313/Include
@@ -1068,7 +1068,7 @@ EIGEN_COMPILER_SUPPORT_CPP11:INTERNAL=
 //ADVANCED property for variable: EIGEN_TEST_EIGEN2
 EIGEN_TEST_EIGEN2-ADVANCED:INTERNAL=1
 //Details about finding Python
-FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[C:/Users/amits/AppData/Local/Programs/Python/Python313/python.exe][C:/Users/amits/AppData/Local/Programs/Python/Python313/libs/python313.lib][C:/Users/amits/AppData/Local/Programs/Python/Python313/Include][found components: Interpreter Development Development.Module Development.Embed ][v3.13.2()]
+FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/python.exe][C:/Users/amits/AppData/Local/Programs/Python/Python313/libs/python313.lib][C:/Users/amits/AppData/Local/Programs/Python/Python313/Include][found components: Interpreter Development Development.Module Development.Embed ][v3.13.2()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: GOOGLEHASH_INCLUDES
@@ -1101,7 +1101,7 @@ PKG_CONFIG_ARGN-ADVANCED:INTERNAL=1
 PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
 PYBIND11_INCLUDE_DIR:INTERNAL=C:/Users/amits/Documents/Projects/mlscript/third_party/pybind11/include
 //Python executable during the last CMake run
-PYBIND11_PYTHON_EXECUTABLE_LAST:INTERNAL=C:/Users/amits/AppData/Local/Programs/Python/Python313/python.exe
+PYBIND11_PYTHON_EXECUTABLE_LAST:INTERNAL=C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/python.exe
 //Python debug status
 PYTHON_IS_DEBUG:INTERNAL=0
 PYTHON_MODULE_DEBUG_POSTFIX:INTERNAL=
@@ -1144,13 +1144,13 @@ _Python_DEVELOPMENT_EMBED_SIGNATURE:INTERNAL=ee7dad6194d65caa01a469465bd4f37c
 _Python_DEVELOPMENT_MODULE_SIGNATURE:INTERNAL=ee7dad6194d65caa01a469465bd4f37c
 //Development reason failure
 _Python_Development_REASON_FAILURE:INTERNAL=
-_Python_EXECUTABLE:INTERNAL=C:/Users/amits/AppData/Local/Programs/Python/Python313/python.exe
+_Python_EXECUTABLE:INTERNAL=C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/python.exe
 //Path to a program.
 _Python_EXECUTABLE_DEBUG:INTERNAL=_Python_EXECUTABLE_DEBUG-NOTFOUND
 _Python_INCLUDE_DIR:INTERNAL=C:/Users/amits/AppData/Local/Programs/Python/Python313/Include
 //Python Properties
-_Python_INTERPRETER_PROPERTIES:INTERNAL=Python;3;13;2;64;<none>;cp313-win_amd64;;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages
-_Python_INTERPRETER_SIGNATURE:INTERNAL=a0be93878e842c729730ca45280f5d8d
+_Python_INTERPRETER_PROPERTIES:INTERNAL=Python;3;13;2;64;<none>;cp313-win_amd64;;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages
+_Python_INTERPRETER_SIGNATURE:INTERNAL=60d1d67de902a8a73e1e19b74f5faf1a
 //Interpreter reason failure
 _Python_Interpreter_REASON_FAILURE:INTERNAL=
 //Path to a library.

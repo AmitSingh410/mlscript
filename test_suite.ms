@@ -311,33 +311,92 @@ print(t_from_ml_list)
 print("")
 
 
-// --- 10. Demonstrating v0.6 Interop Runtime Errors ---
-print("--- 10. Demonstrating v0.6 Interop Runtime Errors ---")
-print("Uncomment lines below one by one to test interop errors.")
+// ######################################################
+// ## v0.7 - NEW FEATURE TESTS
+// ######################################################
 
-// Importing a module that does not exist
-// import "non_existent_module" as bad_import
-// Expected -> Runtime Error: Module 'non_existent_module' not found.
-
-// Accessing an attribute that does not exist
-// np.non_existent_function()
-// Expected -> Runtime Error: Object has no attribute 'non_existent_function'
-
-// Incompatible shapes for matrix multiplication
-// matmul(t1, tensor([[1], [2], [3]]))
-// Expected -> Runtime Error: Tensor shapes are incompatible for matrix multiplication.
-
-// Index out of bounds
-// print(t1[5, 5])
-// Expected -> Runtime Error: Tensor index out of range.
-
-// Importing a module that does not exist
-// import "non_existent_module" as bad_import
-// Expected -> Runtime Error: Module 'non_existent_module' not found.
-
-// Accessing an attribute that does not exist
-// np.non_existent_function()
-// Expected -> Runtime Error: Object has no attribute 'non_existent_function'
 print("")
-print("--- v0.6 Test Suite Complete ---")
+print("--- 10. Testing v0.7 Automatic Differentiation ---")
 
+// Test 1: Simple addition
+print("Test 1: Gradient of Addition")
+a = tensor([[1, 1], [1, 1]])
+b = tensor([[2, 2], [2, 2]])
+c = a + b
+loss_add = c.sum()
+loss_add.backward()
+
+print("a = [[1,1],[1,1]]")
+print("b = [[2,2],[2,2]]")
+print("loss = (a + b).sum()")
+print("a.grad (should be all 1s):")
+print(a.grad)
+print("b.grad (should be all 1s):")
+print(b.grad)
+print("")
+
+
+// Test 2: Element-wise multiplication
+print("Test 2: Gradient of Multiplication")
+d = tensor([[2, 3], [4, 5]])
+e = tensor([[10, 10], [10, 10]])
+f = d * e
+loss_mul = f.sum()
+loss_mul.backward()
+
+print("d = [[2,3],[4,5]]")
+print("e = [[10,10],[10,10]]")
+print("loss = (d * e).sum()")
+print("d.grad (should be equal to e):")
+print(d.grad)
+print("e.grad (should be equal to d):")
+print(e.grad)
+print("")
+
+
+// Test 3: Chained operations
+print("Test 3: Chained Operations (y = (a*b)+c)")
+chain_a = tensor([[2, 2]])
+chain_b = tensor([[3, 3]])
+chain_c = tensor([[4, 4]])
+
+prod = chain_a * chain_b 
+y = prod + chain_c 
+loss_chain = y.sum()
+loss_chain.backward()
+
+print("a = [[2,2]], b = [[3,3]], c = [[4,4]]")
+print("loss = ((a*b)+c).sum()")
+print("a.grad (should be equal to b):")
+print(chain_a.grad)
+print("b.grad (should be equal to a):")
+print(chain_b.grad)
+print("c.grad (should be all 1s):")
+print(chain_c.grad)
+print("")
+
+
+// Test 4: no_grad context
+print("Test 4: Verifying 'no_grad' context")
+ng_a = tensor([[10, 10]]) 
+ng_b = tensor([[20, 20]]) 
+
+with no_grad {
+    ng_c = ng_a * ng_b 
+    print("Inside no_grad, ng_c is computed:")
+    print(ng_c)
+}
+
+final_output = ng_a * 3 
+loss_no_grad = final_output.sum()
+loss_no_grad.backward()
+
+print("final_loss = (ng_a * 3).sum()")
+print("ng_a.grad (should be 3s, from the final computation):")
+print(ng_a.grad)
+print("ng_b.grad (should be 0s, as it was used only in no_grad):")
+print(ng_b.grad)
+print("ng_c has no grad, as it was created in no_grad context.")
+print("")
+
+print("--- v0.7 Test Suite Complete ---")

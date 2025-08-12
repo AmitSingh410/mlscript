@@ -3,18 +3,17 @@
 #include <pybind11/operators.h>
 #include <pybind11/eigen.h>
 #include <sstream>
-
-#include <variant> // Required for std::variant automatic conversion
-#include "evaluator.hpp"
+#include <variant> 
 #include <pybind11/numpy.h>
+#include "evaluator.hpp"
 
 namespace py = pybind11;
 
 PYBIND11_MODULE(mlscript, m) {
     m.doc() = "mlscript C++ core engine";
 
-    py::class_<Tensor>(m, "Tensor", py::buffer_protocol())
-        .def(py::init<const std::vector<std::vector<double>>&>())
+    py::class_<Tensor, std::shared_ptr<Tensor>>(m, "Tensor", py::buffer_protocol())
+        .def(py::init(&std::make_shared<Tensor, const std::vector<std::vector<double>>&>))
         .def(py::init([](py::array_t<double, py::array::c_style | py::array::forcecast> arr) {
             if (arr.ndim() != 2) {
                 throw std::runtime_error("NumPy array must be 2-dimensional to create a Tensor.");
@@ -23,7 +22,7 @@ PYBIND11_MODULE(mlscript, m) {
             Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> map(
                 static_cast<double*>(buf.ptr), buf.shape[0], buf.shape[1]
             );
-            return new Tensor(map);
+            return std::make_shared<Tensor>(map);
         }))
         .def_buffer([](Tensor &t) -> py::buffer_info {
             return py::buffer_info(
@@ -43,6 +42,15 @@ PYBIND11_MODULE(mlscript, m) {
         .def(py::self * double())
         .def(double() * py::self)
         .def("matmul", &Tensor::matmul)
+        .def("sum", &Tensor::sum)
+        .def("backward", &Tensor::backward)
+        .def_property_readonly("grad", [](const Tensor &t) {
+            return py::array_t<double>(
+                {t.grad.rows(), t.grad.cols()},
+                {sizeof(double) * t.grad.cols(), sizeof(double)},
+                t.grad.data()
+            );
+        })
         .def("__getitem__", [](const Tensor &t, py::tuple index_tuple) -> py::object {
             if (index_tuple.size() > 2) {
                 throw py::index_error("Tensor slicing supports at most 2 dimensions.");
@@ -71,7 +79,7 @@ PYBIND11_MODULE(mlscript, m) {
                     col_slice = Slice{c, c + 1, 1};
                 }
             } else {
-                 col_slice = Slice{0, t.mat.cols(), 1}; // Full column slice if only one index provided
+                 col_slice = Slice{0, t.mat.cols(), 1}; 
             }
 
 
@@ -89,7 +97,7 @@ PYBIND11_MODULE(mlscript, m) {
                 size_t start = 0, stop = 0, step = 0, slicelength = 0;
                 r_slice.compute(static_cast<size_t>(t.mat.rows()), &start, &stop, &step, &slicelength);
                 Slice row_slice = {static_cast<py::ssize_t>(start), static_cast<py::ssize_t>(stop), static_cast<py::ssize_t>(step)};
-                Slice col_slice = {0, t.mat.cols(), 1}; // Full column slice
+                Slice col_slice = {0, t.mat.cols(), 1}; 
                 return py::cast(t.slice(row_slice, col_slice));
             }
             long r = index.cast<long>();
@@ -98,8 +106,12 @@ PYBIND11_MODULE(mlscript, m) {
         })
         .def("__repr__", [](const Tensor &t) {
             std::stringstream ss;
-            ss << t.mat;
-            return "Tensor(\n" + ss.str() + "\n)";
+            ss << "Tensor(\n" << t.mat;
+            if (t.grad.size() > 0 && t.grad.cwiseAbs().sum() > 1e-9) {
+                ss << ",\ngrad=\n" << t.grad;
+            }
+            ss << "\n)";
+            return ss.str();
         });
 
 
@@ -107,6 +119,7 @@ PYBIND11_MODULE(mlscript, m) {
         .def(py::init<>())
         .def("assign_variable", &Evaluator::assign_variable)
         .def("get_variable", &Evaluator::get_variable)
+        .def("set_grad_enabled", &Evaluator::set_grad_enabled)
         .def("evaluate", &Evaluator::evaluate)
         .def("matmul", &Evaluator::matmul)
         .def("enter_scope", &Evaluator::enter_scope)

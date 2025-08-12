@@ -29,6 +29,7 @@ class TokenType(Enum):
     WHILE = auto()
     FOR = auto()
     IN = auto()
+    WITH = auto()
     EQ = auto()
     NE = auto()
     GT = auto()
@@ -51,6 +52,7 @@ token_spec = [
     (TokenType.WHILE,   r'while\b'),
     (TokenType.FOR,     r'for\b'),
     (TokenType.IN,      r'in\b'),
+    (TokenType.WITH,    r'with\b'),
     (TokenType.FUN,     r'fun\b'),
     (TokenType.RETURN,  r'return\b'),
     (TokenType.PRINT,   r'print\b'),
