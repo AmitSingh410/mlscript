@@ -166,14 +166,30 @@ class Parser:
         name_token = self.current_token
         self.eat(TokenType.IDENT)
         self.eat(TokenType.LPAREN)
+        
         params = []
+        has_seen_default = False
+
         if self.current_token[0] != TokenType.RPAREN:
-            params.append(Variable(self.current_token))
-            self.eat(TokenType.IDENT)
-            while self.current_token[0] == TokenType.COMMA:
-                self.eat(TokenType.COMMA)
-                params.append(Variable(self.current_token))
+            while True:
+                param_name = Variable(self.current_token)
                 self.eat(TokenType.IDENT)
+                
+                if self.current_token[0] == TokenType.ASSIGN:
+                    self.eat(TokenType.ASSIGN)
+                    default_value = self.comparison_expression()
+                    params.append((param_name, default_value))
+                    has_seen_default = True
+                else:
+                    if has_seen_default:
+                        self.error("non-default argument follows default argument")
+                    params.append((param_name, None))
+
+                if self.current_token[0] == TokenType.COMMA:
+                    self.eat(TokenType.COMMA)
+                else:
+                    break
+
         self.eat(TokenType.RPAREN)
         body = self.block()
         return FunctionDef(name_token, params, body)
@@ -312,8 +328,25 @@ class Parser:
             self.advance()
             return Variable(token)
         elif token_type == TokenType.LPAREN:
+            start_token = self.current_token
             self.eat(TokenType.LPAREN)
+
+            if self.current_token[0] == TokenType.RPAREN:
+                self.eat(TokenType.RPAREN)
+                return TupleLiteral(start_token, [])
+
             node = self.comparison_expression()
+
+            if self.current_token[0] == TokenType.COMMA:
+                elements = [node]
+                while self.current_token[0] == TokenType.COMMA:
+                    self.eat(TokenType.COMMA)
+                    if self.current_token[0] == TokenType.RPAREN:
+                        break
+                    elements.append(self.comparison_expression())
+                self.eat(TokenType.RPAREN)
+                return TupleLiteral(start_token, elements)
+            
             self.eat(TokenType.RPAREN)
             return node
         else:

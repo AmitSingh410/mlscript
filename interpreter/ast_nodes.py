@@ -34,6 +34,12 @@ class DictLiteral(Node):
         self.token = start_token
         self.pairs = pairs
 
+class TupleLiteral(Node):
+    """Represents a tuple literal."""
+    def __init__(self, start_token, elements):
+        self.token = start_token
+        self.elements = elements                                                
+
 class Variable(Node):
     """Represents a variable identifier."""
     def __init__(self, token):
@@ -112,7 +118,6 @@ class ForStatement(Node):
         self.variable = variable
         self.iterable = iterable 
         self.body = body
-
 
 class FunctionDef(Node):
     """Represents a function definition."""

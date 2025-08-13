@@ -15,7 +15,7 @@ def run_from_file(filepath):
 
 def start_repl():
     interp = Interpreter()
-    print("mlscript v0.2 -- interactive REPL")
+    print("mlscript v0.8.1 -- interactive REPL")
     print("Type 'quit' or 'exit' to leave.")
 
     buffer = ""
@@ -30,13 +30,16 @@ def start_repl():
 
             buffer += line
 
-            if buffer.count('{') > buffer.count('}'):
+            if (buffer.count('{') > buffer.count('}') or
+                buffer.count('(') > buffer.count(')') or
+                buffer.count('[') > buffer.count(']')):
                 prompt = "...       "
                 buffer += "\n"
                 continue
             
             if not buffer.strip():
                 buffer = ""
+                prompt = "mlscript> "
                 continue
             
             interp.run(buffer)
@@ -54,9 +57,6 @@ def start_repl():
             prompt = "mlscript> "
 
 def main():
-    # sys.argv is a list of command-line arguments.
-    # sys.argv[0] is the script name itself (main.py)
-    # If there is another argument, it's the file to run.
     if len(sys.argv) > 1:
         run_from_file(sys.argv[1])
     else:

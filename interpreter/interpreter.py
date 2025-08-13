@@ -137,11 +137,11 @@ class Interpreter:
         iterable_value = self.visit(node.iterable)
         
         iterator = None
-        if isinstance(iterable_value, (list, str,range)):
+        if isinstance(iterable_value, (list, str,range,tuple)):
             iterator = iterable_value
         else:
             line_num = node.iterable.token[2]
-            raise Exception(f"Runtime Error on line {line_num}: 'for' loop can only iterate over a list, string, or range.")
+            raise Exception(f"Runtime Error on line {line_num}: 'for' loop can only iterate over a list, string, tuple or range.")
 
         self.e.enter_scope()
         for item in iterator:
@@ -201,15 +201,15 @@ class Interpreter:
         elif op == '>':  return left > right
         elif op == '>=': return left >= right
         elif op == 'in':
-            if isinstance(right, (list, str, dict)):
+            if isinstance(right, (list, str, dict, tuple)):
                 return left in right
             else:
-                raise Exception(f"Runtime Error on line {line_num}: The 'in' operator can only be used with lists, strings, or dictionaries.")
+                raise Exception(f"Runtime Error on line {line_num}: The 'in' operator can only be used with lists, strings, dictionaries, or tuples.")
         elif op == 'not in':
-            if isinstance(right, (list, str, dict)):
+            if isinstance(right, (list, str, dict, tuple)):
                 return left not in right
             else:
-                raise Exception(f"Runtime Error on line {line_num}: The 'not in' operator can only be used with lists, strings, or dictionaries.")
+                raise Exception(f"Runtime Error on line {line_num}: The 'not in' operator can only be used with lists, strings, dictionaries, or tuples.")
         else:
             raise Exception(f"Unsupported binary operator: {op} on line: {line_num}" )
 
@@ -219,15 +219,29 @@ class Interpreter:
         if isinstance(node.callee, Variable) and node.callee.name in self.functions:
             func_def = self.functions[node.callee.name]
             args = [self.visit(arg) for arg in node.args]
-
-            if len(args) != len(func_def.params):
-                raise Exception(f"Runtime Error on line {line_num}: Function '{func_def.name}' expects {len(func_def.params)} arguments, but received {len(args)}")
             
+            num_args = len(args)
+            num_params = len(func_def.params)
+            
+            min_required_args = sum(1 for _, default in func_def.params if default is None)
+
+            if num_args < min_required_args:
+                raise Exception(f"Runtime Error on line {line_num}: Function '{func_def.name}' missing required arguments. Expected at least {min_required_args}, but received {num_args}.")
+            
+            if num_args > num_params:
+                raise Exception(f"Runtime Error on line {line_num}: Function '{func_def.name}' takes at most {num_params} arguments, but {num_args} were given.")
+
             self.e.enter_scope()
             try:
-                for param, arg_value in zip(func_def.params, args):
-                    self.e.assign_variable(param.name, arg_value)
+                for i, (param_node, default_node) in enumerate(func_def.params):
+                    if i < num_args:
+                        self.e.assign_variable(param_node.name, args[i])
+                    else:
+                        default_value = self.visit(default_node)
+                        self.e.assign_variable(param_node.name, default_value)
+                
                 self.visit(func_def.body)
+
             except ReturnSignal as ret:
                 return ret.value
             finally:
@@ -263,3 +277,10 @@ class Interpreter:
         except ImportError as e:
             line_num = node.token[2]
             raise Exception(f"Runtime Error on line {line_num}: {e}")
+        
+    def visit_TupleLiteral(self, node):
+        elements =[]
+        for elem in node.elements:
+            elements.append(self.visit(elem))
+        return tuple(elements)
+    
