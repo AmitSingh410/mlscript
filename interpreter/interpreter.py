@@ -8,6 +8,18 @@ class ReturnSignal(Exception):
     def __init__(self, value):
         self.value = value
 
+class MlscriptThrow(Exception):
+    def __init__(self, value):
+        self.value = value
+
+class BreakSignal(Exception):
+    """Signal to break out of a loop."""
+    pass
+
+class ContinueSignal(Exception):
+    """Signal to continue to the next iteration of a loop."""
+    pass
+
 class MLObject:
     def __init__(self, value):
         self.value = value
@@ -131,7 +143,12 @@ class Interpreter:
 
     def visit_WhileStatement(self, node):
         while self.visit(node.condition):
-            self.visit(node.body)
+            try:
+                self.visit(node.body)
+            except BreakSignal:
+                break
+            except ContinueSignal:
+                continue
 
     def visit_ForStatement(self, node):
         iterable_value = self.visit(node.iterable)
@@ -146,7 +163,12 @@ class Interpreter:
         self.e.enter_scope()
         for item in iterator:
             self.e.assign_variable(node.variable.name, item)
-            self.visit(node.body)
+            try:
+                self.visit(node.body)
+            except BreakSignal:
+                break
+            except ContinueSignal:
+                continue
         self.e.exit_scope()
 
     def visit_WithStatement(self,node):
@@ -284,3 +306,31 @@ class Interpreter:
             elements.append(self.visit(elem))
         return tuple(elements)
     
+    def visit_ThrowStatement(self, node):
+        value_to_throw = self.visit(node.expr)
+        raise MlscriptThrow(value_to_throw)
+
+    def visit_TryCatch(self, node):
+        try:
+            try:
+                self.visit(node.try_block)
+            except MlscriptThrow as e:
+                if node.catch_block:
+                    self.e.enter_scope()
+                    # Assign the caught error to the specified variable
+                    self.e.assign_variable(node.catch_variable.name, e.value)
+                    self.visit(node.catch_block)
+                    self.e.exit_scope()
+                else:
+                    # If there's no catch block, the error continues up
+                    raise e
+        finally:
+            # The finally block runs no matter what
+            if node.finally_block:
+                self.visit(node.finally_block)
+
+    def visit_BreakStatement(self, node):
+        raise BreakSignal()
+    
+    def visit_ContinueStatement(self, node):
+        raise ContinueSignal()

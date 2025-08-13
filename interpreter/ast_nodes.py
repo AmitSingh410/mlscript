@@ -158,3 +158,26 @@ class WithStatement(Node):
         self.context_expr = context_expr
         self.body = body
 
+class ThrowStatement(Node):
+    """Represents a throw statement."""
+    def __init__(self, token, expr):
+        self.token = token
+        self.expr = expr
+
+class TryCatch(Node):
+    """Represents a try-catch block."""
+    def __init__(self, try_block, catch_variable, catch_block, finally_block=None):
+        self.try_block = try_block
+        self.catch_variable = catch_variable
+        self.catch_block = catch_block
+        self.finally_block = finally_block
+
+class BreakStatement(Node):
+    """Represents a break statement."""
+    def __init__(self, token):
+        self.token = token
+
+class ContinueStatement(Node):
+    """Represents a continue statement."""
+    def __init__(self, token):
+        self.token = token

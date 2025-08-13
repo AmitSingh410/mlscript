@@ -31,6 +31,12 @@ class TokenType(Enum):
     NOT = auto()
     IN = auto()
     WITH = auto()
+    TRY = auto()
+    CATCH = auto()
+    FINALLY = auto()
+    THROW = auto()
+    BREAK = auto()
+    CONTINUE = auto()
     EQ = auto()
     NE = auto()
     GT = auto()
@@ -55,6 +61,12 @@ token_spec = [
     (TokenType.NOT,     r'not\b'),
     (TokenType.IN,      r'in\b'),
     (TokenType.WITH,    r'with\b'),
+    (TokenType.TRY,     r'try\b'),
+    (TokenType.CATCH,   r'catch\b'),
+    (TokenType.FINALLY, r'finally\b'),
+    (TokenType.THROW,   r'throw\b'),
+    (TokenType.BREAK,   r'break\b'),
+    (TokenType.CONTINUE, r'continue\b'),
     (TokenType.FUN,     r'fun\b'),
     (TokenType.RETURN,  r'return\b'),
     (TokenType.PRINT,   r'print\b'),

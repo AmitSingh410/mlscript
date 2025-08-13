@@ -8,6 +8,7 @@ class Parser:
         self.code_lines = code.split('\n')
         self.pos = 0
         self.current_token = self.tokens[self.pos]
+        self.in_loop = False
 
     def advance(self):
         """Advance the token pointer and update the current token."""
@@ -54,12 +55,50 @@ class Parser:
             return self.with_statement()
         elif token_type == TokenType.IMPORT:
             return self.import_statement()
+        elif token_type == TokenType.THROW:
+            return self.throw_statement()
+        elif token_type == TokenType.TRY:
+            return self.try_catch_statement()
+        elif token_type == TokenType.BREAK:
+            return self.break_statement()
+        elif token_type == TokenType.CONTINUE:
+            return self.continue_statement()
         elif token_type == TokenType.RETURN:
             self.advance()
             expr = self.comparison_expression()
             return ReturnStatement(expr)
         else:
             return self.assignment_or_expression_statement()
+
+    def throw_statement(self):
+        token = self.current_token
+        self.eat(TokenType.THROW)
+        expr = self.comparison_expression()
+        return ThrowStatement(token, expr)
+
+    def try_catch_statement(self):
+        self.eat(TokenType.TRY)
+        try_block = self.block()
+
+        catch_variable = None
+        catch_block = None
+        if self.current_token[0] == TokenType.CATCH:
+            self.eat(TokenType.CATCH)
+            self.eat(TokenType.LPAREN)
+            catch_variable = Variable(self.current_token)
+            self.eat(TokenType.IDENT)
+            self.eat(TokenType.RPAREN)
+            catch_block = self.block()
+
+        finally_block = None
+        if self.current_token[0] == TokenType.FINALLY:
+            self.eat(TokenType.FINALLY)
+            finally_block = self.block()
+        
+        if not catch_block and not finally_block:
+            self.error("A 'try' statement must have at least one 'catch' or 'finally' block.")
+
+        return TryCatch(try_block, catch_variable, catch_block, finally_block)
         
     def assignment_or_expression_statement(self):
         expr = self.comparison_expression()
@@ -132,7 +171,14 @@ class Parser:
         self.eat(TokenType.LPAREN)
         condition = self.comparison_expression()
         self.eat(TokenType.RPAREN)
-        body = self.block()
+
+        original_in_loop = self.in_loop
+        self.in_loop = True
+        try:
+            body = self.block()
+        finally:
+            self.in_loop = original_in_loop
+        
         return WhileStatement(condition, body)
     
     def for_statement(self):
@@ -141,9 +187,15 @@ class Parser:
         self.eat(TokenType.IDENT)
         self.eat(TokenType.IN)
 
-        iterable_node = self.comparison_expression() # Assuming iterable is a function call, like range()
+        iterable_node = self.comparison_expression()
 
-        body = self.block()
+        original_in_loop = self.in_loop
+        self.in_loop = True
+        try:
+            body = self.block()
+        finally:
+            self.in_loop = original_in_loop
+        
         return ForStatement(variable_node, iterable_node, body)
     
     def with_statement(self):
@@ -385,4 +437,16 @@ class Parser:
         self.eat(TokenType.RBRACE)
         return DictLiteral(start_token, pairs)
     
-  
+    def break_statement(self):
+        if not self.in_loop:
+            self.error("Break statement can only be used inside a loop.")
+        token = self.current_token
+        self.eat(TokenType.BREAK)
+        return BreakStatement(token)
+    
+    def continue_statement(self):
+        if not self.in_loop:
+            self.error("Continue statement can only be used inside a loop.")
+        token = self.current_token
+        self.eat(TokenType.CONTINUE)
+        return ContinueStatement(token)
