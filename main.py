@@ -15,7 +15,7 @@ def run_from_file(filepath):
 
 def start_repl():
     interp = Interpreter()
-    print("mlscript v0.8.1 -- interactive REPL")
+    print("mlscript v0.8.4 -- interactive REPL")
     print("Type 'quit' or 'exit' to leave.")
 
     buffer = ""

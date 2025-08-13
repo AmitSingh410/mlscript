@@ -46,6 +46,7 @@ class TokenType(Enum):
     TRUE = auto()
     FALSE = auto()
     IMPORT = auto()
+    CLASS = auto()
     AS = auto()
     EOF = auto()
 
@@ -68,6 +69,7 @@ token_spec = [
     (TokenType.BREAK,   r'break\b'),
     (TokenType.CONTINUE, r'continue\b'),
     (TokenType.FUN,     r'fun\b'),
+    (TokenType.CLASS,   r'class\b'),
     (TokenType.RETURN,  r'return\b'),
     (TokenType.PRINT,   r'print\b'),
     (TokenType.TRUE,    r'true\b'),

@@ -4,6 +4,83 @@ from .lexer import tokenize
 from .ast_nodes import *
 import mlscript
 
+class MlscriptClass:
+    def __init__(self,name,methods):
+        self.name = name
+        self.methods = methods
+
+    def __call__(self, interpreter,args):
+        instance = MlscriptInstance(self)
+        initializer = self.find_method("init")
+        if initializer:
+            bound_init = MlscriptBoundMethod(instance,initializer)
+            bound_init(interpreter,args)
+        elif len(args) > 0:
+            raise Exception(f"Error: '{self.name}' constructor takes no arguments, but {len(args)} were given.")
+        return instance
+    
+    def find_method(self,name):
+        return self.methods.get(name)
+    
+    def __repr__(self):
+        return f"<class '{self.name}'>"
+    
+class MlscriptInstance:
+    def __init__(self,klass):
+        self.klass = klass
+        self.fields = {}
+
+    def __repr__(self):
+        return f"<{self.klass.name} instance>"
+    
+class MlscriptBoundMethod:
+    def __init__(self,instance,func_def_node):
+        self.instance = instance
+        self.func_def_node = func_def_node
+
+    def __call__(self, interpreter, args):
+        # --- Start of Corrected Logic ---
+        params = self.func_def_node.params
+        num_args = len(args)
+        num_params = len(params)
+
+        # The first parameter is always 'self', so we check against num_params - 1
+        min_required_args = sum(1 for _, default in params if default is None) - 1
+
+        if num_args < min_required_args:
+            raise Exception(f"Error: Method '{self.func_def_node.name}' missing required arguments. Expected at least {min_required_args}, but received {num_args}.")
+        
+        if num_args > num_params - 1:
+            raise Exception(f"Error: Method '{self.func_def_node.name}' takes at most {num_params - 1} arguments, but {num_args} were given.")
+
+        interpreter.e.enter_scope()
+        try:
+            # Bind 'self' to the first parameter
+            self_param_name = params[0][0].name
+            interpreter.e.assign_variable(self_param_name, self.instance)
+
+            # Bind the rest of the arguments
+            for i in range(1, num_params):
+                param_node, default_node = params[i]
+                arg_index = i - 1
+
+                if arg_index < num_args:
+                    # If an argument was provided, use it
+                    interpreter.e.assign_variable(param_node.name, args[arg_index])
+                else:
+                    # Otherwise, use the default value
+                    default_value = interpreter.visit(default_node)
+                    interpreter.e.assign_variable(param_node.name, default_value)
+            
+            # Execute the method body
+            interpreter.visit(self.func_def_node.body)
+
+        except ReturnSignal as ret:
+            return ret.value
+        finally:
+            interpreter.e.exit_scope()
+        return None
+
 class ReturnSignal(Exception):
     def __init__(self, value):
         self.value = value
@@ -201,6 +278,19 @@ class Interpreter:
         
     def visit_AttributeAccess(self, node):
         obj = self.visit(node.obj)
+        attribute_name = node.attribute
+
+        if isinstance(obj, MlscriptInstance):
+            if attribute_name in obj.fields:
+                return obj.fields[attribute_name]
+            
+            method_node = obj.klass.find_method(attribute_name)
+            if method_node:
+                return MlscriptBoundMethod(obj, method_node)
+            
+            line_num = node.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: Object of type '{obj.klass.name}' has no attribute or method '{attribute_name}'")
+        
         try:
             return getattr(obj, node.attribute)
         except AttributeError:
@@ -237,6 +327,14 @@ class Interpreter:
 
     def visit_FunctionCall(self, node):
         line_num = node.token[2]
+        callee_obj = self.visit(node.callee)
+        args = [self.visit(arg) for arg in node.args]
+
+        if isinstance(callee_obj,MlscriptClass):
+            return callee_obj(self,args)
+        
+        if isinstance(callee_obj, MlscriptBoundMethod):
+            return  callee_obj(self, args)
         
         if isinstance(node.callee, Variable) and node.callee.name in self.functions:
             func_def = self.functions[node.callee.name]
@@ -334,3 +432,21 @@ class Interpreter:
     
     def visit_ContinueStatement(self, node):
         raise ContinueSignal()
+    
+    def visit_ClassDef(self,node):
+        class_name = node.name
+        methods = {method.name: method for method in node.methods}
+        klass = MlscriptClass(class_name, methods)
+        self.e.assign_variable(class_name,klass)
+        return None
+    
+    def visit_AttributeAssign(self,node):
+        obj = self.visit(node.obj)
+        if not isinstance(obj,MlscriptInstance):
+            line_num = node.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: Only instances of a class can have attributes assigned to them.")
+        
+        value = self.visit(node.value_expr)
+        obj.fields[node.attribute] = value
+        return value
+    

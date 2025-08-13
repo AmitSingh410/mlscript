@@ -45,6 +45,8 @@ class Parser:
             return self.print_statement()
         elif token_type == TokenType.FUN:
             return self.function_definition()
+        elif token_type == TokenType.CLASS:
+            return self.class_definition()
         elif token_type == TokenType.IF:
             return self.if_statement()
         elif token_type == TokenType.WHILE:
@@ -111,6 +113,8 @@ class Parser:
                 return Assign(expr, right_expr)
             elif isinstance(expr, IndexAccess):
                 return IndexAssign(expr.collection, expr.index_expr, right_expr)
+            elif isinstance(expr, AttributeAccess):
+                return AttributeAssign(expr.obj,expr.token,right_expr)
             else:
                 raise SyntaxError("The left-hand side of an assignment must be a variable or an index.")
         return expr
@@ -450,3 +454,18 @@ class Parser:
         token = self.current_token
         self.eat(TokenType.CONTINUE)
         return ContinueStatement(token)
+    
+    def class_definition(self):
+        self.eat(TokenType.CLASS)
+        name_token = self.current_token
+        self.eat(TokenType.IDENT)
+        self.eat(TokenType.LBRACE)
+
+        methods=[]
+        while self.current_token[0] != TokenType.RBRACE:
+            if self.current_token[0] == TokenType.FUN:
+                methods.append(self.function_definition())
+            else:
+                self.error("Only method definitions ('fun') are allowed inside a class body.")
+        self.eat(TokenType.RBRACE)
+        return ClassDef(name_token,methods)

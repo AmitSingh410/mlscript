@@ -181,3 +181,19 @@ class ContinueStatement(Node):
     """Represents a continue statement."""
     def __init__(self, token):
         self.token = token
+
+class ClassDef(Node):
+    """Represents a class definition"""
+    def __init__(self,name_token,methods):
+        self.name = name_token[1]
+        self.token = name_token
+        self.methods = methods
+
+class AttributeAssign(Node):
+    """Represents assigning a value to an object's attribute."""
+    def __init__(self,obj,attribute_token,value_expr):
+        self.obj=obj
+        self.attribute = attribute_token[1]
+        self.token = attribute_token
+        self.value_expr = value_expr
+
