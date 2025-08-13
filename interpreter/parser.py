@@ -190,14 +190,28 @@ class Parser:
     def comparison_expression(self):
         """Parses comparison operators (==, !=, <, >, etc.)."""
         node = self.expr()
+
+        # Handle 'not in' operator as a special case
+        if self.current_token[0] == TokenType.NOT:
+            self.eat(TokenType.NOT)
+            if self.current_token[0] != TokenType.IN:
+                self.error("Expected 'in' after 'not'")
+
+            in_token = self.current_token
+            self.eat(TokenType.IN)
+            op_token = (in_token[0], 'not in', in_token[2])
+            node = BinOp(node, op_token, self.expr())
+            return node
+
+        # Handle other comparison operators
         op_types = [
             TokenType.EQ, TokenType.NE, TokenType.LT,
-            TokenType.LTE, TokenType.GT, TokenType.GTE
+            TokenType.LTE, TokenType.GT, TokenType.GTE, TokenType.IN
         ]
         while self.current_token[0] in op_types:
             op_token = self.current_token
             self.eat(op_token[0])
-            node = BinOp(node, op_token[1], self.expr())
+            node = BinOp(node, op_token, self.expr())
         return node
 
     def expr(self):
@@ -206,7 +220,7 @@ class Parser:
         while self.current_token[0] in (TokenType.PLUS, TokenType.MINUS):
             op_token = self.current_token
             self.eat(op_token[0])
-            node = BinOp(node, op_token[1], self.term())
+            node = BinOp(node, op_token, self.term())
         return node
 
     def term(self):
@@ -215,7 +229,7 @@ class Parser:
         while self.current_token[0] in (TokenType.MUL, TokenType.DIV):
             op_token = self.current_token
             self.eat(op_token[0])
-            node = BinOp(node, op_token[1], self.factor()) 
+            node = BinOp(node, op_token, self.factor()) 
         return node
 
     def factor(self):

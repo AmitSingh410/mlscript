@@ -28,6 +28,7 @@ class TokenType(Enum):
     ELSE = auto()
     WHILE = auto()
     FOR = auto()
+    NOT = auto()
     IN = auto()
     WITH = auto()
     EQ = auto()
@@ -51,6 +52,7 @@ token_spec = [
     (TokenType.ELSE,    r'else\b'),
     (TokenType.WHILE,   r'while\b'),
     (TokenType.FOR,     r'for\b'),
+    (TokenType.NOT,     r'not\b'),
     (TokenType.IN,      r'in\b'),
     (TokenType.WITH,    r'with\b'),
     (TokenType.FUN,     r'fun\b'),

@@ -189,7 +189,9 @@ class Interpreter:
         left = self.visit(node.left)
         right = self.visit(node.right)
         
-        op = node.op
+        op = node.op_token[1]
+        line_num = node.op_token[2]
+
         if op in ('+', '-', '*', '/'):
             return self.e.evaluate(op, left, right)
         elif op == '==': return left == right
@@ -198,8 +200,18 @@ class Interpreter:
         elif op == '<=': return left <= right
         elif op == '>':  return left > right
         elif op == '>=': return left >= right
+        elif op == 'in':
+            if isinstance(right, (list, str, dict)):
+                return left in right
+            else:
+                raise Exception(f"Runtime Error on line {line_num}: The 'in' operator can only be used with lists, strings, or dictionaries.")
+        elif op == 'not in':
+            if isinstance(right, (list, str, dict)):
+                return left not in right
+            else:
+                raise Exception(f"Runtime Error on line {line_num}: The 'not in' operator can only be used with lists, strings, or dictionaries.")
         else:
-            raise Exception(f"Unsupported binary operator: {op}")
+            raise Exception(f"Unsupported binary operator: {op} on line: {line_num}" )
 
     def visit_FunctionCall(self, node):
         line_num = node.token[2]

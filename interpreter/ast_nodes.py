@@ -72,9 +72,9 @@ class UnaryOp(Node):
 
 class BinOp(Node):
     """Represents a binary operation (e.g., +, -, *, /, ==)."""
-    def __init__(self, left, op, right):
+    def __init__(self, left, op_token, right):
         self.left = left
-        self.op = op
+        self.op_token = op_token
         self.right = right
 
 class Assign(Node):
