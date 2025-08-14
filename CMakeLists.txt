@@ -4,6 +4,9 @@ project(mlscript)
 # Add your local third_party directory to the module path
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/third_party")
 
+# OpenMP for multi-core processing
+find_package(OpenMP REQUIRED)
+
 # Add the subdirectories for Eigen and pybind11
 # This builds them directly from your source files
 add_subdirectory(third_party/eigen)
@@ -47,6 +50,7 @@ target_include_directories(mlscript PRIVATE
 target_link_libraries(mlscript PRIVATE 
     Eigen3::Eigen 
     pybind11::embed
+    OpenMP::OpenMP_CXX
 )
 
 # Set the C++ standard as a target property for consistency

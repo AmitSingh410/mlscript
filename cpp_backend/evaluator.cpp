@@ -4,6 +4,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <algorithm>
+#include <omp.h>
 
 void build_topo(std::shared_ptr<const Tensor> node, std::vector<std::shared_ptr<const Tensor>>& topo, std::unordered_set<std::shared_ptr<const Tensor>>& visited) {
     if (visited.find(node) == visited.end()) {
@@ -21,15 +22,15 @@ Tensor::Tensor(const std::vector<std::vector<double>>& data) : _op("") {
         grad.resize(0, 0);
         return;
     }
-    size_t rows = data.size();
-    size_t cols = data[0].size();
+    ptrdiff_t rows = data.size();
+    ptrdiff_t cols = data[0].size();
     mat.resize(rows, cols);
     grad.setZero(rows, cols);
-    for (size_t i = 0; i < rows; ++i) {
+    for (ptrdiff_t i = 0; i < rows; ++i) {
         if (data[i].size() != cols) {
             throw std::runtime_error("All rows in tensor data must have the same number of columns.");
         }
-        for (size_t j = 0; j < cols; ++j) {
+        for (ptrdiff_t j = 0; j < cols; ++j) {
             mat(i, j) = data[i][j];
         }
     }
@@ -149,8 +150,9 @@ Tensor Tensor::slice(Slice row_slice, Slice col_slice) const {
     }
     
     Eigen::MatrixXd new_mat(row_indices.size(), col_indices.size());
-    for(size_t i = 0; i < row_indices.size(); ++i) {
-        for(size_t j = 0; j < col_indices.size(); ++j) {
+    #pragma omp parallel for collapse(2)
+    for (ptrdiff_t i = 0; i < static_cast<ptrdiff_t>(row_indices.size()); ++i) {
+        for (ptrdiff_t j = 0; j < static_cast<ptrdiff_t>(col_indices.size()); ++j) {
             new_mat(i, j) = this->mat(row_indices[i], col_indices[j]);
         }
     }
