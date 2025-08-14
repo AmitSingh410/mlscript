@@ -9,6 +9,7 @@ class Parser:
         self.pos = 0
         self.current_token = self.tokens[self.pos]
         self.in_loop = False
+        self.in_class = False 
 
     def advance(self):
         """Advance the token pointer and update the current token."""
@@ -376,6 +377,11 @@ class Parser:
         elif token_type in (TokenType.TRUE, TokenType.FALSE):
             self.advance()
             return BooleanLiteral(token)
+        elif token_type == TokenType.SUPER:
+            if not self.in_class:
+                self.error("The 'super' keyword can only be used inside a class method.")
+            self.advance()
+            return SuperNode(token)
         elif token_type == TokenType.LBRACKET:
             return self.list_expression()
         elif token_type == TokenType.LBRACE:
@@ -459,13 +465,31 @@ class Parser:
         self.eat(TokenType.CLASS)
         name_token = self.current_token
         self.eat(TokenType.IDENT)
+
+        parents = []
+        if self.current_token[0] == TokenType.INHERITS:
+            self.eat(TokenType.INHERITS)
+            parents.append(Variable(self.current_token))
+            self.eat(TokenType.IDENT)
+            while self.current_token[0] == TokenType.COMMA:
+                self.eat(TokenType.COMMA)
+                parents.append(Variable(self.current_token))
+                self.eat(TokenType.IDENT)
+
         self.eat(TokenType.LBRACE)
 
-        methods=[]
-        while self.current_token[0] != TokenType.RBRACE:
-            if self.current_token[0] == TokenType.FUN:
-                methods.append(self.function_definition())
-            else:
-                self.error("Only method definitions ('fun') are allowed inside a class body.")
+        original_in_class = self.in_class
+        self.in_class = True
+        try:
+
+            methods=[]
+            while self.current_token[0] != TokenType.RBRACE:
+                if self.current_token[0] == TokenType.FUN:
+                    methods.append(self.function_definition())
+                else:
+                    self.error("Only method definitions ('fun') are allowed inside a class body.")
+        finally:
+            self.in_class = original_in_class
+        
         self.eat(TokenType.RBRACE)
-        return ClassDef(name_token,methods)
+        return ClassDef(name_token,parents,methods)

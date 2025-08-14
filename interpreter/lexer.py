@@ -47,6 +47,8 @@ class TokenType(Enum):
     FALSE = auto()
     IMPORT = auto()
     CLASS = auto()
+    SUPER = auto()
+    INHERITS = auto()
     AS = auto()
     EOF = auto()
 
@@ -70,6 +72,8 @@ token_spec = [
     (TokenType.CONTINUE, r'continue\b'),
     (TokenType.FUN,     r'fun\b'),
     (TokenType.CLASS,   r'class\b'),
+    (TokenType.SUPER,   r'super\b'),
+    (TokenType.INHERITS, r'inherits\b'),
     (TokenType.RETURN,  r'return\b'),
     (TokenType.PRINT,   r'print\b'),
     (TokenType.TRUE,    r'true\b'),

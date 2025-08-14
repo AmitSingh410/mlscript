@@ -4,26 +4,92 @@ from .lexer import tokenize
 from .ast_nodes import *
 import mlscript
 
-class MlscriptClass:
-    def __init__(self,name,methods):
-        self.name = name
-        self.methods = methods
+class C3_MRO:
+    @staticmethod
+    def resolve(cls):
+        """Calculates the Method Resolution Order for a class using the C3 algorithm."""
+        mro = [cls]
+        parent_mros = [p.mro for p in cls.parents]
+        mro.extend(C3_MRO._merge(parent_mros))
+        return mro
 
-    def __call__(self, interpreter,args):
+    @staticmethod
+    def _merge(mro_list):
+        """Merges a list of parent MROs according to C3 linearization."""
+        if not any(mro_list):
+            return []
+        
+        result = []
+        # Make a copy of the lists to avoid modifying them in place
+        mro_list_copy = [list(mro) for mro in mro_list]
+
+        while True:
+            # Filter out empty MROs from our copy
+            mro_list_copy = [mro for mro in mro_list_copy if mro]
+            if not mro_list_copy:
+                break
+
+            # Find a "good head" that does not appear in the TAIL of any other MRO
+            good_head = None
+            for mro in mro_list_copy:
+                head = mro[0]
+                is_good_head = True
+                for other_mro in mro_list_copy:
+                    if head in other_mro[1:]:
+                        is_good_head = False
+                        break
+                if is_good_head:
+                    good_head = head
+                    break
+            
+            if good_head is None:
+                raise Exception("Cannot create a consistent Method Resolution Order (MRO).")
+
+            result.append(good_head)
+
+            # Remove the good head from the front of all lists in our copy
+            for mro in mro_list_copy:
+                if mro[0] == good_head:
+                    del mro[0]
+        
+        return result
+
+
+class MlscriptClass:
+    def __init__(self, name, parents, methods):
+        self.name = name
+        self.parents = parents
+        self.methods = methods
+        self.mro = C3_MRO.resolve(self)
+
+    def __call__(self, interpreter, args):
         instance = MlscriptInstance(self)
-        initializer = self.find_method("init")
-        if initializer:
-            bound_init = MlscriptBoundMethod(instance,initializer)
-            bound_init(interpreter,args)
+        initializer_tuple = self.find_method("init")
+        if initializer_tuple:
+            method_node, defining_class = initializer_tuple
+            bound_init = MlscriptBoundMethod(instance, method_node, defining_class)
+            bound_init(interpreter, args)
         elif len(args) > 0:
             raise Exception(f"Error: '{self.name}' constructor takes no arguments, but {len(args)} were given.")
         return instance
-    
-    def find_method(self,name):
-        return self.methods.get(name)
-    
+
+    def find_method(self, name):
+        for cls in self.mro:
+            if name in cls.methods:
+                return (cls.methods[name], cls)
+        return None
+
     def __repr__(self):
         return f"<class '{self.name}'>"
+
+class MlscriptBoundMethod:
+    def __init__(self, instance, func_def_node, defining_class):
+        self.instance = instance
+        self.func_def_node = func_def_node
+        self.defining_class = defining_class
+
+    def __call__(self, interpreter, args):
+        return interpreter._call_function(self.func_def_node, args, instance=self.instance, defining_class=self.defining_class)
     
 class MlscriptInstance:
     def __init__(self,klass):
@@ -33,54 +99,6 @@ class MlscriptInstance:
     def __repr__(self):
         return f"<{self.klass.name} instance>"
     
-class MlscriptBoundMethod:
-    def __init__(self,instance,func_def_node):
-        self.instance = instance
-        self.func_def_node = func_def_node
-
-    def __call__(self, interpreter, args):
-        # --- Start of Corrected Logic ---
-        params = self.func_def_node.params
-        num_args = len(args)
-        num_params = len(params)
-
-        # The first parameter is always 'self', so we check against num_params - 1
-        min_required_args = sum(1 for _, default in params if default is None) - 1
-
-        if num_args < min_required_args:
-            raise Exception(f"Error: Method '{self.func_def_node.name}' missing required arguments. Expected at least {min_required_args}, but received {num_args}.")
-        
-        if num_args > num_params - 1:
-            raise Exception(f"Error: Method '{self.func_def_node.name}' takes at most {num_params - 1} arguments, but {num_args} were given.")
-
-        interpreter.e.enter_scope()
-        try:
-            # Bind 'self' to the first parameter
-            self_param_name = params[0][0].name
-            interpreter.e.assign_variable(self_param_name, self.instance)
-
-            # Bind the rest of the arguments
-            for i in range(1, num_params):
-                param_node, default_node = params[i]
-                arg_index = i - 1
-
-                if arg_index < num_args:
-                    # If an argument was provided, use it
-                    interpreter.e.assign_variable(param_node.name, args[arg_index])
-                else:
-                    # Otherwise, use the default value
-                    default_value = interpreter.visit(default_node)
-                    interpreter.e.assign_variable(param_node.name, default_value)
-            
-            # Execute the method body
-            interpreter.visit(self.func_def_node.body)
-
-        except ReturnSignal as ret:
-            return ret.value
-        finally:
-            interpreter.e.exit_scope()
-        return None
-
 class ReturnSignal(Exception):
     def __init__(self, value):
         self.value = value
@@ -119,7 +137,8 @@ class Interpreter:
     def __init__(self):
         self.e = mlscript.Evaluator()
         self.functions = {}
-        
+        self.method_context_stack = []
+
         self.global_scope = {
             'tensor': mlscript.Tensor,
             'matmul': self.e.matmul,
@@ -330,24 +349,24 @@ class Interpreter:
         callee_obj = self.visit(node.callee)
         args = [self.visit(arg) for arg in node.args]
 
-        if isinstance(callee_obj,MlscriptClass):
-            return callee_obj(self,args)
+        # Path 1: Handle class instantiation (e.g., Dog())
+        if isinstance(callee_obj, MlscriptClass):
+            return callee_obj(self, args)
         
+        # Path 2: Handle method calls (e.g., my_dog.speak())
         if isinstance(callee_obj, MlscriptBoundMethod):
-            return  callee_obj(self, args)
+            return callee_obj(self, args)
         
+        # Path 3: Handle standalone mlscript functions
         if isinstance(node.callee, Variable) and node.callee.name in self.functions:
             func_def = self.functions[node.callee.name]
-            args = [self.visit(arg) for arg in node.args]
             
             num_args = len(args)
             num_params = len(func_def.params)
-            
             min_required_args = sum(1 for _, default in func_def.params if default is None)
 
             if num_args < min_required_args:
                 raise Exception(f"Runtime Error on line {line_num}: Function '{func_def.name}' missing required arguments. Expected at least {min_required_args}, but received {num_args}.")
-            
             if num_args > num_params:
                 raise Exception(f"Runtime Error on line {line_num}: Function '{func_def.name}' takes at most {num_params} arguments, but {num_args} were given.")
 
@@ -360,7 +379,7 @@ class Interpreter:
                         default_value = self.visit(default_node)
                         self.e.assign_variable(param_node.name, default_value)
                 
-                self.visit(func_def.body)
+                return self.visit(func_def.body)
 
             except ReturnSignal as ret:
                 return ret.value
@@ -368,8 +387,7 @@ class Interpreter:
                 self.e.exit_scope()
             return None
 
-        callee_obj = self.visit(node.callee)
-        
+        # Path 4: Handle special objects and built-in Python callables
         if isinstance(callee_obj, NoGradManager):
             raise Exception(f"Runtime Error on line {line_num}: 'no_grad' must be used in a 'with' statement, not called as a function.")
 
@@ -377,8 +395,6 @@ class Interpreter:
             callee_repr = node.callee.name if isinstance(node.callee, Variable) else 'expression'
             raise Exception(f"Runtime Error on line {line_num}: '{callee_repr}' is not a function.")
 
-        args = [self.visit(arg) for arg in node.args]
-        
         try:
             return callee_obj(*args)
         except Exception as e:
@@ -434,19 +450,119 @@ class Interpreter:
         raise ContinueSignal()
     
     def visit_ClassDef(self,node):
+        parents = []
+        for parent_node in node.parents:
+            parent_obj = self.visit(parent_node)
+            if not isinstance(parent_obj, MlscriptClass):
+                line_num = node.parent.token[2]
+                raise Exception(f"Runtime Error on line {line_num}: 'inherits' must be followed by a class name.")
+            parents.append(parent_obj)
+
         class_name = node.name
         methods = {method.name: method for method in node.methods}
-        klass = MlscriptClass(class_name, methods)
+        klass = MlscriptClass(class_name,parents, methods)
         self.e.assign_variable(class_name,klass)
         return None
     
-    def visit_AttributeAssign(self,node):
+    def visit_AttributeAccess(self, node):
         obj = self.visit(node.obj)
-        if not isinstance(obj,MlscriptInstance):
+        attribute_name = node.attribute
+        
+        if isinstance(obj, tuple) and len(obj) == 2 and isinstance(obj[1], MlscriptClass):
+            instance, search_start_class = obj
+            method_tuple = search_start_class.find_method(attribute_name)
+            if not method_tuple:
+                line_num = node.token[2]
+                raise Exception(f"Runtime Error on line {line_num}: No method '{attribute_name}' found in superclass chain.")
+            
+            method_node, defining_class = method_tuple
+            return MlscriptBoundMethod(instance, method_node, defining_class)
+
+        if isinstance(obj, MlscriptInstance):
+            if attribute_name in obj.fields:
+                return obj.fields[attribute_name]
+            
+            method_tuple = obj.klass.find_method(attribute_name)
+            if method_tuple:
+                method_node, defining_class = method_tuple
+                return MlscriptBoundMethod(obj, method_node, defining_class)
+            
             line_num = node.token[2]
-            raise Exception(f"Runtime Error on line {line_num}: Only instances of a class can have attributes assigned to them.")
+            raise Exception(f"Runtime Error on line {line_num}: Object of type '{obj.klass.name}' has no attribute or method '{attribute_name}'")
+
+        try:
+            return getattr(obj, attribute_name)
+        except AttributeError:
+            line_num = node.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: Object '{obj}' has no attribute '{attribute_name}'")
+        
+    def visit_SuperNode(self, node):
+        if not self.method_context_stack:
+            line_num = node.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: 'super' can only be used inside a class method.")
+
+        instance, defining_class = self.method_context_stack[-1]
+
+        instance_mro = instance.klass.mro
+        try:
+            idx = instance_mro.index(defining_class)
+            search_start_class = instance_mro[idx + 1]
+            return (instance, search_start_class)
+        except (ValueError, IndexError):
+            line_num = node.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: 'super' could not find a valid superclass in the MRO for class '{defining_class.name}'.")
+        
+    def visit_AttributeAssign(self, node):
+        obj = self.visit(node.obj)
+        if not isinstance(obj, MlscriptInstance):
+            line_num = node.token[2]
+            raise Exception(f"Runtime Error on line {line_num}: Cannot assign attribute '{node.attribute}' to non-instance object '{obj}'.")
         
         value = self.visit(node.value_expr)
         obj.fields[node.attribute] = value
         return value
+    
+    def _call_function(self, func_def, args, instance=None, defining_class=None):
+        params = func_def.params
+        num_args = len(args)
+        num_params = len(params)
+        
+        self_offset = 1 if instance is not None else 0
+        min_required_args = sum(1 for _, default in params if default is None) - self_offset
+
+        if num_args < min_required_args:
+            raise Exception(f"Error: Function '{func_def.name}' missing required arguments. Expected at least {min_required_args}, but received {num_args}.")
+        
+        if num_args > num_params - self_offset:
+            raise Exception(f"Error: Function '{func_def.name}' takes at most {num_params - self_offset} arguments, but {num_args} were given.")
+
+        if instance:
+            self.method_context_stack.append((instance, defining_class))
+        
+        self.e.enter_scope()
+        try:
+            if instance:
+                self_param_name = params[0][0].name
+                self.e.assign_variable(self_param_name, instance)
+
+            for i in range(self_offset, num_params):
+                param_node, default_node = params[i]
+                arg_index = i - self_offset
+
+                if arg_index < num_args:
+                    self.e.assign_variable(param_node.name, args[arg_index])
+                else:
+                    default_value = self.visit(default_node)
+                    self.e.assign_variable(param_node.name, default_value)
+            
+            return self.visit(func_def.body)
+
+        except ReturnSignal as ret:
+            return ret.value
+        finally:
+            self.e.exit_scope()
+            if instance:
+                self.method_context_stack.pop()
+        
+        return None
     

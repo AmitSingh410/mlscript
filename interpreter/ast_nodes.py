@@ -184,9 +184,10 @@ class ContinueStatement(Node):
 
 class ClassDef(Node):
     """Represents a class definition"""
-    def __init__(self,name_token,methods):
+    def __init__(self,name_token,parents,methods):
         self.name = name_token[1]
         self.token = name_token
+        self.parents = parents  
         self.methods = methods
 
 class AttributeAssign(Node):
@@ -197,3 +198,7 @@ class AttributeAssign(Node):
         self.token = attribute_token
         self.value_expr = value_expr
 
+class SuperNode(Node):
+    """Represents the 'super' keyword"""
+    def __init__(self, token):
+        self.token = token

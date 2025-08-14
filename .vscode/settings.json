@@ -1,5 +1,5 @@
 {
-    "cmake.sourceDirectory": "C:/Users/amits/Documents/Projects/mlscript/cpp_backend",
+    "cmake.sourceDirectory": "C:/Users/amits/Documents/Projects/mlscript",
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
         "variant": "cpp"
