@@ -91,6 +91,7 @@ C:/Program Files/CMake/share/cmake-4.1/Modules/Compiler/XLClang-CXX-DetermineCom
 C:/Program Files/CMake/share/cmake-4.1/Modules/Compiler/zOS-C-DetermineCompiler.cmake
 C:/Program Files/CMake/share/cmake-4.1/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake
 C:/Program Files/CMake/share/cmake-4.1/Modules/CompilerId/VS-10.vcxproj.in
+C:/Program Files/CMake/share/cmake-4.1/Modules/FindOpenMP.cmake
 C:/Program Files/CMake/share/cmake-4.1/Modules/FindPackageHandleStandardArgs.cmake
 C:/Program Files/CMake/share/cmake-4.1/Modules/FindPackageMessage.cmake
 C:/Program Files/CMake/share/cmake-4.1/Modules/FindPython.cmake

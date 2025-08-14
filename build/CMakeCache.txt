@@ -647,6 +647,18 @@ OMP_gomp_LIBRARY:FILEPATH=OMP_gomp_LIBRARY-NOTFOUND
 //Path to a library.
 OMP_iomp5_LIBRARY:FILEPATH=OMP_iomp5_LIBRARY-NOTFOUND
 
+//CXX compiler flags for OpenMP parallelization
+OpenMP_CXX_FLAGS:STRING=-openmp
+
+//CXX compiler libraries for OpenMP parallelization
+OpenMP_CXX_LIB_NAMES:STRING=
+
+//C compiler flags for OpenMP parallelization
+OpenMP_C_FLAGS:STRING=-openmp
+
+//C compiler libraries for OpenMP parallelization
+OpenMP_C_LIB_NAMES:STRING=
+
 //Installation directory of PASTIX library
 PASTIX_DIR:PATH=
 
@@ -1067,6 +1079,12 @@ DART_TESTING_TIMEOUT-ADVANCED:INTERNAL=1
 EIGEN_COMPILER_SUPPORT_CPP11:INTERNAL=
 //ADVANCED property for variable: EIGEN_TEST_EIGEN2
 EIGEN_TEST_EIGEN2-ADVANCED:INTERNAL=1
+//Details about finding OpenMP
+FIND_PACKAGE_MESSAGE_DETAILS_OpenMP:INTERNAL=[TRUE][TRUE][ ][v2.0()]
+//Details about finding OpenMP_C
+FIND_PACKAGE_MESSAGE_DETAILS_OpenMP_C:INTERNAL=[-openmp][v2.0()]
+//Details about finding OpenMP_CXX
+FIND_PACKAGE_MESSAGE_DETAILS_OpenMP_CXX:INTERNAL=[-openmp][v2.0()]
 //Details about finding Python
 FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/python.exe][C:/Users/amits/AppData/Local/Programs/Python/Python313/libs/python313.lib][C:/Users/amits/AppData/Local/Programs/Python/Python313/Include][found components: Interpreter Development Development.Module Development.Embed ][v3.13.2()]
 //Details about finding Threads
@@ -1093,6 +1111,26 @@ MPFR_LIBRARIES-ADVANCED:INTERNAL=1
 OMP_gomp_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: OMP_iomp5_LIBRARY
 OMP_iomp5_LIBRARY-ADVANCED:INTERNAL=1
+//Result of TRY_COMPILE
+OpenMP_COMPILE_RESULT_CXX_openmp:INTERNAL=TRUE
+//Result of TRY_COMPILE
+OpenMP_COMPILE_RESULT_C_openmp:INTERNAL=TRUE
+//ADVANCED property for variable: OpenMP_CXX_FLAGS
+OpenMP_CXX_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OpenMP_CXX_LIB_NAMES
+OpenMP_CXX_LIB_NAMES-ADVANCED:INTERNAL=1
+//CXX compiler's OpenMP specification date
+OpenMP_CXX_SPEC_DATE:INTERNAL=200203
+//ADVANCED property for variable: OpenMP_C_FLAGS
+OpenMP_C_FLAGS-ADVANCED:INTERNAL=1
+//ADVANCED property for variable: OpenMP_C_LIB_NAMES
+OpenMP_C_LIB_NAMES-ADVANCED:INTERNAL=1
+//C compiler's OpenMP specification date
+OpenMP_C_SPEC_DATE:INTERNAL=200203
+//Result of TRY_COMPILE
+OpenMP_SPECTEST_CXX_:INTERNAL=TRUE
+//Result of TRY_COMPILE
+OpenMP_SPECTEST_C_:INTERNAL=TRUE
 //ADVANCED property for variable: PASTIX_M_m_LIBRARY
 PASTIX_M_m_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PKG_CONFIG_ARGN
