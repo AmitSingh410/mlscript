@@ -304,7 +304,9 @@ py::object Evaluator::evaluate(const std::string& op, const py::object& left, co
         if (op == "+") return py::cast(left.cast<std::string>() + right.cast<std::string>());
     }
     
-    throw std::runtime_error("Unsupported types for operator " + op);
+    std::string left_type = py::str(left.get_type().attr("__name__"));
+    std::string right_type = py::str(right.get_type().attr("__name__"));
+    throw std::runtime_error("Unsupported types for operator " + op + ": '" + left_type + "' and '" + right_type + "'");
 }
 
 py::object Evaluator::matmul(const py::object& left, const py::object& right) {

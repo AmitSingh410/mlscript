@@ -324,7 +324,10 @@ class Interpreter:
         line_num = node.op_token[2]
 
         if op in ('+', '-', '*', '/'):
-            return self.e.evaluate(op, left, right)
+            try:
+                return self.e.evaluate(op, left, right)
+            except Exception as e:
+                raise Exception(f"Runtime Error on line {line_num}: {e}")
         elif op == '==': return left == right
         elif op == '!=': return left != right
         elif op == '<':  return left < right
@@ -346,48 +349,20 @@ class Interpreter:
 
     def visit_FunctionCall(self, node):
         line_num = node.token[2]
-        callee_obj = self.visit(node.callee)
         args = [self.visit(arg) for arg in node.args]
 
-        # Path 1: Handle class instantiation (e.g., Dog())
+        if isinstance(node.callee, Variable) and node.callee.name in self.functions:
+            func_def = self.functions[node.callee.name]
+            return self._call_function(func_def, args)
+
+        callee_obj = self.visit(node.callee)
+
         if isinstance(callee_obj, MlscriptClass):
             return callee_obj(self, args)
         
-        # Path 2: Handle method calls (e.g., my_dog.speak())
         if isinstance(callee_obj, MlscriptBoundMethod):
             return callee_obj(self, args)
         
-        # Path 3: Handle standalone mlscript functions
-        if isinstance(node.callee, Variable) and node.callee.name in self.functions:
-            func_def = self.functions[node.callee.name]
-            
-            num_args = len(args)
-            num_params = len(func_def.params)
-            min_required_args = sum(1 for _, default in func_def.params if default is None)
-
-            if num_args < min_required_args:
-                raise Exception(f"Runtime Error on line {line_num}: Function '{func_def.name}' missing required arguments. Expected at least {min_required_args}, but received {num_args}.")
-            if num_args > num_params:
-                raise Exception(f"Runtime Error on line {line_num}: Function '{func_def.name}' takes at most {num_params} arguments, but {num_args} were given.")
-
-            self.e.enter_scope()
-            try:
-                for i, (param_node, default_node) in enumerate(func_def.params):
-                    if i < num_args:
-                        self.e.assign_variable(param_node.name, args[i])
-                    else:
-                        default_value = self.visit(default_node)
-                        self.e.assign_variable(param_node.name, default_value)
-                
-                return self.visit(func_def.body)
-
-            except ReturnSignal as ret:
-                return ret.value
-            finally:
-                self.e.exit_scope()
-            return None
-
-        # Path 4: Handle special objects and built-in Python callables
         if isinstance(callee_obj, NoGradManager):
             raise Exception(f"Runtime Error on line {line_num}: 'no_grad' must be used in a 'with' statement, not called as a function.")
 

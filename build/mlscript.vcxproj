@@ -87,7 +87,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/amits/AppData/Local/Programs/Python/Python313/Include" /external:I "C:/Users/amits/Documents/Projects/mlscript/third_party/pybind11/include" /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -113,10 +113,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;Py_NO_LINK_LIB;CMAKE_INTDIR=\"Debug\";mlscript_EXPORTS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -143,7 +143,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/amits/AppData/Local/Programs/Python/Python313/Include" /external:I "C:/Users/amits/Documents/Projects/mlscript/third_party/pybind11/include" /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -172,10 +172,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;Py_NO_LINK_LIB;CMAKE_INTDIR=\"Release\";mlscript_EXPORTS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -203,7 +203,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/amits/AppData/Local/Programs/Python/Python313/Include" /external:I "C:/Users/amits/Documents/Projects/mlscript/third_party/pybind11/include" /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -232,10 +232,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;Py_NO_LINK_LIB;CMAKE_INTDIR=\"MinSizeRel\";mlscript_EXPORTS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
@@ -263,7 +263,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Users/amits/AppData/Local/Programs/Python/Python313/Include" /external:I "C:/Users/amits/Documents/Projects/mlscript/third_party/pybind11/include" /bigobj</AdditionalOptions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -290,10 +290,10 @@
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;Py_NO_LINK_LIB;CMAKE_INTDIR=\"RelWithDebInfo\";mlscript_EXPORTS</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\Documents\Projects\mlscript\.venv\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\amits\Documents\Projects\mlscript\cpp_backend;C:\Users\amits\AppData\Local\Programs\Python\Python313\Lib\site-packages\numpy\_core\include;C:\Users\amits\Documents\Projects\mlscript\third_party\eigen;C:\Users\amits\AppData\Local\Programs\Python\Python313\Include;C:\Users\amits\Documents\Projects\mlscript\third_party\pybind11\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>

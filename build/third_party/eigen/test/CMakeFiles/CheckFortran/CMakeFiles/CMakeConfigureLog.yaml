@@ -36,7 +36,6 @@ events:
     found: "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFortranCompilerId.F.in"
     search_context:
       ENV{PATH}:
-        - "C:\\Users\\amits\\Documents\\Projects\\mlscript\\.venv\\Scripts"
         - "C:\\WINDOWS\\system32"
         - "C:\\WINDOWS"
         - "C:\\WINDOWS\\System32\\Wbem"
@@ -54,8 +53,6 @@ events:
         - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\GitHubDesktop\\bin"
-        - "c:\\Users\\amits\\.vscode\\extensions\\ms-python.debugpy-2025.10.0-win32-x64\\bundled\\scripts\\noConfigScripts"
-        - "c:\\Users\\amits\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
   -
     kind: "message-v1"
     backtrace:
@@ -101,7 +98,6 @@ events:
     found: "C:/Program Files/CMake/share/cmake-4.1/Modules/CMakeFortranCompilerId.F.in"
     search_context:
       ENV{PATH}:
-        - "C:\\Users\\amits\\Documents\\Projects\\mlscript\\.venv\\Scripts"
         - "C:\\WINDOWS\\system32"
         - "C:\\WINDOWS"
         - "C:\\WINDOWS\\System32\\Wbem"
@@ -119,8 +115,6 @@ events:
         - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\GitHubDesktop\\bin"
-        - "c:\\Users\\amits\\.vscode\\extensions\\ms-python.debugpy-2025.10.0-win32-x64\\bundled\\scripts\\noConfigScripts"
-        - "c:\\Users\\amits\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
   -
     kind: "message-v1"
     backtrace:
@@ -160,7 +154,6 @@ events:
     names:
       - "link"
     candidate_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/"
       - "C:/Windows/System32/"
       - "C:/Windows/"
       - "C:/Windows/System32/wbem/"
@@ -178,12 +171,7 @@ events:
       - "C:/Program Files/JetBrains/IntelliJ IDEA 2024.3/bin/"
       - "C:/Users/amits/AppData/Local/Programs/Microsoft VS Code/bin/"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
     searched_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/link.com"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/link.exe"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/link"
       - "C:/Windows/System32/link.com"
       - "C:/Windows/System32/link.exe"
       - "C:/Windows/System32/link"
@@ -235,16 +223,9 @@ events:
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/link.com"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/link.exe"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/link"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/link.com"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/link.exe"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/link"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/link.com"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/link.exe"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/link"
     found: false
     search_context:
       ENV{PATH}:
-        - "C:\\Users\\amits\\Documents\\Projects\\mlscript\\.venv\\Scripts"
         - "C:\\WINDOWS\\system32"
         - "C:\\WINDOWS"
         - "C:\\WINDOWS\\System32\\Wbem"
@@ -262,8 +243,6 @@ events:
         - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\GitHubDesktop\\bin"
-        - "c:\\Users\\amits\\.vscode\\extensions\\ms-python.debugpy-2025.10.0-win32-x64\\bundled\\scripts\\noConfigScripts"
-        - "c:\\Users\\amits\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
   -
     kind: "find-v1"
     backtrace:
@@ -286,7 +265,6 @@ events:
     names:
       - "lld-link"
     candidate_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/"
       - "C:/Windows/System32/"
       - "C:/Windows/"
       - "C:/Windows/System32/wbem/"
@@ -304,12 +282,7 @@ events:
       - "C:/Program Files/JetBrains/IntelliJ IDEA 2024.3/bin/"
       - "C:/Users/amits/AppData/Local/Programs/Microsoft VS Code/bin/"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
     searched_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/lld-link.com"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/lld-link.exe"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/lld-link"
       - "C:/Windows/System32/lld-link.com"
       - "C:/Windows/System32/lld-link.exe"
       - "C:/Windows/System32/lld-link"
@@ -361,16 +334,9 @@ events:
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/lld-link.com"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/lld-link.exe"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/lld-link"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/lld-link.com"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/lld-link.exe"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/lld-link"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/lld-link.com"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/lld-link.exe"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/lld-link"
     found: false
     search_context:
       ENV{PATH}:
-        - "C:\\Users\\amits\\Documents\\Projects\\mlscript\\.venv\\Scripts"
         - "C:\\WINDOWS\\system32"
         - "C:\\WINDOWS"
         - "C:\\WINDOWS\\System32\\Wbem"
@@ -388,8 +354,6 @@ events:
         - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\GitHubDesktop\\bin"
-        - "c:\\Users\\amits\\.vscode\\extensions\\ms-python.debugpy-2025.10.0-win32-x64\\bundled\\scripts\\noConfigScripts"
-        - "c:\\Users\\amits\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
   -
     kind: "find-v1"
     backtrace:
@@ -410,7 +374,6 @@ events:
     names:
       - "link"
     candidate_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/"
       - "C:/Windows/System32/"
       - "C:/Windows/"
       - "C:/Windows/System32/wbem/"
@@ -428,12 +391,7 @@ events:
       - "C:/Program Files/JetBrains/IntelliJ IDEA 2024.3/bin/"
       - "C:/Users/amits/AppData/Local/Programs/Microsoft VS Code/bin/"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
     searched_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/link.com"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/link.exe"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/link"
       - "C:/Windows/System32/link.com"
       - "C:/Windows/System32/link.exe"
       - "C:/Windows/System32/link"
@@ -485,16 +443,9 @@ events:
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/link.com"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/link.exe"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/link"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/link.com"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/link.exe"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/link"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/link.com"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/link.exe"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/link"
     found: false
     search_context:
       ENV{PATH}:
-        - "C:\\Users\\amits\\Documents\\Projects\\mlscript\\.venv\\Scripts"
         - "C:\\WINDOWS\\system32"
         - "C:\\WINDOWS"
         - "C:\\WINDOWS\\System32\\Wbem"
@@ -512,8 +463,6 @@ events:
         - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\GitHubDesktop\\bin"
-        - "c:\\Users\\amits\\.vscode\\extensions\\ms-python.debugpy-2025.10.0-win32-x64\\bundled\\scripts\\noConfigScripts"
-        - "c:\\Users\\amits\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
   -
     kind: "find-v1"
     backtrace:
@@ -534,7 +483,6 @@ events:
     names:
       - "mt"
     candidate_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/"
       - "C:/Windows/System32/"
       - "C:/Windows/"
       - "C:/Windows/System32/wbem/"
@@ -552,12 +500,7 @@ events:
       - "C:/Program Files/JetBrains/IntelliJ IDEA 2024.3/bin/"
       - "C:/Users/amits/AppData/Local/Programs/Microsoft VS Code/bin/"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
     searched_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/mt.com"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/mt.exe"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/mt"
       - "C:/Windows/System32/mt.com"
       - "C:/Windows/System32/mt.exe"
       - "C:/Windows/System32/mt"
@@ -609,16 +552,9 @@ events:
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/mt.com"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/mt.exe"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/mt"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/mt.com"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/mt.exe"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/mt"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/mt.com"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/mt.exe"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/mt"
     found: false
     search_context:
       ENV{PATH}:
-        - "C:\\Users\\amits\\Documents\\Projects\\mlscript\\.venv\\Scripts"
         - "C:\\WINDOWS\\system32"
         - "C:\\WINDOWS"
         - "C:\\WINDOWS\\System32\\Wbem"
@@ -636,8 +572,6 @@ events:
         - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\GitHubDesktop\\bin"
-        - "c:\\Users\\amits\\.vscode\\extensions\\ms-python.debugpy-2025.10.0-win32-x64\\bundled\\scripts\\noConfigScripts"
-        - "c:\\Users\\amits\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
   -
     kind: "find-v1"
     backtrace:
@@ -658,7 +592,6 @@ events:
     names:
       - "lib"
     candidate_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/"
       - "C:/Windows/System32/"
       - "C:/Windows/"
       - "C:/Windows/System32/wbem/"
@@ -676,12 +609,7 @@ events:
       - "C:/Program Files/JetBrains/IntelliJ IDEA 2024.3/bin/"
       - "C:/Users/amits/AppData/Local/Programs/Microsoft VS Code/bin/"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/"
     searched_directories:
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/lib.com"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/lib.exe"
-      - "C:/Users/amits/Documents/Projects/mlscript/.venv/Scripts/lib"
       - "C:/Windows/System32/lib.com"
       - "C:/Windows/System32/lib.exe"
       - "C:/Windows/System32/lib"
@@ -733,16 +661,9 @@ events:
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/lib.com"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/lib.exe"
       - "C:/Users/amits/AppData/Local/GitHubDesktop/bin/lib"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/lib.com"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/lib.exe"
-      - "C:/Users/amits/.vscode/extensions/ms-python.debugpy-2025.10.0-win32-x64/bundled/scripts/noConfigScripts/lib"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/lib.com"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/lib.exe"
-      - "C:/Users/amits/AppData/Roaming/Code/User/globalStorage/github.copilot-chat/debugCommand/lib"
     found: false
     search_context:
       ENV{PATH}:
-        - "C:\\Users\\amits\\Documents\\Projects\\mlscript\\.venv\\Scripts"
         - "C:\\WINDOWS\\system32"
         - "C:\\WINDOWS"
         - "C:\\WINDOWS\\System32\\Wbem"
@@ -760,6 +681,4 @@ events:
         - "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\Programs\\Microsoft VS Code\\bin"
         - "C:\\Users\\amits\\AppData\\Local\\GitHubDesktop\\bin"
-        - "c:\\Users\\amits\\.vscode\\extensions\\ms-python.debugpy-2025.10.0-win32-x64\\bundled\\scripts\\noConfigScripts"
-        - "c:\\Users\\amits\\AppData\\Roaming\\Code\\User\\globalStorage\\github.copilot-chat\\debugCommand"
 ...

@@ -206,7 +206,7 @@ print("")
 // ## v0.5 - NEW FEATURE TESTS
 // ######################################################
 
-print("--- 8. Testing v0.5 Numerical Core (Tensors) ---")
+print("--- 7. Testing v0.5 Numerical Core (Tensors) ---")
 
 // Test Tensor Creation
 print("Testing Tensor Creation:")
@@ -266,7 +266,11 @@ print(t_slice[::-1, :])
 print("")
 
 
-print("--- 9. Testing v0.6 Python Interoperability ---")
+// ######################################################
+// ## v0.6 - NEW FEATURE TESTS
+// ######################################################
+
+print("--- 8. Testing v0.6 Python Interoperability ---")
 
 // Test 1: Importing a Python module
 print("Testing 'import' statement...")
@@ -316,7 +320,7 @@ print("")
 // ######################################################
 
 print("")
-print("--- 10. Testing v0.7 Automatic Differentiation ---")
+print("--- 9. Testing v0.7 Automatic Differentiation ---")
 
 // Test 1: Simple addition
 print("Test 1: Gradient of Addition")
@@ -399,4 +403,167 @@ print(ng_b.grad)
 print("ng_c has no grad, as it was created in no_grad context.")
 print("")
 
-print("--- v0.7 Test Suite Complete ---")
+// ######################################################
+// ## v0.8 - NEW FEATURE TESTS
+// ######################################################
+
+print("")
+print("--- 10. Testing v0.8 Language Polish ---")
+
+// Test Tuples
+print("Testing Tuples:")
+my_tuple = ("hello", 10, true)
+single_tuple = (99,)
+empty_tuple = ()
+print(my_tuple)
+print(single_tuple)
+print(empty_tuple)
+print("Iterating over my_tuple:")
+for item in my_tuple {
+    print(item)
+}
+print("")
+
+// Test Default Function Arguments
+print("Testing Default Arguments:")
+fun greet(name, punctuation="!") {
+    print("Greeting: " + name + punctuation)
+}
+greet("mlscript")
+greet("Partner", "!!!")
+print("")
+
+// Test 'in' and 'not in' operators
+print("Testing 'in' and 'not in':")
+check_list = [1, "a", 2]
+check_dict = {"key": "value"}
+check_str = "mlscript"
+check_tuple = (1, 2, 3)
+print("1 in [1, 'a', 2]:")
+print(1 in check_list)
+print("3 not in [1, 'a', 2]:")
+print(3 not in check_list)
+print("'key' in {'key': 'value'}:")
+print("key" in check_dict)
+print("'scr' in 'mlscript':")
+print("scr" in check_str)
+print("3 in (1, 2, 3):")
+print(3 in check_tuple)
+print("")
+
+print("--- 11. Testing v0.8 Advanced Control Flow ---")
+// Test break and continue
+print("Testing 'break' and 'continue':")
+for i in range(10) {
+    if (i == 3) {
+        print("...continuing at 3...")
+        continue
+    }
+    if (i == 7) {
+        print("...breaking at 7...")
+        break
+    }
+    print(i)
+}
+print("")
+
+// Test try/catch/finally
+print("Testing 'try/catch/finally':")
+try {
+    print("Inside try block (will throw).")
+    throw "This is a test error!"
+} catch (e) {
+    print("Caught an error:")
+    print(e)
+} finally {
+    print("Finally block executed (after error).")
+}
+
+try {
+    print("Inside try block (will succeed).")
+} catch (e) {
+    print("This should not be printed.")
+} finally {
+    print("Finally block executed (after success).")
+}
+print("")
+
+print("--- 12. Testing v0.8 OOP (Classes and Inheritance) ---")
+class Pet {
+    fun init(self, name) {
+        self.name = name
+    }
+    fun speak(self) {
+        return self.name + " makes a sound."
+    }
+}
+
+class Dog inherits Pet {
+    fun init(self, name, breed) {
+        super.init(name)
+        self.breed = breed
+    }
+    fun speak(self) {
+        return self.name + " says woof!"
+    }
+}
+
+class Mixin {
+    fun get_id(self) {
+        return 12345
+    }
+}
+
+class RoboDog inherits Dog, Mixin {
+    fun speak(self) {
+        return "RoboDog override: " + super.speak()
+    }
+}
+
+print("Testing Single Inheritance:")
+my_dog = Dog("Rex", "German Shepherd")
+print(my_dog.speak()) // Expected: Rex says woof!
+print("")
+
+print("Testing Multiple Inheritance and MRO:")
+my_robo_dog = RoboDog("Fido", "Cyber-Terrier")
+print(my_robo_dog.speak()) // Expected: RoboDog override: Fido says woof!
+print(my_robo_dog.get_id()) // Expected: 12345
+print("")
+
+
+print("--- 13. Testing v0.8 Performance (OpenMP) ---")
+print("The following is a benchmark and not a correctness test.")
+print("If OpenMP is working, you should see high CPU usage during matmul.")
+// --- OpenMP Performance Test ---
+
+print("Building a large data structure (1500x1500)...")
+// This part is intentionally simple to work with our current language features.
+size = 1500
+row = []
+i = 0
+while (i < size) {
+    row.append(i)
+    i = i + 1
+}
+
+data = []
+i = 0
+while (i < size) {
+    data.append(row)
+    i = i + 1
+}
+
+print("Creating large Tensors...")
+a = tensor(data)
+b = tensor(data)
+
+print("")
+print(">>> Starting parallel matrix multiplication. Watch your CPU monitor now! <<<")
+
+// This is the core operation that should use all available CPU cores.
+c = matmul(a, b)
+
+print(">>> Calculation complete. <<<")
+
+print("--- v0.8 Test Suite Complete ---")
