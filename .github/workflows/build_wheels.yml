@@ -43,6 +43,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.19
         env:
           # This tells cibuildwheel to build for all common architectures.
+          CIBW_SKIP: "cp36-* cp37-*"
           CIBW_ARCHS_WINDOWS: "AMD64"
           CIBW_ARCHS_LINUX: "x86_64 aarch64"
           CIBW_ARCHS_MACOS: "x86_64 arm64"
