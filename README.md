@@ -1,6 +1,6 @@
 
 
-# **Mlscript v0.9 — Documentation**
+# **Mlscript v1.0.0-beta — Documentation**
 
 ## **Part I: Introduction to mlscript**
 
