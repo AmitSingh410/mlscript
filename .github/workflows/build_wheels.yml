@@ -1,76 +1,63 @@
-# The name of the workflow as it will appear in the "Actions" tab of your GitHub repo.
 name: Build and Publish Wheels
 
-# This section defines when the workflow will run.
 on:
-  # Run on every push or pull request to the main branch for testing.
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
-  # This allows you to run the workflow manually from the GitHub Actions tab.
   workflow_dispatch:
 
 jobs:
-  # This is the job that builds the wheels for all platforms.
   build_wheels:
-    name: Build wheels for ${{ matrix.os }}
-    # This tells GitHub to run the job on the operating systems we specify below.
+    name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    
-    # This strategy matrix is the core of cross-platform building.
-    # It tells GitHub to run this entire job three separate times.
     strategy:
       matrix:
         os: [windows-latest]
 
     steps:
-      # Step 1: Check out the source code from your repository.
       - name: Checkout source
         uses: actions/checkout@v4
         with:
-          # This is CRITICAL. It tells the action to also download the
-          # contents of your third_party Git submodules (Eigen and pybind11).
           submodules: recursive
 
-     
+      # This is the new debugging step.
+      - name: "DEBUG: List files and check .gitmodules"
+        run: |
+          echo "--- Listing all files recursively ---"
+          Get-ChildItem -Recurse
+          echo "--- Contents of .gitmodules ---"
+          Get-Content .gitmodules
+        shell: pwsh
 
-      # Step 3: This is the main action. It builds the wheels.
       - name: Build wheels with cibuildwheel
         uses: pypa/cibuildwheel@v2.19
         env:
-          # This tells cibuildwheel to build for all common architectures.
           CIBW_SKIP: "cp36-* cp37-*"
           CIBW_ARCHS_WINDOWS: "AMD64"
-          
-      # Step 4: Upload the built wheels as an artifact.
-      # This allows you to download and inspect them before publishing.
+          CIBW_TEST_COMMAND: "python main.py test_suite.ms"
+
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
           name: wheels-${{ matrix.os }}
           path: ./wheelhouse/*.whl
-
-  # This second job will ONLY run when you create a new release on GitHub.
+  
   publish_to_pypi:
     name: Publish wheels to PyPI
-    # It needs the first job to succeed and will only run on new tags (e.g., v0.8.1).
     needs: [build_wheels]
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-    
-    # It runs on a standard Linux environment.
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
 
     steps:
-      # Step 1: Download all the wheels that were built in the previous job.
       - name: Download all wheels
         uses: actions/download-artifact@v4
         with:
+          pattern: wheels-*
           path: wheelhouse
+          merge-multiple: true
 
-      # Step 2: This is the action that securely publishes the wheels to PyPI.
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@v1.9.0
-        with:
-          # This tells the action to look in all subdirectories of 'wheelhouse' for wheels.
-          packages-dir: wheelhouse/*
