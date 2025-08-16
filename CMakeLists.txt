@@ -1,10 +1,19 @@
 cmake_minimum_required(VERSION 3.15)
 project(mlscript LANGUAGES CXX)
 
-# --- Find Dependencies ---
+message(STATUS "--- Configuring mlscript dependencies ---")
+
 find_package(OpenMP REQUIRED)
+message(STATUS "Found OpenMP: ${OpenMP_CXX_FOUND}")
+
 find_package(Python 3.8 COMPONENTS Interpreter Development REQUIRED)
+message(STATUS "Found Python interpreter: ${Python_EXECUTABLE}")
+
+include_directories("${CMAKE_SOURCE_DIR}/third_party/eigen")
+message(STATUS "Set Eigen include path to: ${CMAKE_SOURCE_DIR}/third_party/eigen")
+
 add_subdirectory(third_party/pybind11)
+message(STATUS "Configured pybind11 submodule")
 
 execute_process(
     COMMAND ${Python_EXECUTABLE} -c "import numpy; print(numpy.get_include())"
@@ -13,10 +22,12 @@ execute_process(
     RESULT_VARIABLE NUMPY_FOUND_RESULT
 )
 if(NOT NUMPY_FOUND_RESULT EQUAL 0)
-    message(FATAL_ERROR "Failed to find NumPy headers.")
+    message(FATAL_ERROR "Failed to find NumPy headers. Make sure NumPy is installed.")
+else()
+    message(STATUS "Found NumPy headers at: ${NUMPY_INCLUDE_DIR}")
 endif()
 
-# --- Build Module ---
+message(STATUS "--- Configuring mlscript C++ module ---")
 
 pybind11_add_module(mlscript SHARED
     cpp_backend/bindings.cpp
@@ -25,18 +36,14 @@ pybind11_add_module(mlscript SHARED
 
 target_compile_features(mlscript PRIVATE cxx_std_17)
 
-# This is the most critical section. We are now explicitly giving our mlscript
-# module the full, absolute paths to every header directory it needs.
-# There is no more magic or automatic discovery for include paths.
 target_include_directories(mlscript PRIVATE
     "${CMAKE_SOURCE_DIR}/cpp_backend"
-    "${CMAKE_SOURCE_DIR}/third_party/eigen"
     ${NUMPY_INCLUDE_DIR}
 )
 
-# We link only to the libraries that need to be linked. Eigen is header-only,
-# so we do not link to it; we only need its include directory (above).
 target_link_libraries(mlscript PRIVATE
     pybind11::module
     OpenMP::OpenMP_CXX
 )
+
+message(STATUS "--- Configuration complete ---")
