@@ -43,7 +43,7 @@
 			{
 				"command" : 3,
 				"file" : 3,
-				"line" : 24,
+				"line" : 21,
 				"parent" : 0
 			},
 			{
@@ -114,13 +114,13 @@
 			{
 				"command" : 4,
 				"file" : 3,
-				"line" : 31,
+				"line" : 39,
 				"parent" : 0
 			},
 			{
 				"command" : 7,
 				"file" : 3,
-				"line" : 37,
+				"line" : 31,
 				"parent" : 0
 			},
 			{
@@ -132,7 +132,7 @@
 			{
 				"command" : 8,
 				"file" : 3,
-				"line" : 29,
+				"line" : 26,
 				"parent" : 0
 			}
 		]
@@ -180,11 +180,11 @@
 				},
 				{
 					"backtrace" : 15,
-					"path" : "C:/Users/amits/AppData/Local/Programs/Python/Python313/Lib/site-packages/numpy/_core/include"
+					"path" : "C:/Users/amits/Documents/Projects/mlscript/third_party/eigen"
 				},
 				{
-					"backtrace" : 14,
-					"path" : "C:/Users/amits/Documents/Projects/mlscript/third_party/eigen"
+					"backtrace" : 15,
+					"path" : "C:/Users/amits/AppData/Local/Programs/Python/Python313/Lib/site-packages/numpy/_core/include"
 				},
 				{
 					"backtrace" : 6,
