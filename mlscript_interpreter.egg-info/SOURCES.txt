@@ -1,0 +1,14 @@
+README.md
+pyproject.toml
+interpreter/__init__.py
+interpreter/ast_nodes.py
+interpreter/interpreter.py
+interpreter/lexer.py
+interpreter/parser.py
+mlscript_interpreter.egg-info/PKG-INFO
+mlscript_interpreter.egg-info/SOURCES.txt
+mlscript_interpreter.egg-info/dependency_links.txt
+mlscript_interpreter.egg-info/top_level.txt
+mlscript_kernel/__init__.py
+mlscript_kernel/__main__.py
+mlscript_kernel/kernel.py

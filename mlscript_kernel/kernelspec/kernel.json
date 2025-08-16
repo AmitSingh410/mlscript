@@ -6,6 +6,6 @@
         "-f",
         "{connection_file}"
     ],
-    "display_name" : "MLScript",
+    "display_name" : "mlscript",
     "language" : "mlscript"
 }
