@@ -37,7 +37,7 @@ jobs:
         env:
           CIBW_SKIP: "cp36-* cp37-*"
           CIBW_ARCHS_WINDOWS: "AMD64"
-          CIBW_TEST_COMMAND: "python main.py test_suite.ms"
+          CCIBW_TEST_COMMAND: "python {project}/main.py {project}/test_suite.ms"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
