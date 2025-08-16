@@ -22,7 +22,7 @@ jobs:
     # It tells GitHub to run this entire job three separate times.
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest, macos-13]
+        os: [windows-latest]
 
     steps:
       # Step 1: Check out the source code from your repository.
@@ -33,10 +33,7 @@ jobs:
           # contents of your third_party Git submodules (Eigen and pybind11).
           submodules: recursive
 
-      # Step 2: Set up QEMU for building Linux ARM64 wheels (optional but good practice).
-      - name: Set up QEMU
-        if: runner.os == 'Linux'
-        uses: docker/setup-qemu-action@v3
+     
 
       # Step 3: This is the main action. It builds the wheels.
       - name: Build wheels with cibuildwheel
@@ -45,9 +42,7 @@ jobs:
           # This tells cibuildwheel to build for all common architectures.
           CIBW_SKIP: "cp36-* cp37-*"
           CIBW_ARCHS_WINDOWS: "AMD64"
-          CIBW_ARCHS_LINUX: "x86_64 aarch64"
-          CIBW_ARCHS_MACOS: "x86_64 arm64"
-
+          
       # Step 4: Upload the built wheels as an artifact.
       # This allows you to download and inspect them before publishing.
       - name: Upload wheels
