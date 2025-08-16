@@ -22,12 +22,14 @@ jobs:
           submodules: recursive
 
       # This is the new debugging step.
-      - name: "DEBUG: List files and check .gitmodules"
+      - name: "DEBUG: Check directory structure and .gitmodules"
         run: |
-          echo "--- Listing all files recursively ---"
-          Get-ChildItem -Recurse
+          echo "--- Top-level directory listing ---"
+          # This command lists only the items in the main project directory.
+          Get-ChildItem -Depth 0
           echo "--- Contents of .gitmodules ---"
-          Get-Content .gitmodules
+          # This command prints the contents of the file, if it exists.
+          Get-Content .gitmodules -ErrorAction SilentlyContinue
         shell: pwsh
 
       - name: Build wheels with cibuildwheel
