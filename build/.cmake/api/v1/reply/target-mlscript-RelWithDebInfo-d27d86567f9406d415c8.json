@@ -23,9 +23,7 @@
 			"target_link_libraries",
 			"set_property",
 			"include",
-			"include_directories",
-			"target_include_directories",
-			"target_compile_features"
+			"target_include_directories"
 		],
 		"files" : 
 		[
@@ -44,7 +42,7 @@
 			{
 				"command" : 3,
 				"file" : 3,
-				"line" : 32,
+				"line" : 28,
 				"parent" : 0
 			},
 			{
@@ -109,19 +107,13 @@
 			{
 				"command" : 4,
 				"file" : 3,
-				"line" : 44,
+				"line" : 39,
 				"parent" : 0
 			},
 			{
 				"command" : 7,
 				"file" : 3,
-				"line" : 12,
-				"parent" : 0
-			},
-			{
-				"command" : 8,
-				"file" : 3,
-				"line" : 39,
+				"line" : 33,
 				"parent" : 0
 			},
 			{
@@ -129,12 +121,6 @@
 				"file" : 2,
 				"line" : 290,
 				"parent" : 1
-			},
-			{
-				"command" : 9,
-				"file" : 3,
-				"line" : 37,
-				"parent" : 0
 			}
 		]
 	},
@@ -173,14 +159,14 @@
 			[
 				{
 					"backtrace" : 14,
-					"path" : "C:/Users/amits/Documents/Projects/mlscript/third_party/eigen"
-				},
-				{
-					"backtrace" : 15,
 					"path" : "C:/Users/amits/Documents/Projects/mlscript/cpp_backend"
 				},
 				{
-					"backtrace" : 15,
+					"backtrace" : 14,
+					"path" : "C:/Users/amits/Documents/Projects/mlscript/third_party/eigen"
+				},
+				{
+					"backtrace" : 14,
 					"path" : "C:/Users/amits/AppData/Local/Programs/Python/Python313/Lib/site-packages/numpy/_core/include"
 				},
 				{
@@ -189,7 +175,7 @@
 					"path" : "C:/Users/amits/AppData/Local/Programs/Python/Python313/Include"
 				},
 				{
-					"backtrace" : 16,
+					"backtrace" : 15,
 					"isSystem" : true,
 					"path" : "C:/Users/amits/Documents/Projects/mlscript/third_party/pybind11/include"
 				}
@@ -199,10 +185,9 @@
 			{
 				"backtraces" : 
 				[
-					17,
-					16,
-					16,
-					16
+					15,
+					15,
+					15
 				],
 				"standard" : "17"
 			},
