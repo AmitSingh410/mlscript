@@ -34,11 +34,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/amits/Documents/Projects/mlscript/build/third_party/eigen/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
   include("C:/Users/amits/Documents/Projects/mlscript/build/third_party/pybind11/cmake_install.cmake")
 endif()
 
