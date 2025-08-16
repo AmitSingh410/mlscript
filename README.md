@@ -1,489 +1,573 @@
 
 
-# **mlscript v0.2 Official Documentation**
+# **Mlscript v0.9 — Documentation**
 
-## **Introduction**
+## **Part I: Introduction to mlscript**
 
-This document provides the official documentation for mlscript version 0.2. It offers a comprehensive guide for developers, covering the language's core philosophy, setup instructions, language features, and practical examples.
+### **1\. Overview**
 
-### **Vision and Philosophy**
+mlscript is a high-level, dynamically-typed, object-oriented scripting language engineered for high-performance numerical computation and machine learning. Its design is centered around a sophisticated dual-nature architecture that combines the expressive power and rapid development capabilities of a scripting language with the computational efficiency of a compiled, low-level backend. This hybrid model is the cornerstone of the language, offering a unique blend of productivity and performance.
 
-mlscript is a new programming language designed from the ground up to provide an intuitive and efficient environment for modern AI, Machine Learning, and Data Science workloads. The core vision is to bridge the gap between high-level, readable syntax and high-performance, low-level execution.
+The frontend of mlscript is implemented in Python, providing a familiar, flexible, and feature-rich environment for developers.1 This layer is responsible for parsing the source code and managing the high-level execution logic, including a comprehensive object model with advanced features such as multiple inheritance governed by the C3 Method Resolution Order algorithm.1 This approach allows users to write clear, concise, and powerful code for complex tasks without sacrificing the dynamic nature expected of a modern scripting language.
 
-While many languages are general-purpose, mlscript is specialized. Its development is guided by the needs of data scientists, researchers, and machine learning engineers. The current version, v0.2, establishes the foundational syntax and architecture. Future versions will build upon this base to introduce first-class language constructs for core data science concepts, such as tensors, dataframes, and model layers, aiming to make complex numerical computation as natural as basic arithmetic.
+The power of mlscript is fully realized through its C++ backend, which handles all performance-critical operations. This backend is built using a modern C++17 toolchain and leverages best-in-class libraries for numerical computing and parallelization.1 At its core is the
 
-### **The Hybrid Architecture: Python's Usability, C++'s Speed**
+Tensor object, a multi-dimensional array implemented using the highly optimized Eigen linear algebra library.1 All numerical operations, from simple element-wise arithmetic to complex matrix multiplications, are delegated to this compiled C++ layer. Furthermore, the backend is parallelized using OpenMP, enabling
 
-mlscript employs a powerful hybrid architecture to achieve its goals of simplicity and performance. It is not a standalone, self-contained executable; rather, it is implemented as a high-performance Python extension module. This design choice is fundamental to its operation and value.
+mlscript to take full advantage of multi-core processors to accelerate computationally intensive tasks.1
 
-The core of the language's interpreter is written in C++ and compiled to a native library, as defined by the project's build configuration.1 This C++ backend is responsible for parsing and executing
+This deliberate separation of concerns allows mlscript to provide an optimal environment for machine learning research and development. The user-friendly frontend simplifies the process of defining models and algorithms, while the high-performance backend ensures that training and inference operations execute with the speed necessary for handling large-scale datasets. The entire system is seamlessly integrated, allowing developers to move effortlessly between high-level scripting and low-level numerical computation.
 
-mlscript code, leveraging the speed of compiled C++. The connection between the Python host environment and the C++ backend is managed by pybind11, a library designed for creating seamless interoperability between the two languages.2
+### **2\. Getting Started**
 
-This architecture offers a significant advantage by combining the strengths of both ecosystems. Developers can leverage Python's vast and mature libraries for tasks like data loading, preprocessing, and visualization, while offloading computationally intensive algorithms to mlscript for execution at near-native C++ speeds. This model provides a compelling alternative to other performance-oriented Python solutions, offering the potential for a more tightly integrated and domain-specific syntax in the future.
+This section provides the necessary information to build the mlscript language module from source and prepare it for use in a development environment.
 
-## **Getting Started**
+#### **2.1. Prerequisites**
 
-This section provides detailed instructions for setting up the build environment, compiling mlscript from source, and running your first program.
+To successfully build mlscript, the following dependencies must be installed and configured on the build system. The build process relies on CMake to manage dependencies and generate the appropriate build files for the target platform.1
 
-### **Prerequisites**
+* **C++17 Compliant Compiler:** The mlscript C++ backend uses features from the C++17 standard. A modern compiler such as GCC, Clang, or MSVC that supports this standard is required.  
+* **CMake (Version 3.15 or higher):** The project uses CMake for its build system automation. The minimum required version is 3.15.  
+* **Python and NumPy:** A Python installation (including development headers) is necessary for building the Python bindings. The NumPy library is also required, as its C API headers are used for interoperability with the Tensor object. The build script will automatically locate the Python interpreter and NumPy include directories.  
+* **OpenMP:** The language's C++ backend is designed for parallel execution and requires the OpenMP library. The CMake configuration will fail if OpenMP is not found on the system.  
+* **Eigen and pybind11:** The source code for the Eigen and pybind11 libraries must be present within the third\_party directory of the project's source tree. The build system is configured to compile these libraries directly from this location rather than relying on a system-wide installation.
 
-Before you can build mlscript, you must ensure your development environment has the necessary tools installed. The project relies on a modern C++ compiler, CMake for build automation, and a compatible Python version to host the module.
+#### **2.2. Building from Source**
 
-**Table 1: Prerequisites for mlscript v0.2**
+The compilation process is managed by CMake and produces a Python extension module. This module can then be imported and used like any other Python package.
 
-| Tool | Required Version | Notes |
-| :---- | :---- | :---- |
-| C++ Compiler | C++17 Support | e.g., MSVC v142+ (VS 2019+), GCC 7+, Apple Clang 10+ |
-| CMake | 3.15+ | The core build system generator for the project.1 |
-| Python | 3.8+ | The host environment for the mlscript module.2 |
-| pip | Included w/ Python | Used to install the pybind11 dependency.3 |
+The build process can be summarized in the following steps:
 
-### **Environment Setup and Build Instructions**
+1. **Obtain the Source Code:** Clone or download the mlscript source code repository.  
+2. **Populate Dependencies:** Ensure that the source code for Eigen and pybind11 is located in the third\_party/eigen and third\_party/pybind11 subdirectories, respectively.  
+3. **Configure the Build:** Navigate to the root directory of the source code in a terminal and run CMake to generate the build files.  
+   Bash  
+   cmake.
 
-The following instructions provide a recommended setup path for Windows, macOS, and Linux.
+4. **Compile the Module:** Execute the build command. On Linux or macOS, this is typically done with make.  
+   Bash  
+   make
 
-#### **On Windows**
+   Alternatively, the platform-agnostic CMake build command can be used:  
+   Bash  
+   cmake \--build.
 
-1. **Install C++ Toolchain:** Download and install Visual Studio 2019 or a newer version from Microsoft. During installation, select the **Desktop development with C++** workload. This will install the required MSVC compiler with C++17 support.4  
-2. **Install Python:** Download the latest Python 3 installer from the official website, python.org.5 During installation, it is crucial to check the box labeled  
-   **Add Python to PATH**.  
-3. **Install CMake:** Download and run the official CMake installer from cmake.org.6 Ensure that you select the option to add CMake to the system PATH for all users or the current user.  
-4. **Install pybind11:** Open a Command Prompt or PowerShell and run the following command to install the required Python package 7:  
-   Shell  
-   py \-m pip install pybind11
+5. **Locate the Artifact:** Upon successful compilation, the mlscript Python module (e.g., mlscript.so on Linux or mlscript.pyd on Windows) will be placed in the root source directory of the project.1 This is a deliberate configuration choice to make the module immediately available for use without requiring installation into a system or virtual environment directory.
 
-#### **On macOS**
+Once built, the mlscript interpreter can be run, or the module can be imported into an interactive Python session from the project's root directory.
 
-1. **Install C++ Toolchain:** Open the Terminal application and run the following command. This will prompt you to install the Xcode Command Line Tools, which include the Apple Clang C++ compiler.8  
-   Shell  
-   xcode-select \--install
+## **Part II: Language Fundamentals**
 
-2. **Install Homebrew:** If you do not have the Homebrew package manager, install it by following the instructions on its official website, brew.sh.  
-3. **Install Python & CMake:** Use Homebrew to install the latest versions of Python and CMake.9  
-   Shell  
-   brew install python cmake
+### **3\. Lexical Structure and Data Types**
 
-4. **Install pybind11:** Use pip to install the pybind11 package 11:  
-   Shell  
-   python3 \-m pip install pybind11
+This section details the fundamental building blocks of the mlscript language, including its variable assignment rules and its set of primitive and compound data types.
 
-#### **On Linux (Debian/Ubuntu)**
+#### **3.1. Variables and Assignment**
 
-1. **Install C++ Toolchain & Dependencies:** Open a terminal and use the apt package manager to install the essential build tools, including the GCC C++ compiler and GDB debugger.12  
-   Shell  
-   sudo apt-get update  
-   sudo apt-get install build-essential gdb
+mlscript is a dynamically-typed language, meaning that the type of a variable is determined at runtime and does not need to be explicitly declared. Variables are created upon their first assignment. The assignment operation uses the single equals sign (=) operator.1
 
-2. **Install Python & CMake:** Install the Python 3 development headers, pip, and CMake.13  
-   Shell  
-   sudo apt-get install python3-dev python3-pip cmake
+The left-hand side of an assignment must be a valid target, such as a variable name, an element of a collection (via index access), or an attribute of an object. The right-hand side can be any valid expression. The interpreter evaluates the right-hand side expression and binds its resulting value to the name on the left-hand side within the current scope.1
 
-3. **Install pybind11:** Use pip to install the pybind11 package:  
-   Shell  
-   python3 \-m pip install pybind11
+*Example:*
 
-#### **Compiling the Module**
+Code snippet
 
-Once all prerequisites are installed, you can compile the mlscript module using CMake.
+x \= 10          // Assigns an integer to x  
+y \= "hello"     // Assigns a string to y  
+z \= x \+ 5       // Assigns the result of an expression to z
 
-1. **Clone the Repository:** First, clone the mlscript source code repository to your local machine.  
-   Shell  
-   git clone https://github.com/example/mlscript.git  
-   cd mlscript
+#### **3.2. Primitive Data Types**
 
-2. **Configure with CMake:** Create a build directory and run CMake from within it. This command inspects your system, finds the required tools, and generates the native build files (e.g., a Visual Studio solution on Windows or a Makefile on Linux/macOS).14  
-   Shell
-   cd cpp_backend  
-   mkdir build  
-   cd build  
-   cmake..
+mlscript supports a standard set of primitive data types for representing numbers, boolean values, and text.
 
-3. **Build with CMake:** Execute the build command. This command invokes the native build tool (like MSVC or Make) to compile the C++ source code and link it into a Python extension module.14 The  
-   \--config Release flag ensures an optimized build.  
-   Shell  
-   cmake \--build. \--config Release
+* **Numbers:** The language recognizes both integer and floating-point numerical literals. These are parsed into Number nodes in the Abstract Syntax Tree (AST) and are handled as standard numerical types during execution.1  
+  * *Integers:* 1, 42, \-100  
+  * *Floats:* 3.14, \-0.01, 1.0e-5  
+* **Booleans:** The boolean type has two literal values: true and false. These keywords are case-sensitive and are represented internally by BooleanLiteral nodes.1 They are used primarily in conditional logic.  
+* **Strings:** String literals are sequences of characters enclosed in either single (') or double (") quotes. They are represented by StringLiteral nodes in the AST.1
 
-4. **Copy the Module:** After the build completes, you must manually copy the compiled module to the project's root directory (the same directory that contains main.py).  
-   * **On Windows:** The file will be named mlscript.cp313-win_amd64.pyd and is typically located in the build\\Release directory.  
-   * **On macOS/Linux:** The file will be named with a .so extension and is typically located directly in the build directory.
+#### **3.3. Data Structures**
 
-### **Running mlscript**
+mlscript provides built-in support for several versatile data structures, which are created as standard Python objects at runtime.1
 
-Because mlscript is a Python module, you interact with it via the main.py Python host script.
+* **Lists:** A list is an ordered, mutable collection of items. List literals are defined by enclosing a comma-separated sequence of expressions in square brackets (\`\`). The items in a list can be of any type.  
+  * *AST Node:* ListLiteral 1  
+  * *Example:* my\_list \= \[1, "apple", true, \]  
+* **Dictionaries:** A dictionary is an unordered collection of key-value pairs. Dictionary literals are defined using curly braces ({}), with each pair consisting of a key expression, a colon (:), and a value expression. Keys are typically strings or numbers.  
+  * *AST Node:* DictLiteral 1  
+  * *Example:* my\_dict \= {"name": "Alice", "age": 30}  
+* **Tuples:** A tuple is an ordered, immutable collection of items. Tuple literals are formed by a comma-separated sequence of expressions, typically enclosed in parentheses (()). A single-element tuple must have a trailing comma (e.g., (5,)). An empty tuple is created with empty parentheses ().  
+  * *AST Node:* TupleLiteral 1  
+  * *Example:* my\_tuple \= (10, 20, "config")
 
-#### **The Interactive REPL (Read-Eval-Print Loop)**
+### **4\. Expressions and Operators**
 
-The REPL is ideal for quick experiments and learning the language syntax. To start it, run main.py from the project's root directory without any arguments.
+mlscript provides a rich set of operators for performing arithmetic, comparison, and membership checks. The order of evaluation for these operators is governed by a well-defined precedence hierarchy.
 
-Shell
+#### **4.1. Arithmetic Operators**
 
-python main.py
+The language supports standard arithmetic operators for numerical computations. When used with Tensor objects, these operators perform element-wise operations delegated to the high-performance C++ backend.1
 
-You will be greeted by the mlscript prompt, where you can enter code one line at a time.
+* \+: Addition. Also used for string concatenation.  
+* \-: Subtraction.  
+* \*: Multiplication.  
+* /: Division.
 
-**Example REPL Session:**
+The language also supports unary \+ and \- operators for indicating the sign of a numerical literal or expression.1
 
-mlscript v0.2 REPL  
-\>\>\> message \= "Hello, mlscript\!"  
-\>\>\> print(message)  
-Hello, mlscript\!  
-\>\>\> x \= 10 \* 5  
-\>\>\> print(x)  
-50  
-\>\>\>
+#### **4.2. Comparison and Membership Operators**
 
-#### **Executing Script Files**
+These operators evaluate to a boolean value (true or false) and are primarily used in conditional statements.
 
-For larger programs, you can save your code in a file with a .ms extension and execute it using the main.py script.
+* **Comparison Operators:**  
+  * \==: Equal to  
+  * \!=: Not equal to  
+  * \<: Less than  
+  * \<=: Less than or equal to  
+  * \>: Greater than  
+  * \>=: Greater than or equal to  
+* **Membership Operators:**  
+  * in: Returns true if an element is found within a sequence.  
+  * not in: Returns true if an element is not found within a sequence.
 
-**Example hello.ms file:**
+The membership operators are supported for lists, strings, dictionaries (checking for key membership), and tuples.1
 
-// A simple mlscript program  
-name \= "World"  
-print("Hello, " \+ name \+ "\!")
+#### **4.3. Operator Precedence**
 
-To run this script, pass its path to main.py:
+The precedence of operators determines the order in which they are evaluated in a complex expression. In mlscript, this hierarchy is not defined by an explicit table but is a natural consequence of the grammar's structure, which is implemented using a recursive descent parser.1 The parser's functions are called in a specific sequence (
 
-Shell
+comparison\_expression \-\> expr \-\> term \-\> factor), which ensures that operators handled in later functions (like \* and / in term) are evaluated before those in earlier functions (like \+ and \- in expr).
 
-python main.py hello.ms
+The following table summarizes the operator precedence in mlscript, from highest to lowest.
 
-**Output:**
+| Precedence | Operator | Description | Associativity |
+| :---- | :---- | :---- | :---- |
+| Highest | () | Grouping | N/A |
+|  | . \`\` () | Attribute Access, Indexing, Function Call | Left-to-Right |
+|  | \- \+ | Unary Minus, Unary Plus | N/A |
+|  | \* / | Multiplication, Division | Left-to-Right |
+|  | \+ \- | Addition, Subtraction | Left-to-Right |
+|  | in not in | Membership | Left-to-Right |
+| Lowest | \== \!= \< \> \<= \>= | Comparisons | Left-to-Right |
 
-Hello, World\!
+### **5\. Statements and Control Flow**
 
-## **Language Guide**
+mlscript provides a comprehensive set of control flow statements for directing the execution path of a program, including conditionals for decision-making and loops for repetitive tasks.
 
-This section serves as a comprehensive reference for all language features available in mlscript v0.2.
+#### **5.1. Conditional Execution: if-elif-else**
 
-### **Comments**
+Conditional logic is implemented using the if, elif (else if), and else keywords. The structure allows for branching execution based on the evaluation of one or more boolean expressions.
 
-Comments are used to annotate code and are ignored by the interpreter. mlscript supports single-line comments, which start with // and extend to the end of the line.
+An if statement begins with a condition. If this condition evaluates to true, the associated block of code is executed. It can be followed by zero or more elif clauses, each with its own condition, which are tested sequentially if all preceding conditions were false. An optional else clause at the end provides a block of code to be executed if none of the if or elif conditions are met.1
 
-**Syntax:**
+*Example:*
 
-// This is a comment.
+Code snippet
 
-**Example:**
-
-// This line is ignored.  
-x \= 10 // This part of the line is also ignored.  
-print(x) // Prints 10
-
-### **Data Types**
-
-mlscript v0.2 supports three primitive data types.
-
-* **Integer:** A 64-bit signed integer for whole numbers (e.g., 10, \-5, 0).  
-* **Float:** A 64-bit double-precision floating-point number for values with a fractional component (e.g., 3.14, \-0.001, 10.0).  
-* **String:** A sequence of characters enclosed in double quotes ("). Strings are UTF-8 encoded.
-
-**Example:**
-
-my\_integer \= 42  
-my\_float \= 2.718  
-my\_string \= "mlscript"
-
-print(my\_integer)  
-print(my\_float)  
-print(my\_string)
-
-### **Variables and Scope**
-
-Variables are used to store data. They are defined within a specific scope and are created on first assignment.
-
-#### **Variable Assignment**
-
-Variables are created when they are first assigned a value. mlscript uses a Python-like approach where you do not need to declare variables before using them. Simply assign a value to a name, and the variable is created.
-
-**Syntax:**
-
-\<identifier\> \= \<expression\>
-
-A variable's value can be updated by assigning a new value to it.
-
-**Example:**
-
-// Initial assignment creates the variable  
-score \= 100  
-print(score) // Output: 100
-
-// Re-assignment  
-score \= 150  
-print(score) // Output: 150
-
-#### **Scope**
-
-mlscript uses lexical (or static) scoping, which means a variable's visibility is determined by its location within the source code. A scope is defined by a block of code enclosed in curly braces ({...}), such as a function body or the body of a control flow statement.
-
-A variable declared inside a block is local to that block and is not accessible from the outside. Inner scopes can access variables from their containing outer scopes.
-
-**Example:**
-
-global\_var \= "I am global"
-
-{  
-  inner\_var \= "I am local"  
-  print(global\_var) // Accessible: prints "I am global"  
-  print(inner\_var)  // Accessible: prints "I am local"  
-}
-
-print(global\_var) // Accessible: prints "I am global"  
-// print(inner\_var) // This would cause an error, inner\_var is not defined here.
-
-### **Operators**
-
-mlscript supports standard arithmetic and comparison operators.
-
-#### **Arithmetic Operators**
-
-These operators perform mathematical calculations on numerical types.
-
-**Table 2: Arithmetic Operators**
-
-| Operator | Description | Example |
-| :---- | :---- | :---- |
-| \+ | Addition (or String concatenation) | 5 \+ 2 |
-| \- | Subtraction | 5 \- 2 |
-| \* | Multiplication | 5 \* 2 |
-| / | Division | 5.0 / 2.0 |
-
-**Example:**
-
-a \= 10  
-b \= 4  
-print(a \+ b) // 14  
-print(a \- b) // 6  
-print(a \* b) // 40  
-print(a / b) // 2.5
-
-greeting \= "Hello"  
-subject \= "World"  
-print(greeting \+ ", " \+ subject \+ "\!") // "Hello, World\!"
-
-#### **Comparison Operators**
-
-These operators compare two values and evaluate to a boolean result, which is internally represented and used by control flow statements like if and while.
-
-**Table 3: Comparison Operators**
-
-| Operator | Description | Example |
-| :---- | :---- | :---- |
-| \== | Equal to | x \== 5 |
-| \!= | Not equal to | x\!= 5 |
-| \< | Less than | x \< 5 |
-| \<= | Less than or equal to | x \<= 5 |
-| \> | Greater than | x \> 5 |
-| \>= | Greater than or equal to | x \>= 5 |
-
-**Example:**
-
-x \= 10  
-y \= 20
-
-if (x \< y) {  
-  print("x is less than y")  
-}
-
-if (x \* 2 \== y) {  
-  print("y is double of x")  
-}
-
-### **Control Flow**
-
-Control flow statements allow you to direct the execution of your program based on certain conditions or to repeat blocks of code.
-
-#### **Conditional Statements: if/elif/else**
-
-These statements execute different blocks of code based on a condition. The block of code must be enclosed in curly braces ({...}).
-
-**Syntax:**
-
-if (\<condition1\>) {  
-  // Block executed if condition1 is true  
-} elif (\<condition2\>) {  
-  // Block executed if condition1 is false and condition2 is true  
+x \= 20  
+if (x \< 10\) {  
+    print("x is less than 10")  
+} elif (x \> 10\) {  
+    print("x is greater than 10")  
 } else {  
-  // Block executed if all preceding conditions are false  
+    print("x is exactly 10")  
 }
 
-**Example:**
+#### **5.2. Loops: while and for...in**
 
-grade \= 85
+mlscript offers two primary looping constructs: while for condition-based iteration and for...in for iterating over sequences.
 
-if (grade \>= 90\) {  
-  print("Grade: A")  
-} elif (grade \>= 80\) {  
-  print("Grade: B")  
-} else {  
-  print("Grade: C or lower")  
-}  
-// Output: Grade: B
+* **while loop:** The while loop repeatedly executes a block of code as long as its condition remains true. The condition is checked before each iteration.1
 
-#### **while Loops**
-
-A while loop repeatedly executes a block of code, enclosed in curly braces ({...}), as long as a given condition remains true.
-
-**Syntax:**
-
-while (\<condition\>) {  
-  // This block repeats as long as condition is true  
-}
-
-**Example:**
-
-countdown \= 3  
-while (countdown \> 0\) {  
-  print(countdown)  
-  countdown \= countdown \- 1  
-}  
-print("Liftoff\!")  
-// Output:  
-// 3  
-// 2  
-// 1  
-// Liftoff\!
-
-#### **for Loops**
-
-A for loop is used for iterating over a sequence. In v0.2, the only available sequence generator is range(\<start\>, \<end\>), which creates a sequence of integers starting from \<start\> and ending just before \<end\>. The loop body must be enclosed in curly braces ({...}).
-
-**Syntax:**
-
-for \<variable\> in range(\<start\>, \<end\>) {  
-  // This block executes for each number in the range  
-}
-
-**Example:**
-
-// Print numbers from 1 up to (but not including) 5  
-for i in range(1, 5\) {  
-  print("Current number: " \+ i)  
-}  
-// Output:  
-// Current number: 1  
-// Current number: 2  
-// Current number: 3  
-// Current number: 4
-
-### **Functions**
-
-Functions are reusable blocks of code that perform a specific task. They help organize code into logical, modular units. The function body must be enclosed in curly braces ({...}).
-
-#### **Definition and Calling**
-
-Functions are defined using the fun keyword. They can accept zero or more parameters.
-
-**Syntax:**
-
-fun \<function\_name\>(\<param1\>, \<param2\>,...) {  
-  // Function body  
-}
-
-**Example:**
-
-// Define a function to greet a user  
-fun greet(name) {  
-  print("Hello, " \+ name \+ "\!")  
-}
-
-// Call the function  
-greet("Alice")   // Output: Hello, Alice\!  
-greet("Bob")     // Output: Hello, Bob\!
-
-#### **The return Statement**
-
-The return statement exits a function and can optionally pass a value back to the caller. If return is not used, the function implicitly returns a null-like value.
-
-**Example:**
-
-fun add(a, b) {  
-  return a \+ b  
-}
-
-sum \= add(15, 27\)  
-print("The sum is: " \+ sum) // Output: The sum is: 42
-
-## **Full Showcase: Calculating Basic Data Statistics**
-
-This final example demonstrates how the features of mlscript v0.2 can work together to solve a practical problem. The following script calculates the count, sum, average, minimum, and maximum for a simulated list of data points. This task is a foundational element of data analysis and showcases the language's potential for more complex numerical tasks.
-
-The script is structured with functions for clarity and reusability, uses loops for iteration, conditionals for logic, and variables to store state.
-
-// mlscript v0.2 Showcase: Basic Data Statistics
-
-// A helper function to neatly print the final results.  
-// This demonstrates function definition and parameter passing.  
-fun print\_stats(count, sum, avg, min\_val, max\_val) {  
-  print("--- Data Statistics \---")  
-  print("Count: " \+ count)  
-  print("Sum: " \+ sum)  
-  print("Average: " \+ avg)  
-  print("Minimum: " \+ min\_val)  
-  print("Maximum: " \+ max\_val)  
-  print("-----------------------")  
-}
-
-// The main function that performs all calculations.  
-// This encapsulates the core logic of the program.  
-fun calculate\_stats() {  
-  // In a future version, this data might come from a file or a list data type.  
-  // For v0.2, we simulate a list with individual variables.  
-  data0 \= 85.5  
-  data1 \= 92.0  
-  data2 \= 78.2  
-  data3 \= 61.0  
-  data4 \= 95.8  
-  data5 \= 88.5
-
-  // Initialize variables to store our calculated statistics.  
+  Example:  
+  Code snippet  
   count \= 0  
-  sum \= 0.0  
-  min\_val \= 1000.0 // Start with a very high number  
-  max\_val \= \-1000.0 // Start with a very low number
+  while (count \< 5\) {  
+      print(count)  
+      count \= count \+ 1  
+  }
 
-  // The 'for' loop iterates from 0 to 5 to process our 6 data points.  
-  // This is the core of our data processing logic.  
-  for i in range(0, 6\) {  
-    current\_val \= 0.0
+* **for...in loop:** The for...in loop iterates over the elements of a sequence, assigning each element to a loop variable in turn. The language supports iteration over lists, strings, tuples, and range objects. Attempting to iterate over an unsupported type will result in a runtime error.1
 
-    // Use if/elif to select the correct data point for the current iteration.  
-    // This simulates accessing an element from a list by its index.  
-    if (i \== 0\) { current\_val \= data0 }  
-    elif (i \== 1\) { current\_val \= data1 }  
-    elif (i \== 2\) { current\_val \= data2 }  
-    elif (i \== 3\) { current\_val \= data3 }  
-    elif (i \== 4\) { current\_val \= data4 }  
-    elif (i \== 5\) { current\_val \= data5 }
+  Example:  
+  Code snippet  
+  items \= \["a", "b", "c"\]  
+  for item in items {  
+      print(item)  
+  }
 
-    // Update the sum and count on each iteration.  
-    sum \= sum \+ current\_val  
-    count \= count \+ 1
+#### **5.3. Loop Control: break and continue**
 
-    // Use conditional logic to find the minimum value.  
-    if (current\_val \< min\_val) {  
-      min\_val \= current\_val  
+The execution of loops can be controlled with the break and continue statements.
+
+* break: Immediately terminates the innermost enclosing while or for loop.  
+* continue: Skips the remainder of the current iteration and proceeds to the next iteration of the innermost enclosing loop.
+
+mlscript provides an important robustness feature related to these statements. The parser validates their usage during the parsing phase, before the code is ever executed. It maintains an internal state to track whether it is currently inside a loop body. If a break or continue statement is found outside of a while or for loop, the parser will immediately raise a SyntaxError.1 This provides immediate feedback to the developer about misplaced control statements, preventing a class of errors that would otherwise only appear at runtime.
+
+### **6\. Functions**
+
+Functions are fundamental, first-class objects in mlscript. They are used to encapsulate reusable blocks of code, promoting modularity and organization.
+
+#### **6.1. Function Definition and Calls**
+
+Functions are defined using the fun keyword, followed by the function name, a list of parameters in parentheses, and a block of code in curly braces.1
+
+* **Parameters and Arguments:** Functions can accept zero or more parameters. When the function is called, arguments are passed to these parameters.  
+* **Default Arguments:** Parameters can be assigned a default value. If a caller does not provide an argument for a parameter with a default value, the default is used instead. A key syntactic rule, enforced by the parser, is that all parameters without default values must appear before any parameters that have default values.1  
+* **Return Values:** The return statement is used to exit a function and optionally pass a value back to the caller. If a function reaches the end of its body without encountering a return statement, it implicitly returns a None value.1
+
+*Example:*
+
+Code snippet
+
+fun greet(name, greeting \= "Hello") {  
+    return greeting \+ ", " \+ name \+ "\!"  
+}
+
+message \= greet("World")         // message is "Hello, World\!"  
+message2 \= greet("Alice", "Hi")  // message2 is "Hi, Alice\!"
+
+#### **6.2. Variable Scope**
+
+mlscript employs lexical (or static) scoping, which means that the scope of a variable is determined by its position within the source code. A variable defined inside a function is local to that function and is not accessible from the outside. A function can, however, access variables defined in its containing (enclosing) scopes.
+
+This scoping mechanism is implemented through a scope\_stack in the language's C++ evaluation engine.1 When a function is called, a new scope (a new map for storing variables) is pushed onto the stack. When a variable is accessed, the interpreter searches for it by starting with the topmost scope on the stack and working its way down through parent scopes until the variable is found or the global scope is reached. When the function returns, its scope is popped from the stack, and its local variables are destroyed.1 This robust implementation ensures that variable lifetimes are managed correctly and predictably.
+
+## **Part III: Object-Oriented Programming**
+
+mlscript is a fully object-oriented language, providing a powerful and flexible class system for creating custom data types with associated behaviors. The object model supports key features such as inheritance, method overriding, and dynamic attribute access.
+
+### **7.1. Classes and Instances**
+
+* **Class Definition:** Classes are defined using the class keyword, followed by the class name and a body enclosed in curly braces ({}). The class body is where methods are defined.1 A notable design choice in  
+  mlscript is that class bodies are restricted to containing only method definitions (using the fun keyword). Unlike languages such as Python, mlscript does not permit class-level attributes or other arbitrary statements directly within the class body. Any attempt to include non-method statements will result in a SyntaxError during the parsing phase.1 This decision simplifies the object model by ensuring that all state is instance-level state, managed within the instance's methods.  
+* **Instance Creation:** An instance of a class is created by calling the class as if it were a function, e.g., my\_instance \= MyClass().  
+* **The init Method:** When an instance is created, mlscript automatically looks for a method named init. If this method exists, it is called immediately after the instance is created, and any arguments passed during instantiation are forwarded to it. The init method serves as the class constructor and is the primary place to initialize the instance's state (its attributes).1
+
+*Example:*
+
+Code snippet
+
+class Dog {  
+    fun init(name, age) {  
+        self.name \= name  
+        self.age \= age  
+    }  
+}
+
+my\_dog \= Dog("Rex", 5\)  
+print(my\_dog.name) // Prints "Rex"
+
+### **7.2. Attributes and Methods**
+
+* **Methods:** Methods are functions defined inside a class. The first parameter of every method is a reference to the instance on which the method is being called. By convention, this parameter is named self.1  
+* **Attributes:** Attributes are variables that belong to an instance. They are created, accessed, and modified using dot notation (e.g., instance.attribute). Attributes are typically created within the init method by assigning to self, but they can also be created in other methods. They are stored in a dictionary unique to each instance.1
+
+*Example:*
+
+Code snippet
+
+class Counter {  
+    fun init() {  
+        self.value \= 0  
     }
 
-    // Use conditional logic to find the maximum value.  
-    if (current\_val \> max\_val) {  
-      max\_val \= current\_val  
+    fun increment() {  
+        self.value \= self.value \+ 1  
+    }
+
+    fun get\_value() {  
+        return self.value  
     }  
-  }
-
-  // After the loop, calculate the average.  
-  average \= 0.0  
-  if (count \> 0\) {  
-    average \= sum / count  
-  }
-
-  // Call our helper function to display the results.  
-  print\_stats(count, sum, average, min\_val, max\_val)  
 }
 
-// This is the entry point of our script.  
-// The program execution begins here.  
-print("Starting statistical analysis...")  
-calculate\_stats()  
-print("Analysis complete.")
+c \= Counter()  
+c.increment()  
+c.increment()  
+print(c.get\_value()) // Prints 2
+
+### **7.3. Inheritance**
+
+mlscript supports both single and multiple inheritance, allowing a class (the child class) to inherit methods from one or more other classes (the parent classes). Inheritance is specified using the inherits keyword after the class name.1
+
+When a method is called on an instance, mlscript first searches for the method in the instance's own class. If it is not found, it searches through the parent classes in a specific, well-defined order. This search order is known as the Method Resolution Order (MRO). mlscript implements the same sophisticated C3 linearization algorithm for its MRO as Python.1 This ensures that in complex multiple inheritance hierarchies, the order in which methods are resolved is consistent, predictable, and avoids common pitfalls.
+
+*Example:*
+
+Code snippet
+
+class Animal {  
+    fun speak() {  
+        print("The animal makes a sound")  
+    }  
+}
+
+class Cat inherits Animal {  
+    fun speak() {  
+        print("Meow")  
+    }  
+}
+
+c \= Cat()  
+c.speak() // Prints "Meow"
+
+### **7.4. Accessing Superclass Methods: super()**
+
+Within a method of a child class, it is often necessary to call the implementation of that same method from its parent class. This is achieved using the super() keyword. A call like super().method\_name() will invoke the version of method\_name found in the next class in the MRO.1
+
+The implementation of super() in mlscript is robust and correctly handles complex inheritance scenarios. The interpreter maintains a method\_context\_stack that tracks the current instance (self) and the class where the currently executing method was defined. When super() is called, the interpreter uses this context to look up the instance's MRO, find the defining class, and then start its search for the method in the *next* class in the MRO.1 This ensures that
+
+super() always does the right thing, even with multiple levels of inheritance or diamond-shaped inheritance patterns. Using super() outside of a class method will result in a runtime error.
+
+*Example:*
+
+Code snippet
+
+class Person {  
+    fun init(name) {  
+        self.name \= name  
+    }  
+}
+
+class Employee inherits Person {  
+    fun init(name, employee\_id) {  
+        super().init(name) // Calls Person's init method  
+        self.employee\_id \= employee\_id  
+    }  
+}
+
+e \= Employee("Jane Doe", 12345\)  
+print(e.name)         // Prints "Jane Doe"  
+print(e.employee\_id)  // Prints 12345
+
+## **Part IV: Advanced Features**
+
+mlscript includes several advanced features that provide powerful mechanisms for error handling, resource management, and interoperability with the broader Python ecosystem.
+
+### **8.1. Error Handling: try-catch-finally**
+
+mlscript provides a structured exception handling mechanism similar to that of other modern languages, using try, catch, finally, and throw keywords.
+
+* try: A try block encloses a section of code where an exception might occur.  
+* catch (e): If an exception is thrown within the try block, execution immediately jumps to the corresponding catch block. The exception object that was thrown is bound to the variable specified in the parentheses (e.g., e).  
+* finally: An optional finally block contains cleanup code that is guaranteed to execute after the try and catch blocks, regardless of whether an exception was thrown or caught.  
+* throw: The throw statement is used to raise an exception. Any expression can be thrown as an exception value.
+
+The interpreter implements this control flow using a custom MlscriptThrow exception internally. When a throw statement is executed, this exception is raised. The visit\_TryCatch method then uses a standard try...except...finally structure to catch this signal, execute the catch block if present, and ensure the finally block is always executed.1
+
+*Example:*
+
+Code snippet
+
+fun divide(a, b) {  
+    if (b \== 0\) {  
+        throw "Division by zero error"  
+    }  
+    return a / b  
+}
+
+try {  
+    result \= divide(10, 0\)  
+    print("Result:", result)  
+} catch (error) {  
+    print("Caught an exception:", error)  
+} finally {  
+    print("Execution finished.")  
+}
+
+### **8.2. Context Management: with**
+
+The with statement provides a convenient way to manage resources, ensuring that setup and teardown operations are always performed correctly. It simplifies the pattern of try...finally for resource management.
+
+To be used with a with statement, an object must implement the context management protocol, which consists of two special methods:
+
+* \_\_enter\_\_(): This method is called when execution enters the with block. Its return value is optionally assigned to a variable if the as keyword is used.  
+* \_\_exit\_\_(): This method is called when execution leaves the with block, either normally or due to an exception. It is responsible for releasing the resource.
+
+The mlscript interpreter enforces this protocol at runtime, checking for the existence of \_\_enter\_\_ and \_\_exit\_\_ methods on the context object and calling them at the appropriate times.1 This feature is particularly important for the built-in
+
+no\_grad context manager.
+
+### **8.3. Interoperability: import**
+
+mlscript provides a powerful and direct bridge to the vast ecosystem of Python libraries through its import statement. This allows developers to leverage existing Python code and packages for tasks that are not part of the mlscript core language, such as data visualization, file I/O, or web requests.
+
+The syntax for importing is fixed: import \<module\_name\> as \<alias\>. The module name must be a string literal, and an alias is required.1 At runtime, the interpreter uses Python's standard
+
+importlib.import\_module function to dynamically load the specified Python module. The imported module object is then bound to the specified alias name in the current mlscript scope, making its functions and classes available for use.1
+
+*Example:*
+
+Code snippet
+
+import "numpy" as np
+
+// Create a NumPy array using the imported module  
+a \= np.array()
+
+// Pass the NumPy array to the mlscript tensor constructor  
+t \= tensor(a)
+
+print(t)
+
+## **Part V: The Core Numerical Engine**
+
+The heart of mlscript is its high-performance numerical engine, implemented in C++ and exposed to the scripting environment. This engine is centered around the Tensor object and a sophisticated automatic differentiation system.
+
+### **9\. The Tensor Object**
+
+#### **9.1. Introduction**
+
+The Tensor is the central data structure for all numerical computation in mlscript. It represents a two-dimensional matrix of double-precision floating-point numbers. For maximum performance, the Tensor is not a pure script-level object; it is a C++ class that uses the highly optimized Eigen::Matrix library for its underlying data storage and mathematical operations.1 The interface to this powerful C++ object is exposed to the
+
+mlscript environment via the pybind11 library, ensuring seamless and efficient interaction between the scripting frontend and the numerical backend.1
+
+Beyond being a simple matrix, every Tensor object is also a potential node in a dynamically constructed computational graph, which is the foundation of mlscript's automatic differentiation capabilities.
+
+#### **9.2. Tensor Creation**
+
+Tensor objects can be created in two primary ways, providing flexibility and interoperability with other numerical libraries.
+
+* **From mlscript Lists:** The most direct way to create a Tensor is by calling the built-in tensor function with a nested list of numbers.  
+  Code snippet  
+  t1 \= tensor(\[\[1.0, 2.0, 3.0\], \[4.0, 5.0, 6.0\]\])
+
+* **From NumPy Arrays:** mlscript is designed for seamless interoperability with NumPy. A Tensor can be created directly from a 2D NumPy array. This conversion is highly efficient as it leverages the C-level APIs of both NumPy and pybind11.1  
+  Code snippet  
+  import "numpy" as np  
+  arr \= np.ones((2, 3))  
+  t2 \= tensor(arr)
+
+#### **9.3. Indexing and Slicing**
+
+mlscript provides a rich and expressive syntax for accessing and modifying Tensor data, supporting a wide range of indexing and slicing operations that mirror the capabilities of libraries like NumPy.1
+
+* **Integer Indexing:**  
+  * To access a single scalar value, provide a tuple of row and column indices: scalar \= t\[row, col\].  
+  * To extract an entire row as a new 1xN Tensor, provide a single integer index: row\_tensor \= t\[row\]. Negative indexing is supported for rows, where \-1 refers to the last row.  
+* **Slice Indexing:**  
+  * Slicing is performed using the start:stop:step syntax. A slice can be used to select a range of rows: sliced\_rows \= t\[1:3\].  
+  * Slices can be combined with integer indices in a tuple to select sub-regions of the tensor. For example, t\[0, 1:3\] selects elements from the first row and columns 1 and 2\. t\[0:2, 0:2\] selects a 2x2 sub-matrix from the top-left corner.
+
+#### **9.4. Tensor Operations**
+
+All operations on Tensor objects are executed by the underlying C++ engine, ensuring high performance.1
+
+* **Element-wise Arithmetic:** The standard arithmetic operators (+, \-, \*, /) perform element-wise operations when applied to two Tensor objects of the same dimensions.  
+* **Scalar Operations:** A Tensor can be multiplied by a scalar value, which applies the operation to every element in the tensor (e.g., t \* 2.0).  
+* **Matrix Multiplication:** True matrix multiplication is performed using the built-in matmul function: result \= matmul(t1, t2).  
+* **Reduction:** The .sum() method reduces the tensor to a single 1x1 Tensor containing the sum of all its elements.
+
+A critical performance feature of the Tensor object is its implementation of Python's buffer protocol.1 This allows other Python libraries, most notably NumPy, to access the
+
+Tensor's underlying C++ memory buffer directly without needing to copy the data. This zero-copy interoperability is essential for efficient data exchange in numerical workflows, preventing memory bottlenecks when moving data between mlscript and the broader Python scientific computing stack. Furthermore, the C++ implementation of certain operations, such as slicing, is parallelized using OpenMP, allowing the language to leverage multiple CPU cores to accelerate data manipulation tasks.1
+
+### **10\. Automatic Differentiation**
+
+Automatic differentiation (AD) is a cornerstone feature of mlscript, enabling the automatic computation of gradients for complex functions. This is essential for training machine learning models using gradient-based optimization algorithms. mlscript implements a reverse-mode AD system based on the dynamic construction of a computational graph.
+
+#### **10.1. The Computational Graph**
+
+mlscript does not require users to pre-define a static graph. Instead, a computational graph is built dynamically, on-the-fly, as Tensor operations are executed. Every Tensor object stores pointers to its parent Tensors (the operands that created it) and the operation that was performed.1 For example, when
+
+C \= A \+ B is executed, a new Tensor C is created that holds references to A and B and stores the operation type "+". This chain of references forms a directed acyclic graph (DAG) that represents the exact sequence of computations performed.
+
+This graph construction is conditional. It only occurs when gradient tracking is enabled. This allows users to switch off the overhead of graph building when it is not needed, such as during model inference.
+
+#### **10.2. Gradient Computation: .backward()**
+
+The process of computing gradients is initiated by calling the .backward() method on a Tensor. Typically, this is done on a scalar Tensor that represents the final output of a function, such as the loss of a machine learning model.
+
+When .backward() is called, the C++ engine performs the following steps 1:
+
+1. **Topological Sort:** It traverses the computational graph backwards from the starting Tensor to build a topologically sorted list of all nodes (Tensors) involved in the computation. This ensures that when gradients are propagated, a node's gradient is fully computed before it is used to compute the gradients of its own parents.  
+2. **Gradient Initialization:** The gradient of the starting Tensor with respect to itself is initialized to 1\.  
+3. **Backpropagation:** The engine iterates through the sorted list in reverse order. For each Tensor in the graph, it applies the chain rule based on the operation that created it. For example, for a matrix multiplication C \= matmul(A, B), it uses the incoming gradient of C to compute the gradients for A and B and adds them to the .grad attributes of A and B. This process continues until gradients have been accumulated for all "leaf" nodes in the graph (the original input Tensors).
+
+#### **10.3. Inspecting Gradients: .grad**
+
+After .backward() has been called, the computed gradient for any Tensor t in the graph is stored in its .grad attribute. This attribute is exposed as a read-only property that returns the gradient as a NumPy array, making it easy to inspect or use with external Python libraries.1 The
+
+.grad attribute of a Tensor has the same dimensions as the Tensor itself.
+
+#### **10.4. Inference Mode: no\_grad**
+
+For performance-critical situations where gradients are not required (e.g., model inference or forward passes), mlscript provides the no\_grad context manager. Any code executed within a with no\_grad: block will not build the computational graph. This significantly reduces memory consumption and computational overhead.
+
+This feature is implemented through a clean, cross-language mechanism. The Python-level NoGradManager object, when entering the with block, calls a method on the C++ Evaluator object. This C++ method toggles a global boolean flag within a singleton AutodiffContext object.1 Every
+
+Tensor operation in the C++ backend first checks the state of this global flag before attempting to record its parents and operation in the computational graph.1 This design provides a simple and efficient way to control the behavior of the entire automatic differentiation engine from the script level.
+
+*Example of a full AD workflow:*
+
+Code snippet
+
+// Create input tensors  
+a \= tensor(\[\[2.0\]\])  
+b \= tensor(\[\[3.0\]\])
+
+// Perform computations (builds the graph)  
+c \= a \* b  
+d \= c \+ a  
+e \= d.sum()
+
+// Compute gradients  
+e.backward()
+
+// Inspect the gradients  
+print(a.grad) // Gradient of e with respect to a  
+print(b.grad) // Gradient of e with respect to b
+
+// Perform inference without tracking gradients  
+with no\_grad:  
+    result \= a \* b // This operation is not added to the graph
+
+## **Part VI: Reference**
+
+### **11\. Built-in Functions and Objects**
+
+mlscript provides a set of globally available functions and objects that form its standard library. These built-ins are immediately available in any mlscript program without needing to be imported.
+
+* **Functions:**  
+  * len(object): Returns the length (number of items) of an object. Applicable to lists, strings, dictionaries, and tuples. This is a direct mapping to the Python len function.  
+  * range(...): Generates a sequence of numbers. It behaves identically to Python's range function.  
+  * min(...): Returns the smallest item from an iterable or the smallest of two or more arguments.  
+  * max(...): Returns the largest item from an iterable or the largest of two or more arguments.  
+  * sum(iterable): Returns the sum of all items in an iterable.  
+* **Objects and Factories:**  
+  * tensor(data): The factory function/constructor for creating Tensor objects from nested lists or NumPy arrays.  
+  * matmul(t1, t2): A function that performs matrix multiplication on two Tensor objects. It is a convenient alias for the C++ backend's matmul implementation.  
+  * no\_grad: The context manager instance used with the with statement to disable automatic differentiation.
+
+### **12\. Language Keywords**
+
+The following identifiers are reserved keywords in the mlscript language and cannot be used as variable, function, or class names.
+
+| Keyword | Description |
+| :---- | :---- |
+| as | Used with import to create an alias for a module. |
+| break | Exits the innermost loop. |
+| catch | Defines a block to handle exceptions thrown in a try block. |
+| class | Defines a new class. |
+| continue | Skips to the next iteration of the innermost loop. |
+| elif | Defines a conditional "else if" block in an if statement. |
+| else | Defines a block to execute when if/elif conditions are false. |
+| false | The boolean literal for false. |
+| finally | Defines a cleanup block that always executes after try/catch. |
+| for | Defines a loop for iterating over a sequence. |
+| fun | Defines a new function. |
+| if | Defines a block for conditional execution. |
+| import | Imports an external Python module. |
+| in | Used in for loops and for membership testing. |
+| inherits | Specifies parent classes in a class definition. |
+| not | Used with in for negative membership testing (not in). |
+| print | Prints a value to the console. |
+| return | Exits a function and returns a value. |
+| super | Accesses methods from a parent class. |
+| throw | Raises an exception. |
+| true | The boolean literal for true. |
+| try | Defines a block of code for exception handling. |
+| while | Defines a loop that executes as long as a condition is true. |
+| with | Used with context managers for resource management. |
+
