@@ -5,9 +5,9 @@ name: Build and Publish Wheels
 on:
   # Run on every push or pull request to the main branch for testing.
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "master" ]
   # This allows you to run the workflow manually from the GitHub Actions tab.
   workflow_dispatch:
 
