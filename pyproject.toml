@@ -1,10 +1,27 @@
-[project]
-name = "mlscript_interpreter"
+name = "mlscript-lang"
 version = "0.8.0"
+description = "A specialized scripting language for AI and Machine Learning."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT License" }
+authors = [
+    { name = "Amit Singh", email = "amitsinghdps6@gmail.com" },
+]
 
+# These URLs will be displayed on your project's PyPI page.
+[project.urls]
+Homepage = "https://github.com/AmitSingh410/mlscript"
+"Bug Tracker" = "https://github.com/AmitSingh410/mlscript/issues"
+
+# This section tells pip what tools it needs to download BEFORE building your project.
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["scikit-build-core>=0.8", "cmake>=3.15", "pybind11"]
+build-backend = "scikit_build_core.build"
 
-[tool.setuptools]
-packages = ["interpreter","mlscript_kernel"]
+# This section is the configuration for our main build tool, scikit-build-core.
+[tool.scikit-build]
+# Specifies the minimum version of CMake required to build the C++ backend.
+cmake.minimum-version = "3.15"
+# This is a crucial line. It explicitly tells the build tool which of your
+# directories are Python packages that need to be included in the final distribution.
+wheel.packages = ["interpreter", "mlscript_kernel"]
