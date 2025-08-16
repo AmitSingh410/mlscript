@@ -4,7 +4,10 @@ project(mlscript LANGUAGES CXX)
 find_package(OpenMP REQUIRED)
 find_package(Python 3.8 COMPONENTS Interpreter Development REQUIRED)
 
-add_subdirectory(third_party/eigen EXCLUDE_FROM_ALL)
+add_library(Eigen INTERFACE)
+target_include_directories(Eigen INTERFACE
+    "${CMAKE_SOURCE_DIR}/third_party/eigen"
+)
 add_subdirectory(third_party/pybind11)
 
 execute_process(
@@ -26,7 +29,7 @@ pybind11_add_module(mlscript SHARED
 target_compile_features(mlscript PRIVATE cxx_std_17)
 
 target_link_libraries(mlscript PRIVATE
-    Eigen3::Eigen
+    Eigen
     pybind11::module
     OpenMP::OpenMP_CXX
 )
