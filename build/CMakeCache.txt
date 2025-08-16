@@ -650,6 +650,9 @@ MPFR_INCLUDES:PATH=MPFR_INCLUDES-NOTFOUND
 //Path to a library.
 MPFR_LIBRARIES:FILEPATH=MPFR_LIBRARIES-NOTFOUND
 
+//The directory containing a CMake configuration file for NumPy.
+NumPy_DIR:PATH=NumPy_DIR-NOTFOUND
+
 //Path to a library.
 OMP_gomp_LIBRARY:FILEPATH=OMP_gomp_LIBRARY-NOTFOUND
 
@@ -850,6 +853,8 @@ CMAKE_CACHE_PATCH_VERSION:INTERNAL=0
 CMAKE_COMMAND:INTERNAL=C:/Program Files/CMake/bin/cmake.exe
 //Path to cpack program executable.
 CMAKE_CPACK_COMMAND:INTERNAL=C:/Program Files/CMake/bin/cpack.exe
+//ADVANCED property for variable: CMAKE_CTEST_COMMAND
+CMAKE_CTEST_COMMAND-ADVANCED:INTERNAL=1
 //Path to ctest program executable.
 CMAKE_CTEST_COMMAND:INTERNAL=C:/Program Files/CMake/bin/ctest.exe
 //ADVANCED property for variable: CMAKE_CXX_FLAGS
@@ -958,7 +963,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=2
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=20
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //noop for ranlib
@@ -1010,6 +1015,8 @@ COMPILER_SUPPORT_FASTMATH:INTERNAL=
 COMPILER_SUPPORT_FPFAST:INTERNAL=1
 //Test COMPILER_SUPPORT_OPENMP
 COMPILER_SUPPORT_OPENMP:INTERNAL=1
+//Test COMPILER_SUPPORT_std=cpp03
+COMPILER_SUPPORT_std=cpp03:INTERNAL=
 //ADVANCED property for variable: COVERAGE_COMMAND
 COVERAGE_COMMAND-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: COVERAGE_EXTRA_FLAGS
@@ -1085,13 +1092,13 @@ EIGEN_COMPILER_SUPPORT_CPP11:INTERNAL=
 //ADVANCED property for variable: EIGEN_TEST_EIGEN2
 EIGEN_TEST_EIGEN2-ADVANCED:INTERNAL=1
 //Details about finding OpenMP
-FIND_PACKAGE_MESSAGE_DETAILS_OpenMP:INTERNAL=[TRUE][TRUE][ ][v2.0()]
+FIND_PACKAGE_MESSAGE_DETAILS_OpenMP:INTERNAL=[TRUE][ ][v2.0()]
 //Details about finding OpenMP_C
 FIND_PACKAGE_MESSAGE_DETAILS_OpenMP_C:INTERNAL=[-openmp][v2.0()]
 //Details about finding OpenMP_CXX
 FIND_PACKAGE_MESSAGE_DETAILS_OpenMP_CXX:INTERNAL=[-openmp][v2.0()]
 //Details about finding Python
-FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[C:/Users/amits/AppData/Local/Programs/Python/Python313/python.exe][C:/Users/amits/AppData/Local/Programs/Python/Python313/libs/python313.lib][C:/Users/amits/AppData/Local/Programs/Python/Python313/Include][found components: Interpreter Development Development.Module Development.Embed ][v3.13.2()]
+FIND_PACKAGE_MESSAGE_DETAILS_Python:INTERNAL=[C:/Users/amits/AppData/Local/Programs/Python/Python313/python.exe][C:/Users/amits/AppData/Local/Programs/Python/Python313/libs/python313.lib][C:/Users/amits/AppData/Local/Programs/Python/Python313/Include][found components: Interpreter Development Development.Module Development.Embed ][v3.13.2(3.8)]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: GOOGLEHASH_INCLUDES

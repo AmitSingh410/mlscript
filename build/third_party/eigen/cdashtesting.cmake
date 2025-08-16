@@ -3,7 +3,7 @@ set(CTEST_SOURCE_DIRECTORY  "C:/Users/amits/Documents/Projects/mlscript")
 set(CTEST_BINARY_DIRECTORY  "C:/Users/amits/Documents/Projects/mlscript/build")
 set(CTEST_CMAKE_GENERATOR   "Visual Studio 17 2022")
 set(CTEST_BUILD_NAME        "unknownwin-19.44.35213.0-sse2-64bit")
-set(CTEST_SITE              "AmitSingh")
+set(CTEST_SITE              "amitsingh")
 
 set(MODEL Experimental)
 if(${CTEST_SCRIPT_ARG} MATCHES Nightly)

@@ -1,47 +1,37 @@
 cmake_minimum_required(VERSION 3.15)
-project(mlscript)
-
-# --- Find Dependencies ---
+project(mlscript LANGUAGES CXX)
 
 find_package(OpenMP REQUIRED)
+find_package(Python 3.8 COMPONENTS Interpreter Development REQUIRED)
 
+add_subdirectory(third_party/eigen EXCLUDE_FROM_ALL)
 add_subdirectory(third_party/pybind11)
 
-# For Eigen, we create an INTERFACE library. This is the standard way to handle
-# a header-only library. It just adds the include directory to the compiler's
-# search path without trying to "build" Eigen itself.
-add_library(Eigen INTERFACE)
-target_include_directories(Eigen SYSTEM INTERFACE third_party/eigen)
-
-find_package(Python COMPONENTS Interpreter Development REQUIRED)
 execute_process(
     COMMAND ${Python_EXECUTABLE} -c "import numpy; print(numpy.get_include())"
     OUTPUT_VARIABLE NUMPY_INCLUDE_DIR
     OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE NUMPY_FOUND_RESULT
 )
 
-# --- Configure the Main Project ---
-
-# This places the final compiled .pyd file in the project's root directory
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+if(NOT NUMPY_FOUND_RESULT EQUAL 0)
+    message(FATAL_ERROR "Failed to find NumPy headers. Make sure NumPy is installed in the build environment.")
+endif()
 
 pybind11_add_module(mlscript SHARED
     cpp_backend/bindings.cpp
     cpp_backend/evaluator.cpp
 )
 
-# Link the necessary libraries and include directories
-target_include_directories(mlscript PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/cpp_backend"
-    ${Python_INCLUDE_DIRS}
-    ${NUMPY_INCLUDE_DIR}
-)
+target_compile_features(mlscript PRIVATE cxx_std_17)
 
 target_link_libraries(mlscript PRIVATE
-    Eigen
-    pybind11::embed
+    Eigen3::Eigen
+    pybind11::module
     OpenMP::OpenMP_CXX
 )
 
-# Set the C++ standard for consistency
-target_compile_features(mlscript PRIVATE cxx_std_17)
+target_include_directories(mlscript PRIVATE
+    "${CMAKE_SOURCE_DIR}/cpp_backend"
+    ${NUMPY_INCLUDE_DIR}
+)

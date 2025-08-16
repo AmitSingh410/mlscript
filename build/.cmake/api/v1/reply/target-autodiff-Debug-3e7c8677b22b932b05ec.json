@@ -1,0 +1,100 @@
+{
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"ei_add_test",
+			"add_dependencies"
+		],
+		"files" : 
+		[
+			"third_party/eigen/cmake/EigenTesting.cmake",
+			"third_party/eigen/unsupported/test/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 44,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 210,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 3,
+			"id" : "autodiff_5::@342d5b24818f8cb880bb"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "autodiff_2::@342d5b24818f8cb880bb"
+		},
+		{
+			"backtrace" : 5,
+			"id" : "autodiff_1::@342d5b24818f8cb880bb"
+		},
+		{
+			"backtrace" : 6,
+			"id" : "autodiff_4::@342d5b24818f8cb880bb"
+		},
+		{
+			"backtrace" : 7,
+			"id" : "autodiff_3::@342d5b24818f8cb880bb"
+		}
+	],
+	"id" : "autodiff::@342d5b24818f8cb880bb",
+	"name" : "autodiff",
+	"paths" : 
+	{
+		"build" : "third_party/eigen/unsupported/test",
+		"source" : "third_party/eigen/unsupported/test"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

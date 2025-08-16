@@ -1,0 +1,260 @@
+{
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"ei_add_test",
+			"add_dependencies"
+		],
+		"files" : 
+		[
+			"third_party/eigen/cmake/EigenTesting.cmake",
+			"third_party/eigen/test/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 186,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 210,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "product_small_1::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "product_small_3::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 5,
+			"id" : "product_small_5::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 6,
+			"id" : "product_small_13::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 7,
+			"id" : "product_small_12::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 8,
+			"id" : "product_small_23::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 9,
+			"id" : "product_small_2::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 10,
+			"id" : "product_small_8::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 11,
+			"id" : "product_small_4::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 12,
+			"id" : "product_small_6::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 13,
+			"id" : "product_small_11::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 14,
+			"id" : "product_small_21::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 15,
+			"id" : "product_small_22::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 16,
+			"id" : "product_small_42::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 17,
+			"id" : "product_small_9::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 18,
+			"id" : "product_small_32::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 19,
+			"id" : "product_small_31::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 20,
+			"id" : "product_small_43::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 21,
+			"id" : "product_small_41::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 22,
+			"id" : "product_small_33::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 23,
+			"id" : "product_small_7::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "product_small::@735bd0dc3aa0a1a32fec",
+	"name" : "product_small",
+	"paths" : 
+	{
+		"build" : "third_party/eigen/test",
+		"source" : "third_party/eigen/test"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

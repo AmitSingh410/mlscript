@@ -1,0 +1,130 @@
+{
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_custom_target",
+			"ei_add_test",
+			"add_dependencies"
+		],
+		"files" : 
+		[
+			"third_party/eigen/cmake/EigenTesting.cmake",
+			"third_party/eigen/test/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 198,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 210,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 214,
+				"parent" : 1
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 3,
+			"id" : "array_cwise_6::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "array_cwise_8::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 5,
+			"id" : "array_cwise_1::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 6,
+			"id" : "array_cwise_3::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 7,
+			"id" : "array_cwise_4::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 8,
+			"id" : "array_cwise_5::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 9,
+			"id" : "array_cwise_2::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"backtrace" : 10,
+			"id" : "array_cwise_7::@735bd0dc3aa0a1a32fec"
+		},
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
+		}
+	],
+	"id" : "array_cwise::@735bd0dc3aa0a1a32fec",
+	"name" : "array_cwise",
+	"paths" : 
+	{
+		"build" : "third_party/eigen/test",
+		"source" : "third_party/eigen/test"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}
