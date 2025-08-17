@@ -2,7 +2,7 @@ import importlib
 from .parser import Parser
 from .lexer import tokenize
 from .ast_nodes import *
-import mlscript
+from . import mlscript
 
 class C3_MRO:
     @staticmethod

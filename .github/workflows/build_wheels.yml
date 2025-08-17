@@ -39,7 +39,7 @@ jobs:
         env:
           CIBW_SKIP: "cp36-* cp37-* pp*"
           CIBW_ARCHS_WINDOWS: "AMD64"
-          CIBW_TEST_COMMAND: "mlscript test_suite.ms"
+          CIBW_TEST_COMMAND: "mlscript {project}/test_suite.ms"
 
 
       - name: Upload wheels
