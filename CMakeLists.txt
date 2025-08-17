@@ -25,18 +25,18 @@ endif()
 
 # --- Build Module ---
 
-pybind11_add_module(mlscript SHARED
+pybind11_add_module(interpreter.mlscript SHARED
     cpp_backend/bindings.cpp
     cpp_backend/evaluator.cpp
 )
 
-target_include_directories(mlscript PRIVATE
+target_include_directories(interpreter.mlscript PRIVATE
     "${CMAKE_SOURCE_DIR}/cpp_backend"
     "${CMAKE_SOURCE_DIR}/third_party/eigen"
     ${NUMPY_INCLUDE_DIR}
 )
 
-target_link_libraries(mlscript PRIVATE
+target_link_libraries(interpreter.mlscript PRIVATE
     pybind11::module
     OpenMP::OpenMP_CXX
 )

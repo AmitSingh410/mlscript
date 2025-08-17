@@ -2,13 +2,13 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Release/mlscript.cp313-win_amd64.pyd"
+			"path" : "RelWithDebInfo/interpreter.mlscript.cp313-win_amd64.pyd"
 		},
 		{
-			"path" : "Release/mlscript.lib"
+			"path" : "RelWithDebInfo/interpreter.mlscript.lib"
 		},
 		{
-			"path" : "Release/mlscript.pdb"
+			"path" : "RelWithDebInfo/interpreter.mlscript.pdb"
 		}
 	],
 	"backtrace" : 4,
@@ -65,12 +65,6 @@
 			},
 			{
 				"command" : 4,
-				"file" : 2,
-				"line" : 324,
-				"parent" : 1
-			},
-			{
-				"command" : 4,
 				"file" : 0,
 				"line" : 4451,
 				"parent" : 3
@@ -82,27 +76,27 @@
 				"command" : 6,
 				"file" : 5,
 				"line" : 296,
-				"parent" : 7
+				"parent" : 6
 			},
 			{
 				"file" : 4,
-				"parent" : 8
+				"parent" : 7
 			},
 			{
 				"command" : 6,
 				"file" : 4,
 				"line" : 202,
-				"parent" : 9
+				"parent" : 8
 			},
 			{
 				"file" : 2,
-				"parent" : 10
+				"parent" : 9
 			},
 			{
 				"command" : 5,
 				"file" : 2,
 				"line" : 257,
-				"parent" : 11
+				"parent" : 10
 			},
 			{
 				"command" : 4,
@@ -136,56 +130,52 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD"
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /O2 /Ob1 /DNDEBUG -std:c++17 -MD"
 				},
 				{
-					"backtrace" : 5,
-					"fragment" : "/GL"
-				},
-				{
-					"backtrace" : 13,
+					"backtrace" : 12,
 					"fragment" : "/bigobj"
 				},
 				{
-					"backtrace" : 13,
+					"backtrace" : 12,
 					"fragment" : "/MP"
 				},
 				{
-					"backtrace" : 14,
+					"backtrace" : 13,
 					"fragment" : "-openmp"
 				}
 			],
 			"defines" : 
 			[
 				{
-					"backtrace" : 6,
+					"backtrace" : 5,
 					"define" : "Py_NO_LINK_LIB"
 				},
 				{
-					"define" : "mlscript_EXPORTS"
+					"define" : "interpreter_mlscript_EXPORTS"
 				}
 			],
 			"includes" : 
 			[
 				{
-					"backtrace" : 15,
+					"backtrace" : 14,
 					"path" : "C:/Users/amits/Documents/Projects/mlscript/cpp_backend"
 				},
 				{
-					"backtrace" : 15,
+					"backtrace" : 14,
 					"path" : "C:/Users/amits/Documents/Projects/mlscript/third_party/eigen"
 				},
 				{
-					"backtrace" : 15,
+					"backtrace" : 14,
 					"path" : "C:/Users/amits/AppData/Local/Programs/Python/Python313/Lib/site-packages/numpy/_core/include"
 				},
 				{
-					"backtrace" : 6,
+					"backtrace" : 5,
 					"isSystem" : true,
 					"path" : "C:/Users/amits/AppData/Local/Programs/Python/Python313/Include"
 				},
 				{
-					"backtrace" : 16,
+					"backtrace" : 15,
 					"isSystem" : true,
 					"path" : "C:/Users/amits/Documents/Projects/mlscript/third_party/pybind11/include"
 				}
@@ -195,9 +185,9 @@
 			{
 				"backtraces" : 
 				[
-					16,
-					16,
-					16
+					15,
+					15,
+					15
 				],
 				"standard" : "17"
 			},
@@ -214,7 +204,7 @@
 			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "mlscript::@6890427a1f51a3e7e1df",
+	"id" : "interpreter.mlscript::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -224,21 +214,16 @@
 				"role" : "flags"
 			},
 			{
-				"fragment" : "/machine:x64 /INCREMENTAL:NO",
+				"fragment" : "/machine:x64 /debug /INCREMENTAL",
 				"role" : "flags"
 			},
 			{
 				"backtrace" : 5,
-				"fragment" : "-LTCG",
-				"role" : "flags"
-			},
-			{
-				"backtrace" : 6,
 				"fragment" : "C:\\Users\\amits\\AppData\\Local\\Programs\\Python\\Python313\\libs\\python313.lib",
 				"role" : "libraries"
 			},
 			{
-				"backtrace" : 12,
+				"backtrace" : 11,
 				"fragment" : "C:\\Users\\amits\\AppData\\Local\\Programs\\Python\\Python313\\libs\\python313.lib",
 				"role" : "libraries"
 			},
@@ -249,8 +234,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "mlscript",
-	"nameOnDisk" : "mlscript.cp313-win_amd64.pyd",
+	"name" : "interpreter.mlscript",
+	"nameOnDisk" : "interpreter.mlscript.cp313-win_amd64.pyd",
 	"paths" : 
 	{
 		"build" : ".",

@@ -1690,6 +1690,18 @@
 			"value" : "8aa8cd9c4dce525eb09528a9132f5703"
 		},
 		{
+			"name" : "_Python_Interpreter_REASON_FAILURE",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Interpreter reason failure"
+				}
+			],
+			"type" : "INTERNAL",
+			"value" : ""
+		},
+		{
 			"name" : "_Python_LIBRARY_DEBUG",
 			"properties" : 
 			[
