@@ -1,22 +1,35 @@
 [project]
 name = "mlscript-lang"
-version = "0.9.0"
+version = "1.0.0"
 description = "A specialized scripting language for AI and Machine Learning."
 readme = "README.md"
 requires-python = ">=3.8"
-license = { text = "MIT License" }
+license = { file = "LICENSE" } 
 authors = [
-    { name = "Amit Singh", email = "amitsingh4102001@gmail.com" },
+    { name = "Amit Singh", email = "amitsinghdps6@gmail.com" },
+]
+# This NEW section lists packages that mlscript needs to RUN.
+# They will be installed automatically for the end-user.
+dependencies = [
+    "numpy",
+    "ipykernel",
+    "jupyter-client",
+    "ipython"
 ]
 
 [project.urls]
 Homepage = "https://github.com/AmitSingh410/mlscript"
 "Bug Tracker" = "https://github.com/AmitSingh410/mlscript/issues"
 
+# This NEW section creates the command-line executables.
+[project.scripts]
+mlscript = "interpreter.main:main"
+mlscript-kernel-install = "mlscript_kernel.install:main"
+
 [build-system]
-requires = ["scikit-build-core>=0.8", "cmake>=3.15", "pybind11","numpy"]
+requires = ["scikit-build-core>=0.8", "cmake>=3.15", "pybind11", "numpy"]
 build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
-cmake.minimum-version = "3.15"
+cmake.version = ">=3.15"
 wheel.packages = ["interpreter", "mlscript_kernel"]

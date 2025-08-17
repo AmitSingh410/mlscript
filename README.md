@@ -22,39 +22,78 @@ This deliberate separation of concerns allows mlscript to provide an optimal env
 
 This section provides the necessary information to build the mlscript language module from source and prepare it for use in a development environment.
 
-#### **2.1. Prerequisites**
+#### **2.1. Installation**
 
-To successfully build mlscript, the following dependencies must be installed and configured on the build system. The build process relies on CMake to manage dependencies and generate the appropriate build files for the target platform.1
+The easiest way to get started with mlscript is to install it directly from the Python Package Index (PyPI). This does not require a C++ compiler or any other development tools on your machine.
 
-* **C++17 Compliant Compiler:** The mlscript C++ backend uses features from the C++17 standard. A modern compiler such as GCC, Clang, or MSVC that supports this standard is required.  
-* **CMake (Version 3.15 or higher):** The project uses CMake for its build system automation. The minimum required version is 3.15.  
-* **Python and NumPy:** A Python installation (including development headers) is necessary for building the Python bindings. The NumPy library is also required, as its C API headers are used for interoperability with the Tensor object. The build script will automatically locate the Python interpreter and NumPy include directories.  
-* **OpenMP:** The language's C++ backend is designed for parallel execution and requires the OpenMP library. The CMake configuration will fail if OpenMP is not found on the system.  
-* **Eigen and pybind11:** The source code for the Eigen and pybind11 libraries must be present within the third\_party directory of the project's source tree. The build system is configured to compile these libraries directly from this location rather than relying on a system-wide installation.
+**Prequisites:**
 
-#### **2.2. Building from Source**
+* Python 3.8 or higher.
 
-The compilation process is managed by CMake and produces a Python extension module. This module can then be imported and used like any other Python package.
+Open your terminal and run the following command. This will download and install mlscript and all of its required dependencies, such as NumPy.
 
-The build process can be summarized in the following steps:
+`pip install mlscript-lang`
 
-1. **Obtain the Source Code:** Clone or download the mlscript source code repository.  
-2. **Populate Dependencies:** Ensure that the source code for Eigen and pybind11 is located in the third\_party/eigen and third\_party/pybind11 subdirectories, respectively.  
-3. **Configure the Build:** Navigate to the root directory of the source code in a terminal and run CMake to generate the build files.  
-   Bash  
-   cmake.
 
-4. **Compile the Module:** Execute the build command. On Linux or macOS, this is typically done with make.  
-   Bash  
-   make
+#### **2.2. Running Script Files**
 
-   Alternatively, the platform-agnostic CMake build command can be used:  
-   Bash  
-   cmake \--build.
+You can write mlscript code in a file with a .ms extension and run it directly from your terminal.
 
-5. **Locate the Artifact:** Upon successful compilation, the mlscript Python module (e.g., mlscript.so on Linux or mlscript.pyd on Windows) will be placed in the root source directory of the project.1 This is a deliberate configuration choice to make the module immediately available for use without requiring installation into a system or virtual environment directory.
+`mlscript test_suite.ms`
 
-Once built, the mlscript interpreter can be run, or the module can be imported into an interactive Python session from the project's root directory.
+#### **2.3. Using the Jupyter Kernel**
+
+mlscript provides a full-featured Jupyter kernel for interactive development.
+
+1. **Run the one-time setup command** This registers the kernel with Jupyter.
+
+`mlscript-kernel-install` 
+
+2. **Launch Jupyter** 
+
+`jupyter lab`
+
+3. **Select the *mlscript* kernel** When you create a new notebook, you will see "mlscript" as an option in the launcher. You can now write and execute mlscript code directly in the cells.
+
+### **3. Building from Source (for Developers)**
+
+This section is for users who wish to contribute to the development of mlscript and need to build the C++ module from the source code.
+
+#### **3.1. Prerequisites:**
+
+* A **C+17** Compliant Compiler (GCC, Clang, or MSVC)
+
+* **CMake** (Version 3.15 or higher)
+
+* **Python** (Version 3.8 or higher, including development headers)
+
+* **OpenMP** 
+
+#### **3.2. Development Setup**
+
+The recommended way to set up a development environment is to perform an "editable" install. This builds the C++ module and links the Python packages to your source tree, so any changes you make are reflected immediately.
+
+1. **Clone the Repository:** Clone the mlscript repository, ensuring you also fetch the necessary submodules for Eigen and pybind11.
+
+```
+git clone --recursive [https://github.com/AmitSingh410/mlscript.git(https://github.com/AmitSingh410/mlscript.git)
+cd mlscript
+```
+
+2. **Create and Activate a Virtual Environment:**
+
+```
+python -m venv .venv
+.\.venv\Scripts\activate
+```
+3. **Perform an Editable Install:**
+
+This command will invoke the CMake build process and install the package in editable mode.
+
+`pip install -e .`
+
+Once the install is complete, you can run the interpreter and test your changes using the mlscript command as described in the sections above.
+
 
 ## **Part II: Language Fundamentals**
 
