@@ -34,6 +34,11 @@ jobs:
           Get-Content .gitmodules -ErrorAction SilentlyContinue
         shell: pwsh
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
       - name: Build wheels with cibuildwheel
         uses: pypa/cibuildwheel@v2.19
         env:
