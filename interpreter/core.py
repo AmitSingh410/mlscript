@@ -2,6 +2,7 @@ import importlib
 from .parser import Parser
 from .lexer import tokenize
 from .ast_nodes import *
+from interpreter import mlscript 
 
 class C3_MRO:
     @staticmethod
@@ -134,7 +135,6 @@ class NoGradManager:
 
 class Interpreter:
     def __init__(self):
-        from interpreter import mlscript 
         self.mlscript = mlscript
         self.e = mlscript.Evaluator()
         self.functions = {}

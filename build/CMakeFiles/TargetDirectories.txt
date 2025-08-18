@@ -1,4 +1,6 @@
 C:/Users/amits/Documents/Projects/mlscript/build/CMakeFiles/interpreter.mlscript.dir
+C:/Users/amits/Documents/Projects/mlscript/build/CMakeFiles/INSTALL.dir
 C:/Users/amits/Documents/Projects/mlscript/build/CMakeFiles/ALL_BUILD.dir
 C:/Users/amits/Documents/Projects/mlscript/build/CMakeFiles/ZERO_CHECK.dir
+C:/Users/amits/Documents/Projects/mlscript/build/third_party/pybind11/CMakeFiles/INSTALL.dir
 C:/Users/amits/Documents/Projects/mlscript/build/third_party/pybind11/CMakeFiles/ALL_BUILD.dir

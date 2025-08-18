@@ -1,5 +1,4 @@
 import sys
-from interpreter import mlscript
 from .core import Interpreter, ReturnSignal
 
 def run_from_file(filepath):

@@ -10,7 +10,8 @@
 					[
 						1
 					],
-					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-532643aa2bfc8d6df596.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.15"
@@ -99,7 +100,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "interpreter.mlscript::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-interpreter.mlscript-Debug-e78a92a9458fc7c0e14a.json",
+					"jsonFile" : "target-interpreter.mlscript-Debug-ad3138d07341e25e7862.json",
 					"name" : "interpreter.mlscript",
 					"projectIndex" : 0
 				}
@@ -114,7 +115,8 @@
 					[
 						1
 					],
-					"jsonFile" : "directory-.-Release-d0094a50bb2071803777.json",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Release-77aff51c3b598dd5dd04.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.15"
@@ -203,7 +205,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "interpreter.mlscript::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-interpreter.mlscript-Release-fe521252e845dc5d5ce2.json",
+					"jsonFile" : "target-interpreter.mlscript-Release-537f4a2067604324b9f0.json",
 					"name" : "interpreter.mlscript",
 					"projectIndex" : 0
 				}
@@ -218,7 +220,8 @@
 					[
 						1
 					],
-					"jsonFile" : "directory-.-MinSizeRel-d0094a50bb2071803777.json",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-MinSizeRel-4891225499b9d2f15bb1.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.15"
@@ -307,7 +310,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "interpreter.mlscript::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-interpreter.mlscript-MinSizeRel-7625e6e2941d8380f56f.json",
+					"jsonFile" : "target-interpreter.mlscript-MinSizeRel-dd4504ff73bf64911536.json",
 					"name" : "interpreter.mlscript",
 					"projectIndex" : 0
 				}
@@ -322,7 +325,8 @@
 					[
 						1
 					],
-					"jsonFile" : "directory-.-RelWithDebInfo-d0094a50bb2071803777.json",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-RelWithDebInfo-cdad16096b884a8b7829.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.15"
@@ -411,7 +415,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "interpreter.mlscript::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-interpreter.mlscript-RelWithDebInfo-006f8c1bcbeb8d21cd74.json",
+					"jsonFile" : "target-interpreter.mlscript-RelWithDebInfo-6075a61e60ca6d59f956.json",
 					"name" : "interpreter.mlscript",
 					"projectIndex" : 0
 				}
