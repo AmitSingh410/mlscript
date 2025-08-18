@@ -1307,7 +1307,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "[C:/Users/amits/AppData/Local/Programs/Python/Python313/python.exe][C:/Users/amits/AppData/Local/Programs/Python/Python313/libs/python313.lib][C:/Users/amits/AppData/Local/Programs/Python/Python313/Include][found components: Interpreter Development Development.Module Development.Embed ][v3.13.2(3.8)]"
+			"value" : "[C:/Users/amits/AppData/Local/Programs/Python/Python313/python.exe][C:/Users/amits/AppData/Local/Programs/Python/Python313/libs/python313.lib][C:/Users/amits/AppData/Local/Programs/Python/Python313/Include][found components: Interpreter Development Development.Module Development.Embed ][v3.13.2()]"
 		},
 		{
 			"name" : "HAS_MSVC_GL_LTCG",

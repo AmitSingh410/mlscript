@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # --- Find Dependencies ---
 find_package(OpenMP REQUIRED)
-find_package(Python 3.8 COMPONENTS Interpreter Development REQUIRED)
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
 add_subdirectory(third_party/pybind11)
 
 execute_process(

@@ -32,8 +32,11 @@ build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
 cmake.version = ">=3.15"
-wheel.install-dir = "interpreter"
 wheel.packages = ["interpreter", "mlscript_kernel"]
 
 [tool.cibuildwheel]
 test-command = "mlscript {project}/test_suite.ms"
+skip = "cp36-* cp37-* pp*"
+
+[tool.cibuildwheel.windows]
+archs = ["AMD64"]
