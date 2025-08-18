@@ -2,7 +2,11 @@
     "cmake.sourceDirectory": "C:/Users/amits/Documents/Projects/mlscript",
     "C_Cpp.errorSquiggles": "enabled",
     "files.associations": {
-        "variant": "cpp"
+        "*.md": "markdown",
+        "variant": "cpp",
+        "chrono": "cpp",
+        "thread": "cpp",
+        "vector": "cpp"
     }
     
     

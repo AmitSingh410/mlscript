@@ -21,7 +21,7 @@ if os.name == 'nt':
 
 # We wrap the import in a try/except to log startup crashes
 try:
-    from interpreter.interpreter import Interpreter
+    from interpreter.core import Interpreter
     INTERPRETER_INSTANCE = Interpreter()
     IMPORT_ERROR = None
 except Exception:
@@ -35,7 +35,7 @@ from ipykernel.kernelbase import Kernel
 
 class MLScriptKernel(Kernel):
     implementation = 'mlscript'
-    implementation_version = '0.8'
+    implementation_version = '1.0.0'
     language = 'mlscript'
     language_version = '0.8'
     language_info = {

@@ -1,6 +1,6 @@
 import sys
 from interpreter import mlscript
-from .interpreter import Interpreter, ReturnSignal
+from .core import Interpreter, ReturnSignal
 
 def run_from_file(filepath):
     interp = Interpreter()

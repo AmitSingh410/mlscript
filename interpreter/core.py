@@ -135,6 +135,7 @@ class NoGradManager:
 class Interpreter:
     def __init__(self):
         from interpreter import mlscript 
+        self.mlscript = mlscript
         self.e = mlscript.Evaluator()
         self.functions = {}
         self.method_context_stack = []
@@ -154,10 +155,6 @@ class Interpreter:
             self.e.assign_variable(name, value)
 
     def run(self, code):
-        ast = self.mlscript.parse(code)
-        result = self.evaluate(ast)
-        if result is not None:
-            print(result)
         tokens = tokenize(code)
         statements = Parser(tokens,code).parse()
         for stmt in statements:
