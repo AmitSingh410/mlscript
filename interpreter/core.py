@@ -62,14 +62,14 @@ class MlscriptClass:
         self.methods = methods
         self.mro = C3_MRO.resolve(self)
 
-    def __call__(self, interpreter, args):
+    def __call__(self, interpreter, args, kwargs):
         instance = MlscriptInstance(self)
         initializer_tuple = self.find_method("init")
         if initializer_tuple:
             method_node, defining_class = initializer_tuple
             bound_init = MlscriptBoundMethod(instance, method_node, defining_class)
-            bound_init(interpreter, args)
-        elif len(args) > 0:
+            bound_init(interpreter, args,kwargs)
+        elif len(args) > 0 or len(kwargs) > 0:
             raise Exception(f"Error: '{self.name}' constructor takes no arguments, but {len(args)} were given.")
         return instance
 
@@ -88,8 +88,8 @@ class MlscriptBoundMethod:
         self.func_def_node = func_def_node
         self.defining_class = defining_class
 
-    def __call__(self, interpreter, args):
-        return interpreter._call_function(self.func_def_node, args, instance=self.instance, defining_class=self.defining_class)
+    def __call__(self, interpreter, args, kwargs):
+        return interpreter._call_function(self.func_def_node, args, kwargs,instance=self.instance, defining_class=self.defining_class)
     
 class MlscriptInstance:
     def __init__(self,klass):
@@ -149,6 +149,14 @@ class Interpreter:
             'max': max,
             'sum': sum,
             'no_grad': NoGradManager(self.e),
+            'Dense': mlscript.Dense,
+            'ReLU': mlscript.ReLU,
+            'Sigmoid': mlscript.Sigmoid,
+            'Flatten': mlscript.Flatten,
+            'MSELoss': mlscript.MSELoss,
+            'CrossEntropyLoss': mlscript.CrossEntropyLoss,
+            'SGD': mlscript.SGD,
+            'Adam': mlscript.Adam
         }
         
         for name, value in self.global_scope.items():
@@ -161,6 +169,8 @@ class Interpreter:
             self.visit(stmt)
 
     def visit(self, node):
+        if isinstance(node,NetworkLiteral):
+            return self.visit_NetworkLiteral(node)
         method_name = f'visit_{type(node).__name__}'
         visitor = getattr(self, method_name, self.no_visit_method)
         return visitor(node)
@@ -221,11 +231,15 @@ class Interpreter:
         return node.value
 
     def visit_PrintStatement(self, node):
-        value = self.visit(node.expr)
-        if isinstance(value,bool):
-            print(str(value).lower())
-        else:
-            print(value)
+        values = []
+        for expr in node.exprs:
+            value = self.visit(expr)
+            if isinstance(value, bool):
+                values.append(str(value).lower())
+            else:
+                values.append(value)
+        
+        print(*values)
 
     def visit_Block(self, node):
         for statement in node.statements:
@@ -351,18 +365,19 @@ class Interpreter:
     def visit_FunctionCall(self, node):
         line_num = node.token[2]
         args = [self.visit(arg) for arg in node.args]
+        kwargs = {key: self.visit(value) for key,value in node.kwargs.items()}
 
         if isinstance(node.callee, Variable) and node.callee.name in self.functions:
             func_def = self.functions[node.callee.name]
-            return self._call_function(func_def, args)
+            return self._call_function(func_def, args, kwargs)
 
         callee_obj = self.visit(node.callee)
 
         if isinstance(callee_obj, MlscriptClass):
-            return callee_obj(self, args)
+            return callee_obj(self, args, kwargs)
         
         if isinstance(callee_obj, MlscriptBoundMethod):
-            return callee_obj(self, args)
+            return callee_obj(self, args, kwargs)
         
         if isinstance(callee_obj, NoGradManager):
             raise Exception(f"Runtime Error on line {line_num}: 'no_grad' must be used in a 'with' statement, not called as a function.")
@@ -372,7 +387,7 @@ class Interpreter:
             raise Exception(f"Runtime Error on line {line_num}: '{callee_repr}' is not a function.")
 
         try:
-            return callee_obj(*args)
+            return callee_obj(*args, **kwargs)
         except Exception as e:
             raise Exception(f"Runtime Error on line {line_num}: Error during function call: {e}")
         
@@ -498,39 +513,54 @@ class Interpreter:
         obj.fields[node.attribute] = value
         return value
     
-    def _call_function(self, func_def, args, instance=None, defining_class=None):
-        params = func_def.params
-        num_args = len(args)
-        num_params = len(params)
-        
-        self_offset = 1 if instance is not None else 0
-        min_required_args = sum(1 for _, default in params if default is None) - self_offset
+    def _call_function(self, func_def, args, kwargs, instance=None, defining_class=None):
+        params = list(func_def.params)
+        param_names = [p[0].name for p in params]
+        final_args = {}
 
-        if num_args < min_required_args:
-            raise Exception(f"Error: Function '{func_def.name}' missing required arguments. Expected at least {min_required_args}, but received {num_args}.")
+        # 1. Handle instance 'self' - it's a special positional argument
+        if instance:
+            if not param_names:
+                raise Exception(f"Error: Method '{func_def.name}' has no 'self' parameter.")
+            final_args[param_names[0]] = instance
+            # Remove 'self' from the list of params to match against
+            param_names.pop(0) 
+            params.pop(0)
+
+        # 2. Match positional args to remaining params
+        for i, arg_value in enumerate(args):
+            if i >= len(param_names):
+                raise Exception(f"Error: Function '{func_def.name}' received too many positional arguments.")
+            param_name = param_names[i]
+            if param_name in kwargs:
+                 raise Exception(f"Error: Function '{func_def.name}' got multiple values for argument '{param_name}'")
+            final_args[param_name] = arg_value
         
-        if num_args > num_params - self_offset:
-            raise Exception(f"Error: Function '{func_def.name}' takes at most {num_params - self_offset} arguments, but {num_args} were given.")
+        # 3. Handle keyword arguments
+        for key, value in kwargs.items():
+            if key not in param_names:
+                raise Exception(f"Error: Function '{func_def.name}' got an unexpected keyword argument '{key}'")
+            if key in final_args:
+                raise Exception(f"Error: Function '{func_def.name}' got multiple values for argument '{key}'")
+            final_args[key] = value
 
         if instance:
             self.method_context_stack.append((instance, defining_class))
-        
+
         self.e.enter_scope()
         try:
-            if instance:
-                self_param_name = params[0][0].name
-                self.e.assign_variable(self_param_name, instance)
-
-            for i in range(self_offset, num_params):
-                param_node, default_node = params[i]
-                arg_index = i - self_offset
-
-                if arg_index < num_args:
-                    self.e.assign_variable(param_node.name, args[arg_index])
-                else:
+            for param_node, default_node in params:
+                param_name = param_node.name
+                if param_name in final_args:
+                    self.e.assign_variable(param_name, final_args[param_name])
+                elif default_node is not None:
                     default_value = self.visit(default_node)
-                    self.e.assign_variable(param_node.name, default_value)
-            
+                    self.e.assign_variable(param_name, default_value)
+                elif instance and param_name == param_names[0]:
+                    continue # Skip 'self' if it wasn't provided
+                else:
+                    raise Exception(f"Error: Function '{func_def.name}' missing required argument: '{param_name}'")
+
             return self.visit(func_def.body)
 
         except ReturnSignal as ret:
@@ -539,6 +569,60 @@ class Interpreter:
             self.e.exit_scope()
             if instance:
                 self.method_context_stack.pop()
-        
+
         return None
     
+    def visit_NetworkLiteral(self,node):
+        attrs = node.attributes
+
+        # Building Model Architecture
+        input_shape = self.visit(attrs['input'])
+        architecture = self.mlscript.Sequential()
+        current_shape = input_shape
+
+        layer_list_node = attrs['layers']
+        if not isinstance(layer_list_node,ListLiteral):
+            raise Exception("The 'layers' attribute in a network block must be a list.")
+        
+        for layer_call_node in layer_list_node.elements:
+            if not isinstance(layer_call_node,FunctionCall):
+                raise Exception("Elements in the 'layers' list must be layer calls, e.g., Dense(...)")
+            
+            layer_class = self.visit(layer_call_node.callee)
+            args = [self.visit(arg) for arg in layer_call_node.args]
+
+            if layer_class == self.mlscript.Dense:
+                if len(args)!=1:
+                    raise Exception(f"Dense() in a network block expects 1 argument (output_Features), got {len(args)}.")
+                output_features = args[0]
+                layer_instance = layer_class(current_shape, output_features)
+                current_shape = output_features
+            else:
+                layer_instance = layer_class(*args)
+
+            architecture.add_module(layer_instance)
+
+        # Building the Optimizer 
+        optimizer_node = attrs['optimizer']
+        if not isinstance(optimizer_node,FunctionCall):
+            raise Exception("The 'optimizer' attribute must be a function call, e.g., Adam(...)")
+        
+        optimizer_class = self.visit(optimizer_node.callee)
+
+        optimizer_pos_args = [self.visit(arg) for arg in optimizer_node.args]
+        optimizer_kwargs = {key: self.visit(value) for key, value in optimizer_node.kwargs.items()}
+
+        model_params = architecture.parameters()
+        optimizer = optimizer_class(model_params, *optimizer_pos_args, **optimizer_kwargs)
+
+        # Building the Loss functions
+        loss_fn_node = attrs['loss']
+        if not isinstance(loss_fn_node,FunctionCall):
+            raise Exception("The 'loss' attribute must be a function call, e.g., CrossEntropyLoss()")
+        
+        loss_fn_class = self.visit(loss_fn_node.callee)
+        loss_fn_args = [self.visit(arg) for arg in loss_fn_node.args]
+        loss_fn = loss_fn_class(*loss_fn_args)
+
+        # Final Assembly
+        return self.mlscript.AssembledModel(architecture,optimizer,loss_fn)    

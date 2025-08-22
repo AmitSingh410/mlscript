@@ -50,6 +50,7 @@ class TokenType(Enum):
     SUPER = auto()
     INHERITS = auto()
     AS = auto()
+    NETWORK = auto()
     EOF = auto()
 
 token_spec = [
@@ -78,6 +79,7 @@ token_spec = [
     (TokenType.PRINT,   r'print\b'),
     (TokenType.TRUE,    r'true\b'),
     (TokenType.FALSE,   r'false\b'),
+    (TokenType.NETWORK, r'network\b'),
     (TokenType.IMPORT,  r'import\b'),
     (TokenType.AS,      r'as\b'),
     (TokenType.FLOAT,   r'\d+\.\d+'),

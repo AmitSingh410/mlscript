@@ -1,6 +1,9 @@
 #ifndef AUTODIFF_CONTEXT_HPP
 #define AUTODIFF_CONTEXT_HPP
 
+#include <vector>
+#include <memory>
+
 class AutodiffContext {
 public:
     static AutodiffContext& get_instance() {
@@ -23,6 +26,8 @@ private:
     AutodiffContext() : grad_enabled_(true) {}
     bool grad_enabled_;
 };
+
+
 
 #endif // AUTODIFF_CONTEXT_HPP
 

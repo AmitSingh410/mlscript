@@ -21,42 +21,100 @@ struct Slice {
     py::ssize_t step;
 };
 
+namespace nn{
+    class ReLU;
+    class Sigmoid;
+    class Flatten;
+}
+
 class Tensor; 
 
-void build_topo(std::shared_ptr<const Tensor> node, std::vector<std::shared_ptr<const Tensor>>& topo, std::unordered_set<std::shared_ptr<const Tensor>>& visited);
+void build_topo(const std::shared_ptr<Tensor>& node, std::vector<std::shared_ptr<Tensor>>& topo, std::unordered_set<std::shared_ptr<Tensor>>& visited);
+
 
 class PYBIND11_EXPORT Tensor : public std::enable_shared_from_this<Tensor> {
 public:
     Eigen::Matrix<double, Eigen::Dynamic,Eigen::Dynamic, Eigen::RowMajor> mat;
     Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor> grad;
 
+    Tensor(const Tensor& other) = delete; // Copy Constructor
+    Tensor& operator=(const Tensor& other) = delete; // Copy Assignment Operator
+    Tensor(Tensor&& other) noexcept = default; // Move Constructor
+    Tensor& operator=(Tensor&& other) noexcept = default;
+    
+    // Factory helper to ensure Tensor instances are created as shared_ptrs and set requires_grad explicitly.
+    static std::shared_ptr<Tensor> create(const Eigen::MatrixXd& m, bool requires_grad = false) {  // (5)
+    auto t = std::make_shared<Tensor>(m);                                                      // (6)
+    t->requires_grad = requires_grad;                                                          // (7)
+    return t;                                                                                  // (8)
+    }
+
     Tensor(const std::vector<std::vector<double>>& data);
     Tensor(const Eigen::MatrixXd& matrix); 
     Tensor() = default;
 
-    Tensor operator+(const Tensor& other) const;
-    Tensor operator-(const Tensor& other) const;
-    Tensor operator*(const Tensor& other) const;
-    Tensor operator/(const Tensor& other) const;
-    Tensor operator*(double scalar) const;
-    Tensor matmul(const Tensor& other) const;
-    Tensor sum() const;
+    std::shared_ptr<Tensor> operator+(const Tensor& other) const;
+    std::shared_ptr<Tensor> operator-(const Tensor& other) const;
+    std::shared_ptr<Tensor> operator*(const Tensor& other) const;
+    std::shared_ptr<Tensor> operator/(const Tensor& other) const;
+    std::shared_ptr<Tensor> matmul(const Tensor& other) const;
+
+    std::shared_ptr<Tensor> graph_add(const std::shared_ptr<Tensor>& other) const;
+    std::shared_ptr<Tensor> graph_sub(const std::shared_ptr<Tensor>& other) const;
+    std::shared_ptr<Tensor> graph_mul(const std::shared_ptr<Tensor>& other) const;
+    std::shared_ptr<Tensor> graph_div(const std::shared_ptr<Tensor>& other) const;
+    std::shared_ptr<Tensor> graph_mul_scalar(double scalar) const;
+    std::shared_ptr<Tensor> graph_matmul(const std::shared_ptr<Tensor>& other) const;
+    std::shared_ptr<Tensor> sum() const;
+    std::shared_ptr<Tensor> softmax() const;
+    std::shared_ptr<Tensor> log() const;
+    std::shared_ptr<Tensor> log_softmax() const;
+    
 
     double get_element(long row, long col) const;
-    Tensor get_row(long row) const;
-    Tensor slice(Slice row_slice,Slice col_slice) const;
+    std::shared_ptr<Tensor> get_row(long row) const;
+    std::shared_ptr<Tensor> slice(Slice row_slice,Slice col_slice) const;
 
     void backward();
+    void zero_grad() {
+        this->grad.setZero();
+    }
     
-    friend void build_topo(std::shared_ptr<const Tensor> node, std::vector<std::shared_ptr<const Tensor>>& topo, std::unordered_set<std::shared_ptr<const Tensor>>& visited);
+    friend void ::build_topo(const std::shared_ptr<Tensor>& node, std::vector<std::shared_ptr<Tensor>>& topo, std::unordered_set<std::shared_ptr<Tensor>>& visited);
+    friend class nn::ReLU;
+    friend class nn::Sigmoid;
+    friend class nn::Flatten;
+
+    static std::shared_ptr<Tensor> random(long rows, long cols) {
+        return std::make_shared<Tensor>(Eigen::MatrixXd::Random(rows,cols));
+    }
 
 private:
-    std::vector<std::shared_ptr<const Tensor>> _prev;
+    std::vector<std::weak_ptr<const Tensor>> _prev;
     std::string _op;
     double _scalar_val = 0.0;
+
+    // Flag: whether this tensor participates in the autograd graph tree.
+    bool requires_grad = false;
+    // Unique id for tracing ownership and lifetime issues.
+    uint64_t id = 0; 
+
+    std::shared_ptr<Tensor> make_binary_op(const Tensor& other, const Eigen::MatrixXd& result, const std::string& op) const 
+{
+    auto out = std::make_shared<Tensor>(result);
+
+    if (auto self_ptr = this->shared_from_this())
+        out->_prev.push_back(self_ptr);
+    if (auto other_ptr = other.shared_from_this())
+        out->_prev.push_back(other_ptr);
+
+    out->_op = op;
+    return out;
+}
+
 };
 
-Tensor operator*(double scalar, const Tensor& t);
+std::shared_ptr<Tensor> operator*(double scalar, const std::shared_ptr<Tensor>& t);
 
 using Value = std::variant<int, double, std::string, bool, py::object>;
 
@@ -73,6 +131,22 @@ public:
     py::object get_variable(const std::string& name);
     py::object evaluate(const std::string& op, const py::object& left, const py::object& right);
     py::object matmul(const py::object& left, const py::object& right);
+};
+
+class GraphContext {
+    public:
+        static GraphContext& get_instance();
+
+        void clear_tape();
+        void register_tensor(std::shared_ptr<Tensor> t);
+        
+        GraphContext(const GraphContext&) = delete;
+        void operator=(const GraphContext&) = delete;
+
+    private:
+        GraphContext() = default;
+        std::vector<std::shared_ptr<Tensor>> tape_;
+
 };
 
 #endif

@@ -91,8 +91,8 @@ class Assign(Node):
 
 class PrintStatement(Node):
     """Represents a print statement."""
-    def __init__(self, expr):
-        self.expr = expr
+    def __init__(self, exprs):
+        self.exprs = exprs
 
 class Block(Node):
     """Represents a block of statements { ... }."""
@@ -128,9 +128,10 @@ class FunctionDef(Node):
 
 class FunctionCall(Node):
     """Represents a function call."""
-    def __init__(self, callee, args):
+    def __init__(self, callee, args, kwargs):
         self.callee = callee
         self.args = args
+        self.kwargs = kwargs
         self.token = callee.token  
 
 class ReturnStatement(Node):
@@ -202,3 +203,9 @@ class SuperNode(Node):
     """Represents the 'super' keyword"""
     def __init__(self, token):
         self.token = token
+
+class NetworkLiteral(Node):
+    """Represents a network block with input, layers, optimizer, and loss."""
+    def __init__(self, token, attributes):
+        self.token = token
+        self.attributes = attributes

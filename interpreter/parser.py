@@ -123,9 +123,16 @@ class Parser:
     def print_statement(self):
         self.eat(TokenType.PRINT)
         self.eat(TokenType.LPAREN)
-        expr = self.comparison_expression()
+        
+        exprs = []
+        if self.current_token[0] != TokenType.RPAREN:
+            exprs.append(self.comparison_expression())
+            while self.current_token[0] == TokenType.COMMA:
+                self.eat(TokenType.COMMA)
+                exprs.append(self.comparison_expression())
+
         self.eat(TokenType.RPAREN)
-        return PrintStatement(expr)
+        return PrintStatement(exprs)
 
     def assignment_statement(self):
         ident_token = self.current_token
@@ -319,13 +326,24 @@ class Parser:
             if self.current_token[0] == TokenType.LPAREN:
                 self.eat(TokenType.LPAREN)
                 args = []
+                kwargs = {}
                 if self.current_token[0] != TokenType.RPAREN:
-                    args.append(self.comparison_expression())
-                    while self.current_token[0] == TokenType.COMMA:
-                        self.eat(TokenType.COMMA)
-                        args.append(self.comparison_expression())
+                    while True:
+                        if self.current_token[0] == TokenType.IDENT and self.tokens[self.pos + 1][0] == TokenType.ASSIGN:
+                            key = self.current_token[1]
+                            self.eat(TokenType.IDENT)
+                            self.eat(TokenType.ASSIGN)
+                            value = self.comparison_expression()
+                            kwargs[key] = value
+                        else:
+                            args.append(self.comparison_expression())
+
+                        if self.current_token[0] == TokenType.COMMA:
+                            self.eat(TokenType.COMMA)
+                        else:
+                            break
                 self.eat(TokenType.RPAREN)
-                node = FunctionCall(node, args)
+                node = FunctionCall(node, args, kwargs)
             elif self.current_token[0] == TokenType.LBRACKET:
                 self.eat(TokenType.LBRACKET)
                 index_expr = []
@@ -386,6 +404,8 @@ class Parser:
             return self.list_expression()
         elif token_type == TokenType.LBRACE:
             return self.dict_expression()
+        elif token_type == TokenType.NETWORK:
+            return self.network_literal()
         elif token_type == TokenType.IDENT:
             self.advance()
             return Variable(token)
@@ -413,6 +433,42 @@ class Parser:
             return node
         else:
             raise SyntaxError(f"Unexpected token {self.current_token} in expression")
+        
+    def network_literal(self):
+        start_token = self.current_token
+        self.eat(TokenType.NETWORK)
+        self.eat(TokenType.LBRACE)
+
+        attributes = {}
+        required_keys = {"input", "layers", "optimizer", "loss"}
+
+        while self.current_token[0] != TokenType.RBRACE:
+            if self.current_token[0] != TokenType.IDENT:
+                self.error("Expected an identifier (e.g., 'input', 'layers') in network block.")
+
+            key = self.current_token[1]
+            self.eat(TokenType.IDENT)
+            self.eat(TokenType.COLON)
+
+            value_expr = self.comparison_expression()
+            attributes[key] = value_expr
+
+            if self.current_token[0] == TokenType.COMMA:
+                self.eat(TokenType.COMMA)
+
+        self.eat(TokenType.RBRACE)
+
+        # Validation of required keys
+        provided_keys = set(attributes.keys())
+        if provided_keys != required_keys:
+            missing = required_keys - provided_keys
+            extra = provided_keys - required_keys
+            error_msg = ""
+            if missing: error_msg += f"Missing keys in network block: {missing}. "
+            if extra: error_msg += f"Unexpected keys in network block: {extra}. "
+            raise Exception(f"SyntaxError: {error_msg}")
+        
+        return NetworkLiteral(start_token,attributes)
         
     def list_expression(self):
         """Parses a list literal."""
