@@ -40,3 +40,6 @@ skip = "cp36-* cp37-* pp*"
 
 [tool.cibuildwheel.windows]
 archs = ["AMD64"]
+
+[project.entry-points."pygments.lexers"]
+mlscript = "interpreter.lexer_pygments:MlscriptLexer"
